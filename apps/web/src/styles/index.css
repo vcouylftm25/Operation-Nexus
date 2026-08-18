@@ -330,3 +330,12 @@
     opacity: 0.9;
   }
 }
+
+.nx-tab-trigger[data-state="active"] {
+  background: var(--nx-accent-08);
+  color: var(--nx-accent-text);
+}
+
+.nx-tab-trigger:hover {
+  color: var(--nx-ink);
+}

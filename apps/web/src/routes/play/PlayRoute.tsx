@@ -59,30 +59,62 @@ function PlayWarRoom({ session }: { session: TeamSession }) {
   const graphUnlocked = displayRound >= 2;
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-[#070a0f]">
+    <div
+      className="nx-scope flex h-full min-h-0 flex-col"
+      data-nx-theme={nxTheme}
+      style={{ background: "var(--nx-bg)" }}
+    >
       <TutorialOverlay storageKey={`nexus-tutorial-${session.teamId}`} />
-      <NexusHeader subtitle={session.teamName} round={displayRound} live={live} right={<span className="font-mono text-[10px] uppercase tracking-[0.16em] text-nexus-muted">Equipe privada</span>} />
+      <NexusHeader
+        variant="nx"
+        subtitle={session.teamName}
+        round={displayRound}
+        live={live}
+        credits={displayCredits}
+      />
       <MissionBrief round={displayRound} title={title} credits={displayCredits} countdown={countdown} />
-      <div className="grid min-h-0 flex-1 grid-cols-[300px_minmax(0,1fr)_360px]">
-        <section className="flex min-h-0 flex-col border-r border-white/[0.07] bg-[#0b0f16]">
+      <div className="grid min-h-0 flex-1 grid-cols-[304px_minmax(0,1fr)_344px]">
+        <section
+          className="flex min-h-0 flex-col"
+          style={{ borderRight: "1px solid var(--nx-line)", background: "var(--nx-surface)" }}
+        >
           <Tabs defaultValue="docket" className="flex min-h-0 flex-1 flex-col">
-            <div className="border-b border-white/[0.07] px-3 py-2.5"><TabsList><TabsTrigger value="docket">Casos</TabsTrigger><TabsTrigger value="evidence">Evidências</TabsTrigger></TabsList></div>
+            <div style={{ borderBottom: "1px solid var(--nx-line)", padding: "10px 12px" }}>
+              <TabsList><TabsTrigger value="docket">Casos</TabsTrigger><TabsTrigger value="evidence">Evidências</TabsTrigger></TabsList>
+            </div>
             <TabsContent value="docket" className="mt-0 flex min-h-0 flex-1 flex-col"><CaseDocket files={docketQuery.data ?? []} teamId={session.teamId} sessionToken={session.sessionToken} /></TabsContent>
             <TabsContent value="evidence" className="mt-0 min-h-0 flex-1 overflow-hidden"><EvidenceDrawer embedded /></TabsContent>
           </Tabs>
         </section>
-        <div className="nx-scope contents" data-nx-theme={nxTheme}>
-          <section className="relative min-h-0">
-            {graphUnlocked ? (
-              <GraphCanvas onCommand={investigatorSession.submit} pending={investigatorSession.pending} />
-            ) : (
-              <div className="flex h-full items-center justify-center px-12" style={{ background: "var(--nx-card)" }}><div className="max-w-lg text-center"><div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.035] font-mono text-xs text-nexus-muted">R1</div><p className="mt-6 font-mono text-[10px] uppercase tracking-[0.24em] text-nexus-amber">Contexto relacional bloqueado</p><h2 className="mt-3 text-2xl font-semibold tracking-[-0.025em] text-white">Primeiro, julgue os indivíduos.</h2><p className="mt-3 text-sm leading-6 text-nexus-muted">Neste round vocês têm apenas os dossiês. Escolham onde gastar inteligência sem saber quem está conectado a quem.</p><div className="mx-auto mt-6 h-px w-28 bg-gradient-to-r from-transparent via-white/20 to-transparent" /><p className="mt-5 text-xs text-nexus-muted">As relações entram no caso no próximo round.</p></div></div>
-            )}
-          </section>
-          <InvestigatorPanel session={investigatorSession} credits={displayCredits} />
-        </div>
+        <section className="relative min-h-0">
+          {graphUnlocked ? (
+            <GraphCanvas onCommand={investigatorSession.submit} pending={investigatorSession.pending} />
+          ) : (
+            <div className="flex h-full items-center justify-center px-12" style={{ background: "var(--nx-card)" }}>
+              <div className="max-w-lg text-center">
+                <div
+                  className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl font-mono text-xs"
+                  style={{ border: "1px solid var(--nx-line-2)", background: "var(--nx-elev)", color: "var(--nx-muted)" }}
+                >
+                  R1
+                </div>
+                <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.24em]" style={{ color: "var(--nx-accent-text)" }}>Contexto relacional bloqueado</p>
+                <h2 className="mt-3 text-2xl font-semibold tracking-[-0.025em]" style={{ color: "var(--nx-ink)" }}>Primeiro, julgue os indivíduos.</h2>
+                <p className="mt-3 text-sm leading-6" style={{ color: "var(--nx-muted)" }}>Neste round vocês têm apenas os dossiês. Escolham onde gastar inteligência sem saber quem está conectado a quem.</p>
+                <div className="mx-auto mt-6 h-px w-28" style={{ background: "var(--nx-line-2)" }} />
+                <p className="mt-5 text-xs" style={{ color: "var(--nx-muted)" }}>As relações entram no caso no próximo round.</p>
+              </div>
+            </div>
+          )}
+        </section>
+        <InvestigatorPanel session={investigatorSession} credits={displayCredits} />
       </div>
-      <div className="h-[210px] shrink-0 border-t border-white/[0.07] bg-[#090d13]"><HypothesisBoard teamId={session.teamId} sessionToken={session.sessionToken} /></div>
+      <div
+        className="h-[210px] shrink-0"
+        style={{ borderTop: "1px solid var(--nx-line)", background: "var(--nx-surface)" }}
+      >
+        <HypothesisBoard teamId={session.teamId} sessionToken={session.sessionToken} />
+      </div>
     </div>
   );
 }

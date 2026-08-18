@@ -2,7 +2,7 @@ import { ScrollArea } from "@/components/ui/ScrollArea";
 import { useGraphStore, useTeamGraphPayload } from "@/features/graph/graphStore";
 import { useLiveStore } from "@/features/game/liveStore";
 import { colorForLabels, labelDisplay, propertyDisplay } from "@/features/graph/colors";
-import { cn, propertyText } from "@/lib/utils";
+import { propertyText } from "@/lib/utils";
 
 export function EvidenceDrawer({ embedded = false }: { embedded?: boolean }) {
   const payload = useTeamGraphPayload();
@@ -18,36 +18,38 @@ export function EvidenceDrawer({ embedded = false }: { embedded?: boolean }) {
   );
 
   return (
-    <section
-      className={
-        embedded
-          ? "flex h-full min-h-0 flex-col"
-          : "nexus-panel flex h-full min-h-0 flex-col rounded-none border-y-0 border-l-0"
-      }
-    >
+    <section style={{ display: "flex", height: "100%", minHeight: 0, flexDirection: "column" }}>
       {embedded ? null : (
-      <header className="border-b border-nexus-border px-4 py-3">
-        <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-nexus-muted">Evidências</p>
-        <p className="mt-1 font-mono text-[10px] text-nexus-amber">
-          {payload.nodes.length} nós · {payload.relationships.length} relações
-        </p>
-      </header>
+        <header style={{ borderBottom: "1px solid var(--nx-line)", padding: "12px 16px" }}>
+          <p style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, letterSpacing: "0.22em", color: "var(--nx-muted)", textTransform: "uppercase" }}>
+            Evidências
+          </p>
+          <p style={{ marginTop: 4, fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, color: "var(--nx-accent-text)" }}>
+            {payload.nodes.length} nós · {payload.relationships.length} relações
+          </p>
+        </header>
       )}
       <ScrollArea className="min-h-0 flex-1">
-        <div className="space-y-4 px-3 py-3">
+        <div style={{ padding: "14px 12px", display: "flex", flexDirection: "column", gap: 16 }}>
           {unlocked.length > 0 ? (
             <div>
-              <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.16em] text-nexus-amber">
+              <p style={{ marginBottom: 8, fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, letterSpacing: "0.16em", color: "var(--nx-accent-text)", textTransform: "uppercase" }}>
                 Pistas liberadas
               </p>
-              <ul className="space-y-1">
+              <ul style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                 {unlocked.map((item, index) => (
                   <li
                     key={`${item.id ?? item.evidence_id ?? index}`}
-                    className="rounded-sm border border-nexus-amber/30 bg-nexus-amber/5 px-2 py-2 text-xs"
+                    style={{ borderRadius: 10, border: "1px solid var(--nx-accent-30)", background: "var(--nx-accent-06)", padding: "8px 10px", fontSize: 12 }}
                   >
-                    <p className="font-medium text-nexus-text">{item.evidence_type === "message" ? "Mensagem recuperada" : "Evidência liberada"}</p>
-                    {item.excerpt ? <p className="mt-1 leading-relaxed text-nexus-text/90">“{item.excerpt}”</p> : <p className="mt-1 text-xs text-nexus-muted">Material liberado pelo host.</p>}
+                    <p style={{ fontWeight: 500, color: "var(--nx-ink)" }}>
+                      {item.evidence_type === "message" ? "Mensagem recuperada" : "Evidência liberada"}
+                    </p>
+                    {item.excerpt ? (
+                      <p style={{ marginTop: 4, lineHeight: 1.5, color: "var(--nx-ink)" }}>“{item.excerpt}”</p>
+                    ) : (
+                      <p style={{ marginTop: 4, fontSize: 11, color: "var(--nx-muted)" }}>Material liberado pelo host.</p>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -58,22 +60,24 @@ export function EvidenceDrawer({ embedded = false }: { embedded?: boolean }) {
           <NodeGroup title="Entidades" nodes={others} selectedId={selectedId} />
 
           {selected ? (
-            <div className="rounded-sm border border-nexus-border bg-nexus-bg/50 p-3">
-              <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-nexus-muted">
+            <div style={{ borderRadius: 12, border: "1px solid var(--nx-line)", background: "var(--nx-card)", padding: 12 }}>
+              <p style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, letterSpacing: "0.16em", color: "var(--nx-muted)", textTransform: "uppercase" }}>
                 {labelDisplay(selected.labels)}
               </p>
-              <p className="mt-1 text-sm font-medium">{selected.label_display}</p>
-              <dl className="mt-3 space-y-1.5">
+              <p style={{ marginTop: 4, fontSize: 13, fontWeight: 500, color: "var(--nx-ink)" }}>{selected.label_display}</p>
+              <dl style={{ marginTop: 10, display: "flex", flexDirection: "column", gap: 6 }}>
                 {Object.entries(selected.properties).map(([key, value]) => (
                   <div key={key}>
-                    <dt className="font-mono text-[10px] uppercase tracking-wider text-nexus-muted">{propertyDisplay(key)}</dt>
-                    <dd className="text-xs leading-relaxed text-nexus-text/90">{propertyText(value)}</dd>
+                    <dt style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, letterSpacing: "0.08em", color: "var(--nx-muted)", textTransform: "uppercase" }}>
+                      {propertyDisplay(key)}
+                    </dt>
+                    <dd style={{ fontSize: 12, lineHeight: 1.5, color: "var(--nx-ink)" }}>{propertyText(value)}</dd>
                   </div>
                 ))}
               </dl>
             </div>
           ) : (
-            <p className="px-1 text-xs text-nexus-muted">Selecione um nó no grafo ou na lista.</p>
+            <p style={{ fontSize: 12, color: "var(--nx-muted)" }}>Selecione um nó no grafo ou na lista.</p>
           )}
         </div>
       </ScrollArea>
@@ -93,25 +97,32 @@ function NodeGroup({
   if (nodes.length === 0) return null;
   return (
     <div>
-      <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.16em] text-nexus-muted">{title}</p>
-      <ul className="space-y-1">
+      <p style={{ marginBottom: 8, fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, letterSpacing: "0.16em", color: "var(--nx-muted)", textTransform: "uppercase" }}>
+        {title}
+      </p>
+      <ul style={{ display: "flex", flexDirection: "column", gap: 4 }}>
         {nodes.map((node) => (
           <li key={node.id}>
             <button
               type="button"
               onClick={() => useGraphStore.getState().select(node.id)}
-              className={cn(
-                "flex w-full items-center gap-2 rounded-sm border px-2 py-1.5 text-left text-xs transition-colors",
-                selectedId === node.id
-                  ? "border-nexus-amber/50 bg-nexus-amber/10"
-                  : "border-nexus-border hover:border-nexus-amber/30 hover:bg-white/4",
-              )}
+              style={{
+                display: "flex",
+                width: "100%",
+                alignItems: "center",
+                gap: 8,
+                borderRadius: 9,
+                border: `1px solid ${selectedId === node.id ? "var(--nx-accent-45)" : "var(--nx-line)"}`,
+                background: selectedId === node.id ? "var(--nx-accent-08)" : "transparent",
+                padding: "6px 8px",
+                textAlign: "left",
+                fontSize: 12,
+                cursor: "pointer",
+                color: "var(--nx-ink)",
+              }}
             >
-              <span
-                className="h-2 w-2 shrink-0 rounded-full"
-                style={{ background: colorForLabels(node.labels) }}
-              />
-              <span className="min-w-0 flex-1 truncate">{node.label_display}</span>
+              <span style={{ width: 8, height: 8, flexShrink: 0, borderRadius: "50%", background: colorForLabels(node.labels) }} />
+              <span style={{ minWidth: 0, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{node.label_display}</span>
             </button>
           </li>
         ))}
