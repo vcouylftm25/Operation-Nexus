@@ -1,0 +1,85 @@
+[project]
+name = "operation-nexus"
+version = "0.1.0"
+description = "Operation Nexus — competitive graph-powered fraud investigation game"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.120",
+    "uvicorn[standard]>=0.38",
+    "pydantic>=2.12",
+    "pydantic-settings>=2.8",
+    "sqlalchemy>=2.0",
+    "alembic>=1.14",
+    "psycopg[binary]>=3.2",
+    "neo4j>=6.0",
+    "python-ulid>=3.0",
+    "pyyaml>=6.0",
+    "typer>=0.15",
+    "httpx>=0.28",
+    "structlog>=25.1",
+    "websockets>=14.0",
+]
+
+[project.optional-dependencies]
+ai = [
+    "langgraph>=1.0",
+    "langgraph-checkpoint-postgres>=2.0",
+    "langchain-core>=1.0",
+    "langchain-openai>=1.0",
+    "neo4j-graphrag>=1.7",
+]
+
+[project.scripts]
+operation-nexus = "operation_nexus.cli:app"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=0.25",
+    "pytest-cov>=6.0",
+    "ruff>=0.9",
+    "pyright>=1.1.390",
+    "testcontainers[neo4j,postgres]>=4.9",
+    "freezegun>=1.5",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/operation_nexus"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "B", "SIM", "RUF", "ASYNC", "S", "C4", "PT"]
+ignore = ["S101", "B008", "N818"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S", "PT011"]
+
+[tool.pyright]
+include = ["src"]
+exclude = [
+    "src/operation_nexus/ai/graph/investigation_graph.py",
+]
+pythonVersion = "3.13"
+venvPath = "."
+venv = ".venv"
+typeCheckingMode = "basic"
+reportMissingImports = "warning"
+strict = []
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+markers = [
+    "integration: requires postgres/neo4j",
+    "golden: golden investigation suite",
+    "ai: requires Azure OpenAI",
+]

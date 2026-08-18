@@ -1,0 +1,122 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --color-nexus-bg: #07080c;
+  --color-nexus-bg-alt: #0c1018;
+  --color-nexus-panel: rgb(18 24 38 / 0.8);
+  --color-nexus-border: #1e2a3d;
+  --color-nexus-amber: #f5b942;
+  --color-nexus-signal: #3ee0a0;
+  --color-nexus-danger: #ff5d5d;
+  --color-nexus-muted: #8b9bb4;
+  --color-nexus-text: #e8eef8;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    color: var(--color-nexus-text);
+    font-family: var(--font-sans);
+    background-color: var(--color-nexus-bg);
+    background-image:
+      radial-gradient(ellipse at 12% -8%, rgb(245 185 66 / 0.09), transparent 42%),
+      radial-gradient(ellipse at 88% 108%, rgb(62 224 160 / 0.06), transparent 46%),
+      linear-gradient(rgb(30 42 61 / 0.28) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(30 42 61 / 0.28) 1px, transparent 1px);
+    background-size: auto, auto, 56px 56px, 56px 56px;
+    background-attachment: fixed;
+  }
+
+  ::selection {
+    background: rgb(245 185 66 / 0.35);
+    color: #fff;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font-family: inherit;
+  }
+}
+
+@layer components {
+  .nexus-panel {
+    background: var(--color-nexus-panel);
+    border: 1px solid var(--color-nexus-border);
+    backdrop-filter: blur(14px);
+  }
+
+  .nexus-scan {
+    position: relative;
+  }
+
+  .nexus-scan::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgb(255 255 255 / 0.015),
+      rgb(255 255 255 / 0.015) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    mix-blend-mode: overlay;
+  }
+}
+
+@keyframes nexus-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgb(62 224 160 / 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 14px rgb(62 224 160 / 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgb(62 224 160 / 0);
+  }
+}
+
+@keyframes nexus-live {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes nexus-toast-in {
+  from {
+    transform: translateY(-12px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.nexus-node-pulse {
+  animation: nexus-pulse 1.4s ease-out 3;
+}
+
+.nexus-live-dot {
+  animation: nexus-live 1.4s ease-in-out infinite;
+}
+
+.nexus-toast {
+  animation: nexus-toast-in 280ms ease-out;
+}

@@ -1,0 +1,30 @@
+{
+  "evidence": [
+    {
+      "id": "message_01",
+      "kind": "Message",
+      "visible_from_round": 2,
+      "label_display": "SMS — 01/02 09:00",
+      "content": "usa meu aparelho pra terminar o cadastro que é mais rapido",
+      "captured_at": "2026-02-01T09:00:00Z",
+      "source": "seized_device",
+      "channel": "sms",
+      "sent_by": "person_02",
+      "sent_to": ["person_01"],
+      "mentions": ["person_01"],
+      "mentions_accounts": []
+    },
+    {
+      "id": "evidence_01",
+      "kind": "Evidence",
+      "visible_from_round": 4,
+      "label_display": "Extrato bancário — Conta 02",
+      "content": "Transferência recebida de R$ 9.800 originada na conta de Alice Fixture.",
+      "captured_at": "2026-03-18T00:00:00Z",
+      "source": "bank_statement",
+      "evidence_type": "financial_record",
+      "mentions": ["person_01", "person_02"],
+      "mentions_accounts": ["account_02"]
+    }
+  ]
+}

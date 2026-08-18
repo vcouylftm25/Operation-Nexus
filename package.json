@@ -1,0 +1,5 @@
+{
+  "name": "operation-nexus",
+  "private": true,
+  "packageManager": "pnpm@10.14.0"
+}

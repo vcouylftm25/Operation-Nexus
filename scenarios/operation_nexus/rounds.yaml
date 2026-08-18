@@ -1,0 +1,50 @@
+rounds:
+  - number: 1
+    title: "Individualmente, tudo parece normal"
+    narrative: >
+      A Vero Crédito pediu à equipe de investigação para revisar 31 propostas de crédito
+      aprovadas ou negadas nos últimos meses, ligadas a 22 clientes. Vistos um a um, os
+      perfis parecem exatamente o que se espera de uma carteira saudável: rendas
+      declaradas plausíveis, ocupações variadas, scores de crédito dentro do esperado.
+      Nenhuma ficha, isoladamente, grita "fraude". Encontrem o perfil mais arriscado e
+      justifiquem por quê — mas desconfiem de conclusões fáceis baseadas em um único número.
+    credits: 100
+    unlocks: ["Person", "Application"]
+    duration_seconds: 900
+  - number: 2
+    title: "Conectando os pontos"
+    narrative: >
+      Dispositivos, telefones, e-mails, IPs, endereços e contas bancárias agora estão
+      visíveis. Três "pessoas diferentes" compartilham o mesmo notebook para enviar
+      propostas. Um notebook doméstico é usado por três pessoas ao mesmo tempo — mas uma
+      dessas ligações tem explicação simples assim que o vínculo familiar aparece no grafo.
+      Duas outras conexões de infraestrutura parecem graves e vão resistir ao escrutínio
+      por mais uma rodada inteira. Lembrem-se: compartilhar infraestrutura não é,
+      por si só, prova de fraude.
+    credits: 120
+    unlocks: ["Device", "Phone", "Email", "IPAddress", "Address", "BankAccount"]
+    duration_seconds: 1200
+  - number: 3
+    title: "Identidade e evidência semântica"
+    narrative: >
+      Mensagens e evidências capturadas em dispositivos apreendidos entram no jogo, junto
+      com o recurso de resolução de identidade. Três nomes quase idênticos — "Roberto
+      Alves", "R. Alves" e "Rob. Alves" — escondem uma única pessoa por trás de três
+      propostas. Uma mensagem lida isoladamente parece confirmar um crime; outra, com a
+      mesma leitura apressada, na verdade fala sobre uma festa de aniversário. A busca
+      semântica é o caminho mais rápido para separar as duas coisas.
+    credits: 140
+    unlocks: ["Message", "Evidence"]
+    duration_seconds: 1200
+  - number: 4
+    title: "Seguindo o dinheiro"
+    narrative: >
+      Transações, uma empresa de fachada e um corretor coautor do esquema completam o
+      quadro. O caminho do dinheiro conecta os solicitantes até quem realmente lucra —
+      mas só se seguido por três ou quatro saltos no grafo, sem atalhos. Uma conta aberta
+      depois de supostamente ter recebido uma transferência é um lembrete de que datas
+      importam tanto quanto conexões. Façam a acusação final: quem é cúmplice, quem
+      coordena, e quem só foi vítima da própria infraestrutura.
+    credits: 160
+    unlocks: ["Transaction", "Company", "Broker", "Document"]
+    duration_seconds: 1500

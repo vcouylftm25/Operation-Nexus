@@ -1,0 +1,4 @@
+name: "Mini Scenario"
+slug: "mini_scenario"
+description: "Tiny 8-entity fixture used by graph unit/integration tests. Not the real mystery."
+version: "0.1.0"

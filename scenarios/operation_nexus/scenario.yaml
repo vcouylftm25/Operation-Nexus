@@ -1,0 +1,13 @@
+name: "Operação Nexus — Fraude na Vero Crédito"
+slug: operation_nexus
+description: >
+  Em quatro meses, a fintech fictícia Vero Crédito aprovou mais de R$ 250 mil em
+  empréstimos e antecipações de recebíveis para um grupo de clientes que, isoladamente,
+  pareciam perfis de crédito exemplares. Uma varredura de compliance encontrou o primeiro
+  fio da meada: dispositivos, telefones e endereços compartilhados entre solicitantes que
+  deveriam ser estranhos entre si. Os times de analistas assumem a investigação —
+  "Operação Nexus" — para separar coincidência de conluio, resolver identidades duplicadas
+  e seguir o dinheiro até quem de fato comanda o esquema. Todos os nomes, documentos,
+  contas e empresas neste cenário são fictícios, criados exclusivamente para fins de
+  treinamento; qualquer semelhança com pessoas ou empresas reais é coincidência.
+version: "1.0.0"

@@ -1,0 +1,103 @@
+{
+  "relationships": [
+    {
+      "id": "rel_001",
+      "type": "USED_DEVICE",
+      "start_id": "person_01",
+      "end_id": "device_01",
+      "visible_from_round": 1,
+      "source": "device_fingerprinting",
+      "confidence": 0.95,
+      "timestamp": "2026-01-05T10:05:00Z",
+      "properties": {}
+    },
+    {
+      "id": "rel_002",
+      "type": "USED_DEVICE",
+      "start_id": "person_02",
+      "end_id": "device_01",
+      "visible_from_round": 1,
+      "source": "device_fingerprinting",
+      "confidence": 0.95,
+      "timestamp": "2026-01-06T09:00:00Z",
+      "properties": {}
+    },
+    {
+      "id": "rel_003",
+      "type": "OWNS_ACCOUNT",
+      "start_id": "person_01",
+      "end_id": "account_01",
+      "visible_from_round": 1,
+      "source": "kyc_onboarding",
+      "confidence": 1.0,
+      "timestamp": "2020-03-01T00:00:00Z",
+      "properties": {}
+    },
+    {
+      "id": "rel_004",
+      "type": "OWNS_ACCOUNT",
+      "start_id": "person_02",
+      "end_id": "account_02",
+      "visible_from_round": 3,
+      "source": "kyc_onboarding",
+      "confidence": 1.0,
+      "timestamp": "2021-07-14T00:00:00Z",
+      "properties": {}
+    },
+    {
+      "id": "rel_005",
+      "type": "WORKS_AT",
+      "start_id": "person_01",
+      "end_id": "company_01",
+      "visible_from_round": 2,
+      "source": "employment_registry",
+      "confidence": 0.9,
+      "timestamp": "2022-01-10T00:00:00Z",
+      "properties": {}
+    },
+    {
+      "id": "rel_006",
+      "type": "WORKS_AT",
+      "start_id": "person_02",
+      "end_id": "company_01",
+      "visible_from_round": 2,
+      "source": "employment_registry",
+      "confidence": 0.9,
+      "timestamp": "2022-02-01T00:00:00Z",
+      "properties": {}
+    },
+    {
+      "id": "rel_007",
+      "type": "USED_PHONE",
+      "start_id": "person_01",
+      "end_id": "phone_01",
+      "visible_from_round": 2,
+      "source": "application_form",
+      "confidence": 0.8,
+      "timestamp": "2026-02-01T00:00:00Z",
+      "properties": {}
+    },
+    {
+      "id": "rel_008",
+      "type": "FROM_ACCOUNT",
+      "start_id": "transaction_01",
+      "end_id": "account_01",
+      "visible_from_round": 4,
+      "source": "bank_statement",
+      "confidence": 1.0,
+      "timestamp": "2026-03-10T12:00:00Z",
+      "properties": {}
+    },
+    {
+      "id": "rel_009",
+      "type": "TO_ACCOUNT",
+      "start_id": "transaction_01",
+      "end_id": "account_02",
+      "visible_from_round": 4,
+      "source": "bank_statement",
+      "confidence": 1.0,
+      "timestamp": "2026-03-10T12:00:01Z",
+      "properties": {}
+    }
+  ]
+}

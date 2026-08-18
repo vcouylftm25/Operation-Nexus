@@ -1,0 +1,45 @@
+# --- Python (uv) ---
+.venv/
+.venv
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+dist/
+build/
+
+# --- Node ---
+node_modules/
+apps/web/dist/
+apps/web/.vite/
+.pnpm-store/
+
+# --- Env files (keep the example, ignore anything real) ---
+.env
+.env.*.local
+!.env.example
+
+# --- macOS ---
+.DS_Store
+
+# --- Neo4j / Postgres local data (named docker volumes live outside the repo;
+#     these guard against anyone bind-mounting locally for debugging) ---
+infra/docker/*_data/
+infra/**/neo4j_data/
+infra/**/postgres_data/
+*.dump
+
+# --- LangGraph ---
+.langgraph_api/
+
+# --- Editors / OS cruft ---
+.vscode/
+.idea/
+*.swp
+
+# --- Logs ---
+*.log

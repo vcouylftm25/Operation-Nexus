@@ -1,0 +1,12 @@
+packages:
+  - apps/web
+
+# pnpm 11+ refuses to run any dependency's install/postinstall script unless
+# it's explicitly allow-listed here — otherwise `pnpm install` hard-fails
+# with ERR_PNPM_IGNORED_BUILDS in non-interactive contexts (Docker, CI).
+# esbuild (via Vite) needs this; Tailwind v4's native oxide engine likely
+# will too once apps/web depends on it — extend this list if `pnpm install`
+# reports further ignored builds.
+allowBuilds:
+  esbuild: true
+  "@tailwindcss/oxide": true

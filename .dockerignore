@@ -1,0 +1,30 @@
+# Repo-root .dockerignore — applies to any build whose context is the repo
+# root (infra/docker/api.Dockerfile, infra/docker/web.Dockerfile).
+
+.git
+.github
+.vscode
+.idea
+
+# Python
+**/__pycache__/
+**/*.py[cod]
+apps/api/.venv/
+apps/api/.pytest_cache/
+apps/api/.ruff_cache/
+apps/api/htmlcov/
+apps/api/.coverage
+
+# Node
+node_modules/
+apps/web/node_modules/
+apps/web/dist/
+apps/web/.vite/
+
+# Env / secrets
+.env
+.env.*.local
+!.env.example
+
+*.log
+.DS_Store

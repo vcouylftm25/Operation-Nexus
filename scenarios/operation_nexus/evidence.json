@@ -1,0 +1,288 @@
+{
+  "evidence": [
+    {
+      "id": "message_01",
+      "visible_from_round": 3,
+      "label_display": "WhatsApp — 05/01 19:40",
+      "content": "Fala Pati, já conversei com o Anderson e ele topou. Ele só precisa colocar no nome dele, o resto a gente resolve.",
+      "captured_at": "2026-01-05T19:40:00Z",
+      "source": "seized_device_patricia",
+      "channel": "whatsapp",
+      "sent_by": "person_04",
+      "sent_to": [
+        "person_03"
+      ],
+      "mentions": [
+        "person_01"
+      ],
+      "mentions_accounts": [],
+      "kind": "Message"
+    },
+    {
+      "id": "message_02",
+      "visible_from_round": 3,
+      "label_display": "WhatsApp — 06/01 08:12",
+      "content": "Fechado. Já separei as contas pra girar assim que cair o crédito. Só me manda o valor certinho de cada proposta.",
+      "captured_at": "2026-01-06T08:12:00Z",
+      "source": "seized_device_patricia",
+      "channel": "whatsapp",
+      "sent_by": "person_03",
+      "sent_to": [
+        "person_04"
+      ],
+      "mentions": [],
+      "mentions_accounts": [
+        "account_02"
+      ],
+      "kind": "Message"
+    },
+    {
+      "id": "message_03",
+      "visible_from_round": 3,
+      "label_display": "WhatsApp — 20/01 13:50",
+      "content": "Mandei a proposta com os documentos que vocês passaram. Usei o notebook de novo, o do Anderson mesmo, o meu tava com problema.",
+      "captured_at": "2026-01-20T13:50:00Z",
+      "source": "seized_device_patricia",
+      "channel": "whatsapp",
+      "sent_by": "person_05",
+      "sent_to": [
+        "person_03"
+      ],
+      "mentions": [
+        "person_01"
+      ],
+      "mentions_accounts": [],
+      "kind": "Message"
+    },
+    {
+      "id": "message_04",
+      "visible_from_round": 3,
+      "label_display": "WhatsApp — 18/01 10:05",
+      "content": "Nas três propostas muda um pouco o nome e o telefone quando der, não pode ficar tudo idêntico que o sistema recusa na hora.",
+      "captured_at": "2026-01-18T10:05:00Z",
+      "source": "seized_device_alias_trio",
+      "channel": "whatsapp",
+      "sent_by": "person_04",
+      "sent_to": [
+        "person_05"
+      ],
+      "mentions": [
+        "person_06",
+        "person_07"
+      ],
+      "mentions_accounts": [],
+      "kind": "Message"
+    },
+    {
+      "id": "message_05",
+      "visible_from_round": 3,
+      "label_display": "WhatsApp — 14/02 12:03",
+      "content": "Camila, fecha o valor do buffet da festa da Bia? Preciso saber quanto cada convidado vai colocar até sexta.",
+      "captured_at": "2026-02-14T12:03:00Z",
+      "source": "extracao_telefone_camila",
+      "channel": "whatsapp",
+      "sent_by": "person_10",
+      "sent_to": [
+        "person_02"
+      ],
+      "mentions": [],
+      "mentions_accounts": [],
+      "kind": "Message"
+    },
+    {
+      "id": "message_06",
+      "visible_from_round": 3,
+      "label_display": "WhatsApp — 14/02 12:07",
+      "content": "Já resolvi tudo, pode mandar pra mim que eu cuido. Fecha comigo o total do bolo e da decoração também.",
+      "captured_at": "2026-02-14T12:07:00Z",
+      "source": "extracao_telefone_camila",
+      "channel": "whatsapp",
+      "sent_by": "person_02",
+      "sent_to": [
+        "person_10"
+      ],
+      "mentions": [],
+      "mentions_accounts": [],
+      "kind": "Message"
+    },
+    {
+      "id": "message_07",
+      "visible_from_round": 3,
+      "label_display": "WhatsApp — 29/01 15:30",
+      "content": "Caiu o dinheiro da proposta. Já separei sua parte, te chamo mais tarde pra combinar onde te encontro.",
+      "captured_at": "2026-01-29T15:30:00Z",
+      "source": "seized_device_patricia",
+      "channel": "whatsapp",
+      "sent_by": "person_01",
+      "sent_to": [
+        "person_03"
+      ],
+      "mentions": [],
+      "mentions_accounts": [
+        "account_01",
+        "account_02"
+      ],
+      "kind": "Message"
+    },
+    {
+      "id": "message_08",
+      "visible_from_round": 3,
+      "label_display": "WhatsApp — 23/01 21:14",
+      "content": "Isso vai aparecer pro banco depois? Fiquei com medo depois que vi a proposta aprovada tão rápido.",
+      "captured_at": "2026-01-23T21:14:00Z",
+      "source": "seized_device_alias_trio",
+      "channel": "whatsapp",
+      "sent_by": "person_07",
+      "sent_to": [
+        "person_04"
+      ],
+      "mentions": [],
+      "mentions_accounts": [],
+      "kind": "Message"
+    },
+    {
+      "id": "message_09",
+      "visible_from_round": 3,
+      "label_display": "WhatsApp — 23/01 21:20",
+      "content": "Fica tranquilo, tá tudo certo. O Marcelo já validou as três propostas, ele cuida da parte de dentro.",
+      "captured_at": "2026-01-23T21:20:00Z",
+      "source": "seized_device_alias_trio",
+      "channel": "whatsapp",
+      "sent_by": "person_04",
+      "sent_to": [
+        "person_07"
+      ],
+      "mentions": [],
+      "mentions_accounts": [],
+      "kind": "Message"
+    },
+    {
+      "id": "evidence_01",
+      "visible_from_round": 3,
+      "label_display": "Laudo de análise comportamental de propostas",
+      "content": "Análise comparativa das três propostas de antecipação de recebíveis (Roberto Alves, R. Alves e Rob. Alves) identificou padrão de digitação e cadência de preenchimento estatisticamente idênticos nos três formulários, além de reuso do mesmo endereço de e-mail alternativo em campo de recuperação de conta. Conclusão técnica: alta probabilidade de autoria única.",
+      "captured_at": "2026-02-20T00:00:00Z",
+      "source": "analise_forense_ti",
+      "evidence_type": "forensic_report",
+      "mentions": [
+        "person_05",
+        "person_06",
+        "person_07"
+      ],
+      "mentions_accounts": [],
+      "kind": "Evidence"
+    },
+    {
+      "id": "evidence_02",
+      "visible_from_round": 3,
+      "label_display": "Nota de auditoria — IP da LAN House Boa Vista",
+      "content": "O IP 191.32.44.201 corresponde ao ponto de acesso Wi-Fi público da LAN House Boa Vista, que registra em média 40 clientes distintos por dia segundo o próprio estabelecimento. O compartilhamento desse IP entre Patrícia Melo e Juliana Prado, isoladamente, não constitui evidência de vínculo entre as duas: trata-se de infraestrutura de acesso público amplamente utilizada na região.",
+      "captured_at": "2026-02-25T00:00:00Z",
+      "source": "auditoria_ti_lanhouse",
+      "evidence_type": "network_forensics",
+      "mentions": [
+        "person_03",
+        "person_09"
+      ],
+      "mentions_accounts": [],
+      "kind": "Evidence"
+    },
+    {
+      "id": "evidence_03",
+      "visible_from_round": 4,
+      "label_display": "Extrato bancário — Conta 10 (Camila Melo)",
+      "content": "O extrato da conta 10 mostra transferências recorrentes de aproximadamente R$ 450,00 partindo da conta de Anderson Melo, em média uma vez por mês, ao longo dos últimos 14 meses — padrão compatível com repasse de despesas domésticas entre cônjuges, sem relação com o fluxo identificado nas contas 01, 02, 03 e 04.",
+      "captured_at": "2026-03-15T00:00:00Z",
+      "source": "extrato_bancario_conta_10",
+      "evidence_type": "financial_record",
+      "mentions": [
+        "person_02"
+      ],
+      "mentions_accounts": [
+        "account_10"
+      ],
+      "kind": "Evidence"
+    },
+    {
+      "id": "evidence_04",
+      "visible_from_round": 4,
+      "label_display": "Extrato bancário — Conta 01 (Anderson Melo)",
+      "content": "A conta 01 (Anderson Melo) recebeu quatro créditos de operações de crédito aprovadas entre 12/01 e 22/02, com repasse de mais de 80% do valor para a conta 02 em prazo inferior a 72 horas em todos os casos — padrão típico de conta usada como intermediária (conta-laranja).",
+      "captured_at": "2026-03-16T00:00:00Z",
+      "source": "extrato_bancario_conta_01",
+      "evidence_type": "financial_record",
+      "mentions": [
+        "person_01"
+      ],
+      "mentions_accounts": [
+        "account_01",
+        "account_02"
+      ],
+      "kind": "Evidence"
+    },
+    {
+      "id": "evidence_05",
+      "visible_from_round": 4,
+      "label_display": "Alerta de compliance — inconsistência de datas (Conta 05)",
+      "content": "Inconsistência identificada: a transação de 10/02/2026 lista a conta 05 (Juliana Prado) como destinatária, porém o registro de abertura dessa conta no Banco Vero data de 01/03/2026 — quase três semanas após a suposta transferência. O vínculo deve ser tratado como erro de conciliação bancária e não como recebimento efetivo por Juliana Prado.",
+      "captured_at": "2026-03-18T00:00:00Z",
+      "source": "auditoria_compliance_banco_vero",
+      "evidence_type": "compliance_flag",
+      "mentions": [
+        "person_09"
+      ],
+      "mentions_accounts": [
+        "account_05"
+      ],
+      "kind": "Evidence"
+    },
+    {
+      "id": "evidence_06",
+      "visible_from_round": 4,
+      "label_display": "Perícia documental — comprovantes de renda",
+      "content": "Os comprovantes de renda anexados às propostas de Roberto Alves, R. Alves, Rob. Alves e Anderson Melo foram emitidos pelo mesmo escritório de contabilidade (Contabilidade Rápida ME) em um intervalo de 10 dias, com papel timbrado idêntico e a mesma inconsistência de fonte tipográfica no campo de assinatura — indício de emissão em lote para sustentar identidades fabricadas.",
+      "captured_at": "2026-03-19T00:00:00Z",
+      "source": "pericia_documental",
+      "evidence_type": "document_forensics",
+      "mentions": [
+        "person_01",
+        "person_05",
+        "person_06",
+        "person_07"
+      ],
+      "mentions_accounts": [],
+      "kind": "Evidence"
+    },
+    {
+      "id": "evidence_07",
+      "visible_from_round": 4,
+      "label_display": "Nota de auditoria — corretor Marcelo Petri",
+      "content": "O corretor Marcelo Petri originou cinco das propostas com maior valor aprovado no período, todas vinculadas ao mesmo cluster de dispositivo e IP residencial, aprovadas em menos de 24 horas sem as checagens padrão de compatibilidade de renda exigidas pelo manual de crédito.",
+      "captured_at": "2026-03-20T00:00:00Z",
+      "source": "auditoria_compliance_corretores",
+      "evidence_type": "audit_note",
+      "mentions": [
+        "person_01",
+        "person_05"
+      ],
+      "mentions_accounts": [],
+      "kind": "Evidence"
+    },
+    {
+      "id": "evidence_08",
+      "visible_from_round": 4,
+      "label_display": "Registro na Junta Comercial — Aurora Multiserviços",
+      "content": "A empresa Aurora Multiserviços Administrativos LTDA foi constituída em 15/11/2025, treze dias antes da primeira proposta fraudulenta identificada, não possui empregados registrados nem outros clientes ou contratos além dos repasses recebidos na conta 04, e tem como sócio-administrador Eduardo Vasconcelos.",
+      "captured_at": "2026-03-21T00:00:00Z",
+      "source": "junta_comercial_sp",
+      "evidence_type": "corporate_record",
+      "mentions": [
+        "person_04"
+      ],
+      "mentions_accounts": [
+        "account_04"
+      ],
+      "kind": "Evidence"
+    }
+  ]
+}

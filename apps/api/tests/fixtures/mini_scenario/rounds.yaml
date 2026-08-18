@@ -1,0 +1,25 @@
+rounds:
+  - number: 1
+    title: "Individualmente, tudo parece normal"
+    narrative: "Fixture round 1 narrative."
+    credits: 100
+    unlocks: ["Person", "Device", "BankAccount"]
+    duration_seconds: 600
+  - number: 2
+    title: "Primeiras coincidências"
+    narrative: "Fixture round 2 narrative."
+    credits: 120
+    unlocks: ["Phone", "Company"]
+    duration_seconds: 600
+  - number: 3
+    title: "As contas se cruzam"
+    narrative: "Fixture round 3 narrative."
+    credits: 140
+    unlocks: ["BankAccount"]
+    duration_seconds: 600
+  - number: 4
+    title: "O rastro do dinheiro"
+    narrative: "Fixture round 4 narrative."
+    credits: 160
+    unlocks: ["Transaction", "Evidence"]
+    duration_seconds: 600

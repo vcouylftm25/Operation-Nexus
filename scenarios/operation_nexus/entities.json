@@ -1,0 +1,1383 @@
+{
+  "entities": [
+    {
+      "id": "person_01",
+      "label": "Person",
+      "visible_from_round": 1,
+      "label_display": "Anderson Melo",
+      "properties": {
+        "name": "Anderson Melo",
+        "cpf_masked": "***.221.884-**",
+        "age": 29,
+        "occupation": "Motorista de aplicativo",
+        "income_declared": 3200.0,
+        "credit_score": 641
+      }
+    },
+    {
+      "id": "person_02",
+      "label": "Person",
+      "visible_from_round": 1,
+      "label_display": "Camila Melo",
+      "properties": {
+        "name": "Camila Melo",
+        "cpf_masked": "***.774.112-**",
+        "age": 27,
+        "occupation": "Auxiliar administrativo",
+        "income_declared": 2450.0,
+        "credit_score": 703
+      }
+    },
+    {
+      "id": "person_03",
+      "label": "Person",
+      "visible_from_round": 1,
+      "label_display": "Patrícia Melo",
+      "properties": {
+        "name": "Patrícia Melo",
+        "cpf_masked": "***.556.230-**",
+        "age": 34,
+        "occupation": "Autônoma - consultoria financeira",
+        "income_declared": 5400.0,
+        "credit_score": 718
+      }
+    },
+    {
+      "id": "person_04",
+      "label": "Person",
+      "visible_from_round": 1,
+      "label_display": "Eduardo Vasconcelos",
+      "properties": {
+        "name": "Eduardo Vasconcelos",
+        "cpf_masked": "***.903.447-**",
+        "age": 52,
+        "occupation": "Consultor financeiro autônomo",
+        "income_declared": 9100.0,
+        "credit_score": 689
+      }
+    },
+    {
+      "id": "person_05",
+      "label": "Person",
+      "visible_from_round": 1,
+      "label_display": "Roberto Alves",
+      "properties": {
+        "name": "Roberto Alves",
+        "cpf_masked": "***.456.789-**",
+        "age": 41,
+        "occupation": "Autônomo",
+        "income_declared": 8200.0,
+        "credit_score": 812
+      }
+    },
+    {
+      "id": "person_06",
+      "label": "Person",
+      "visible_from_round": 1,
+      "label_display": "R. Alves",
+      "properties": {
+        "name": "R. Alves",
+        "cpf_masked": "***.118.902-**",
+        "age": 40,
+        "occupation": "Comerciante",
+        "income_declared": 7900.0,
+        "credit_score": 799
+      }
+    },
+    {
+      "id": "person_07",
+      "label": "Person",
+      "visible_from_round": 1,
+      "label_display": "Rob. Alves",
+      "properties": {
+        "name": "Rob. Alves",
+        "cpf_masked": "***.339.671-**",
+        "age": 42,
+        "occupation": "Representante comercial",
+        "income_declared": 8600.0,
+        "credit_score": 834
+      }
+    },
+    {
+      "id": "person_08",
+      "label": "Person",
+      "visible_from_round": 1,
+      "label_display": "Marlene Ferreira",
+      "properties": {
+        "name": "Marlene Ferreira",
+        "cpf_masked": "***.002.556-**",
+        "age": 63,
+        "occupation": "Aposentada",
+        "income_declared": 1980.0,
+        "credit_score": 312
+      }
+    },
+    {
+      "id": "person_09",
+      "label": "Person",
+      "visible_from_round": 1,
+      "label_display": "Juliana Prado",
+      "properties": {
+        "name": "Juliana Prado",
+        "cpf_masked": "***.667.041-**",
+        "age": 31,
+        "occupation": "Costureira - microempreendedora",
+        "income_declared": 2800.0,
+        "credit_score": 588
+      }
+    },
+    {
+      "id": "person_10",
+      "label": "Person",
+      "visible_from_round": 1,
+      "label_display": "Beatriz Nogueira",
+      "properties": {
+        "name": "Beatriz Nogueira",
+        "cpf_masked": "***.884.230-**",
+        "age": 33,
+        "occupation": "Professora",
+        "income_declared": 4100.0,
+        "credit_score": 671
+      }
+    },
+    {
+      "id": "person_11",
+      "label": "Person",
+      "visible_from_round": 1,
+      "label_display": "Carlos Eduardo Lima",
+      "properties": {
+        "name": "Carlos Eduardo Lima",
+        "cpf_masked": "***.220.914-**",
+        "age": 47,
+        "occupation": "Engenheiro civil",
+        "income_declared": 11200.0,
+        "credit_score": 742
+      }
+    },
+    {
+      "id": "person_12",
+      "label": "Person",
+      "visible_from_round": 1,
+      "label_display": "Fernanda Ribeiro",
+      "properties": {
+        "name": "Fernanda Ribeiro",
+        "cpf_masked": "***.441.667-**",
+        "age": 25,
+        "occupation": "Analista de marketing",
+        "income_declared": 3600.0,
+        "credit_score": 655
+      }
+    },
+    {
+      "id": "person_13",
+      "label": "Person",
+      "visible_from_round": 1,
+      "label_display": "Gustavo Henrique Souza",
+      "properties": {
+        "name": "Gustavo Henrique Souza",
+        "cpf_masked": "***.775.320-**",
+        "age": 38,
+        "occupation": "Comerciante",
+        "income_declared": 5200.0,
+        "credit_score": 601
+      }
+    },
+    {
+      "id": "person_14",
+      "label": "Person",
+      "visible_from_round": 1,
+      "label_display": "Helena Martins",
+      "properties": {
+        "name": "Helena Martins",
+        "cpf_masked": "***.309.881-**",
+        "age": 55,
+        "occupation": "Enfermeira",
+        "income_declared": 4300.0,
+        "credit_score": 730
+      }
+    },
+    {
+      "id": "person_15",
+      "label": "Person",
+      "visible_from_round": 1,
+      "label_display": "Igor Barbosa",
+      "properties": {
+        "name": "Igor Barbosa",
+        "cpf_masked": "***.662.147-**",
+        "age": 22,
+        "occupation": "Estudante / estagiário",
+        "income_declared": 1800.0,
+        "credit_score": 512
+      }
+    },
+    {
+      "id": "person_16",
+      "label": "Person",
+      "visible_from_round": 1,
+      "label_display": "Joana Pereira",
+      "properties": {
+        "name": "Joana Pereira",
+        "cpf_masked": "***.190.734-**",
+        "age": 44,
+        "occupation": "Cabeleireira - MEI",
+        "income_declared": 3100.0,
+        "credit_score": 598
+      }
+    },
+    {
+      "id": "person_17",
+      "label": "Person",
+      "visible_from_round": 1,
+      "label_display": "Kleber Santos",
+      "properties": {
+        "name": "Kleber Santos",
+        "cpf_masked": "***.508.226-**",
+        "age": 36,
+        "occupation": "Motorista de caminhão",
+        "income_declared": 4800.0,
+        "credit_score": 610
+      }
+    },
+    {
+      "id": "person_18",
+      "label": "Person",
+      "visible_from_round": 1,
+      "label_display": "Larissa Almeida",
+      "properties": {
+        "name": "Larissa Almeida",
+        "cpf_masked": "***.371.905-**",
+        "age": 29,
+        "occupation": "Designer gráfica freelancer",
+        "income_declared": 3900.0,
+        "credit_score": 663
+      }
+    },
+    {
+      "id": "person_19",
+      "label": "Person",
+      "visible_from_round": 1,
+      "label_display": "Mauricio Teixeira",
+      "properties": {
+        "name": "Mauricio Teixeira",
+        "cpf_masked": "***.847.062-**",
+        "age": 58,
+        "occupation": "Comerciante aposentado",
+        "income_declared": 3300.0,
+        "credit_score": 705
+      }
+    },
+    {
+      "id": "person_20",
+      "label": "Person",
+      "visible_from_round": 1,
+      "label_display": "Natália Correia",
+      "properties": {
+        "name": "Natália Correia",
+        "cpf_masked": "***.129.583-**",
+        "age": 33,
+        "occupation": "Farmacêutica",
+        "income_declared": 6700.0,
+        "credit_score": 758
+      }
+    },
+    {
+      "id": "person_21",
+      "label": "Person",
+      "visible_from_round": 1,
+      "label_display": "Otávio Cardoso",
+      "properties": {
+        "name": "Otávio Cardoso",
+        "cpf_masked": "***.955.410-**",
+        "age": 61,
+        "occupation": "Contador aposentado",
+        "income_declared": 5100.0,
+        "credit_score": 780
+      }
+    },
+    {
+      "id": "person_22",
+      "label": "Person",
+      "visible_from_round": 1,
+      "label_display": "Priscila Gomes",
+      "properties": {
+        "name": "Priscila Gomes",
+        "cpf_masked": "***.263.847-**",
+        "age": 27,
+        "occupation": "Assistente social",
+        "income_declared": 3400.0,
+        "credit_score": 690
+      }
+    },
+    {
+      "id": "application_01",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Empréstimo Pessoal — R$ 18.000,00 (2026-01-12)",
+      "properties": {
+        "amount": 18000.0,
+        "submitted_at": "2026-01-12T09:14:00Z",
+        "status": "aprovado",
+        "product": "Empréstimo Pessoal"
+      }
+    },
+    {
+      "id": "application_02",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Antecipação de Recebíveis — R$ 9.500,00 (2026-01-28)",
+      "properties": {
+        "amount": 9500.0,
+        "submitted_at": "2026-01-28T11:02:00Z",
+        "status": "aprovado",
+        "product": "Antecipação de Recebíveis"
+      }
+    },
+    {
+      "id": "application_03",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Empréstimo Pessoal — R$ 14.000,00 (2026-02-09)",
+      "properties": {
+        "amount": 14000.0,
+        "submitted_at": "2026-02-09T16:40:00Z",
+        "status": "aprovado",
+        "product": "Empréstimo Pessoal"
+      }
+    },
+    {
+      "id": "application_04",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Cartão Consignado — R$ 6.000,00 (2026-02-22)",
+      "properties": {
+        "amount": 6000.0,
+        "submitted_at": "2026-02-22T08:55:00Z",
+        "status": "reprovado",
+        "product": "Cartão Consignado"
+      }
+    },
+    {
+      "id": "application_05",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Antecipação de Recebíveis — R$ 22.000,00 (2026-01-15)",
+      "properties": {
+        "amount": 22000.0,
+        "submitted_at": "2026-01-15T10:30:00Z",
+        "status": "aprovado",
+        "product": "Antecipação de Recebíveis"
+      }
+    },
+    {
+      "id": "application_06",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Empréstimo Pessoal — R$ 8.700,00 (2026-02-18)",
+      "properties": {
+        "amount": 8700.0,
+        "submitted_at": "2026-02-18T14:12:00Z",
+        "status": "aprovado",
+        "product": "Empréstimo Pessoal"
+      }
+    },
+    {
+      "id": "application_07",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Empréstimo Consignado - Veículo — R$ 15.000,00 (2026-01-08)",
+      "properties": {
+        "amount": 15000.0,
+        "submitted_at": "2026-01-08T09:00:00Z",
+        "status": "quitado",
+        "product": "Empréstimo Consignado - Veículo"
+      }
+    },
+    {
+      "id": "application_08",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Antecipação de Recebíveis — R$ 26.000,00 (2026-01-20)",
+      "properties": {
+        "amount": 26000.0,
+        "submitted_at": "2026-01-20T13:45:00Z",
+        "status": "aprovado",
+        "product": "Antecipação de Recebíveis"
+      }
+    },
+    {
+      "id": "application_09",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Antecipação de Recebíveis — R$ 24.500,00 (2026-01-21)",
+      "properties": {
+        "amount": 24500.0,
+        "submitted_at": "2026-01-21T09:20:00Z",
+        "status": "aprovado",
+        "product": "Antecipação de Recebíveis"
+      }
+    },
+    {
+      "id": "application_10",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Antecipação de Recebíveis — R$ 27.500,00 (2026-01-22)",
+      "properties": {
+        "amount": 27500.0,
+        "submitted_at": "2026-01-22T17:05:00Z",
+        "status": "aprovado",
+        "product": "Antecipação de Recebíveis"
+      }
+    },
+    {
+      "id": "application_11",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Empréstimo Pessoal — R$ 2.500,00 (2026-02-01)",
+      "properties": {
+        "amount": 2500.0,
+        "submitted_at": "2026-02-01T10:00:00Z",
+        "status": "reprovado",
+        "product": "Empréstimo Pessoal"
+      }
+    },
+    {
+      "id": "application_12",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Crédito para Microempreendedor — R$ 7.800,00 (2026-01-30)",
+      "properties": {
+        "amount": 7800.0,
+        "submitted_at": "2026-01-30T15:22:00Z",
+        "status": "aprovado",
+        "product": "Crédito para Microempreendedor"
+      }
+    },
+    {
+      "id": "application_13",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Empréstimo Pessoal — R$ 5.200,00 (2026-01-10)",
+      "properties": {
+        "amount": 5200.0,
+        "submitted_at": "2026-01-10T08:40:00Z",
+        "status": "aprovado",
+        "product": "Empréstimo Pessoal"
+      }
+    },
+    {
+      "id": "application_14",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Financiamento Veicular — R$ 31.000,00 (2026-01-14)",
+      "properties": {
+        "amount": 31000.0,
+        "submitted_at": "2026-01-14T12:15:00Z",
+        "status": "aprovado",
+        "product": "Financiamento Veicular"
+      }
+    },
+    {
+      "id": "application_15",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Empréstimo Pessoal — R$ 4.200,00 (2026-03-02)",
+      "properties": {
+        "amount": 4200.0,
+        "submitted_at": "2026-03-02T09:50:00Z",
+        "status": "quitado",
+        "product": "Empréstimo Pessoal"
+      }
+    },
+    {
+      "id": "application_16",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Empréstimo Pessoal — R$ 3.800,00 (2026-01-19)",
+      "properties": {
+        "amount": 3800.0,
+        "submitted_at": "2026-01-19T17:30:00Z",
+        "status": "aprovado",
+        "product": "Empréstimo Pessoal"
+      }
+    },
+    {
+      "id": "application_17",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Crédito para Microempreendedor — R$ 6.600,00 (2026-01-25)",
+      "properties": {
+        "amount": 6600.0,
+        "submitted_at": "2026-01-25T10:10:00Z",
+        "status": "reprovado",
+        "product": "Crédito para Microempreendedor"
+      }
+    },
+    {
+      "id": "application_18",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Empréstimo Pessoal — R$ 5.100,00 (2026-02-27)",
+      "properties": {
+        "amount": 5100.0,
+        "submitted_at": "2026-02-27T13:00:00Z",
+        "status": "aprovado",
+        "product": "Empréstimo Pessoal"
+      }
+    },
+    {
+      "id": "application_19",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Empréstimo Pessoal — R$ 4.700,00 (2026-01-11)",
+      "properties": {
+        "amount": 4700.0,
+        "submitted_at": "2026-01-11T09:25:00Z",
+        "status": "aprovado",
+        "product": "Empréstimo Pessoal"
+      }
+    },
+    {
+      "id": "application_20",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Empréstimo Pessoal — R$ 1.500,00 (2026-01-16)",
+      "properties": {
+        "amount": 1500.0,
+        "submitted_at": "2026-01-16T18:00:00Z",
+        "status": "reprovado",
+        "product": "Empréstimo Pessoal"
+      }
+    },
+    {
+      "id": "application_21",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Crédito para Microempreendedor — R$ 3.300,00 (2026-01-23)",
+      "properties": {
+        "amount": 3300.0,
+        "submitted_at": "2026-01-23T11:40:00Z",
+        "status": "aprovado",
+        "product": "Crédito para Microempreendedor"
+      }
+    },
+    {
+      "id": "application_22",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Empréstimo Pessoal — R$ 2.100,00 (2026-03-05)",
+      "properties": {
+        "amount": 2100.0,
+        "submitted_at": "2026-03-05T14:20:00Z",
+        "status": "quitado",
+        "product": "Empréstimo Pessoal"
+      }
+    },
+    {
+      "id": "application_23",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Financiamento Veicular — R$ 9.800,00 (2026-01-29)",
+      "properties": {
+        "amount": 9800.0,
+        "submitted_at": "2026-01-29T07:55:00Z",
+        "status": "aprovado",
+        "product": "Financiamento Veicular"
+      }
+    },
+    {
+      "id": "application_24",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Empréstimo Pessoal — R$ 4.400,00 (2026-02-03)",
+      "properties": {
+        "amount": 4400.0,
+        "submitted_at": "2026-02-03T10:45:00Z",
+        "status": "aprovado",
+        "product": "Empréstimo Pessoal"
+      }
+    },
+    {
+      "id": "application_25",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Empréstimo Pessoal — R$ 6.100,00 (2026-02-05)",
+      "properties": {
+        "amount": 6100.0,
+        "submitted_at": "2026-02-05T15:35:00Z",
+        "status": "aprovado",
+        "product": "Empréstimo Pessoal"
+      }
+    },
+    {
+      "id": "application_26",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Cartão Consignado — R$ 2.900,00 (2026-03-10)",
+      "properties": {
+        "amount": 2900.0,
+        "submitted_at": "2026-03-10T09:05:00Z",
+        "status": "reprovado",
+        "product": "Cartão Consignado"
+      }
+    },
+    {
+      "id": "application_27",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Empréstimo Pessoal — R$ 12.500,00 (2026-02-08)",
+      "properties": {
+        "amount": 12500.0,
+        "submitted_at": "2026-02-08T11:50:00Z",
+        "status": "aprovado",
+        "product": "Empréstimo Pessoal"
+      }
+    },
+    {
+      "id": "application_28",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Empréstimo Consignado — R$ 7.300,00 (2026-02-12)",
+      "properties": {
+        "amount": 7300.0,
+        "submitted_at": "2026-02-12T16:15:00Z",
+        "status": "quitado",
+        "product": "Empréstimo Consignado"
+      }
+    },
+    {
+      "id": "application_29",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Empréstimo Pessoal — R$ 3.700,00 (2026-02-14)",
+      "properties": {
+        "amount": 3700.0,
+        "submitted_at": "2026-02-14T08:30:00Z",
+        "status": "aprovado",
+        "product": "Empréstimo Pessoal"
+      }
+    },
+    {
+      "id": "application_30",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Cartão Consignado — R$ 2.200,00 (2026-03-08)",
+      "properties": {
+        "amount": 2200.0,
+        "submitted_at": "2026-03-08T12:00:00Z",
+        "status": "aprovado",
+        "product": "Cartão Consignado"
+      }
+    },
+    {
+      "id": "application_31",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Empréstimo Pessoal — R$ 1.900,00 (2026-03-12)",
+      "properties": {
+        "amount": 1900.0,
+        "submitted_at": "2026-03-12T09:40:00Z",
+        "status": "reprovado",
+        "product": "Empréstimo Pessoal"
+      }
+    },
+    {
+      "id": "device_01",
+      "label": "Device",
+      "visible_from_round": 2,
+      "label_display": "Notebook Dell Inspiron — residência Melo",
+      "properties": {
+        "fingerprint": "8f1a2c9e77b4",
+        "os": "Windows 11",
+        "first_seen": "2025-10-02T00:00:00Z"
+      }
+    },
+    {
+      "id": "device_02",
+      "label": "Device",
+      "visible_from_round": 2,
+      "label_display": "Notebook Acer — uso compartilhado (trio Alves)",
+      "properties": {
+        "fingerprint": "3d4e5f6a1b2c",
+        "os": "Windows 10",
+        "first_seen": "2025-12-18T00:00:00Z"
+      }
+    },
+    {
+      "id": "device_03",
+      "label": "Device",
+      "visible_from_round": 2,
+      "label_display": "iPhone 12 — Patrícia Melo",
+      "properties": {
+        "fingerprint": "a1b2c3d4e5f6",
+        "os": "iOS 18",
+        "first_seen": "2025-09-14T00:00:00Z"
+      }
+    },
+    {
+      "id": "device_04",
+      "label": "Device",
+      "visible_from_round": 2,
+      "label_display": "Notebook Lenovo — Eduardo Vasconcelos",
+      "properties": {
+        "fingerprint": "9e8d7c6b5a4f",
+        "os": "Windows 11",
+        "first_seen": "2024-05-20T00:00:00Z"
+      }
+    },
+    {
+      "id": "device_05",
+      "label": "Device",
+      "visible_from_round": 2,
+      "label_display": "Notebook pessoal — Juliana Prado",
+      "properties": {
+        "fingerprint": "4c5b6a7d8e9f",
+        "os": "Windows 10",
+        "first_seen": "2025-11-01T00:00:00Z"
+      }
+    },
+    {
+      "id": "device_06",
+      "label": "Device",
+      "visible_from_round": 2,
+      "label_display": "Desktop residencial — Carlos Eduardo Lima",
+      "properties": {
+        "fingerprint": "1a1b1c1d1e1f",
+        "os": "Windows 11",
+        "first_seen": "2023-03-11T00:00:00Z"
+      }
+    },
+    {
+      "id": "device_07",
+      "label": "Device",
+      "visible_from_round": 2,
+      "label_display": "Notebook — Helena Martins",
+      "properties": {
+        "fingerprint": "2b2c2d2e2f2a",
+        "os": "macOS 15",
+        "first_seen": "2024-08-09T00:00:00Z"
+      }
+    },
+    {
+      "id": "phone_01",
+      "label": "Phone",
+      "visible_from_round": 2,
+      "label_display": "Linha compartilhada — trio Alves",
+      "properties": {
+        "number_masked": "(11) 9****-**27",
+        "carrier": "Vivo"
+      }
+    },
+    {
+      "id": "phone_02",
+      "label": "Phone",
+      "visible_from_round": 2,
+      "label_display": "Linha pré-paga — Patrícia/Eduardo",
+      "properties": {
+        "number_masked": "(11) 9****-**93",
+        "carrier": "Claro"
+      }
+    },
+    {
+      "id": "phone_03",
+      "label": "Phone",
+      "visible_from_round": 2,
+      "label_display": "Linha — Anderson Melo",
+      "properties": {
+        "number_masked": "(11) 9****-**14",
+        "carrier": "Tim"
+      }
+    },
+    {
+      "id": "phone_04",
+      "label": "Phone",
+      "visible_from_round": 2,
+      "label_display": "Linha — Camila Melo",
+      "properties": {
+        "number_masked": "(11) 9****-**58",
+        "carrier": "Vivo"
+      }
+    },
+    {
+      "id": "phone_05",
+      "label": "Phone",
+      "visible_from_round": 2,
+      "label_display": "Linha — Fernanda Ribeiro",
+      "properties": {
+        "number_masked": "(11) 9****-**02",
+        "carrier": "Claro"
+      }
+    },
+    {
+      "id": "phone_06",
+      "label": "Phone",
+      "visible_from_round": 2,
+      "label_display": "Linha — Kleber Santos",
+      "properties": {
+        "number_masked": "(19) 9****-**76",
+        "carrier": "Tim"
+      }
+    },
+    {
+      "id": "email_01",
+      "label": "Email",
+      "visible_from_round": 2,
+      "label_display": "roberto.alves.autonomo@mailbr.com",
+      "properties": {
+        "address": "roberto.alves.autonomo@mailbr.com"
+      }
+    },
+    {
+      "id": "email_02",
+      "label": "Email",
+      "visible_from_round": 2,
+      "label_display": "r.alves.mei@mailbr.com",
+      "properties": {
+        "address": "r.alves.mei@mailbr.com"
+      }
+    },
+    {
+      "id": "email_03",
+      "label": "Email",
+      "visible_from_round": 2,
+      "label_display": "rob.alves.comercial@mailbr.com",
+      "properties": {
+        "address": "rob.alves.comercial@mailbr.com"
+      }
+    },
+    {
+      "id": "email_04",
+      "label": "Email",
+      "visible_from_round": 2,
+      "label_display": "familia.melo.casa@mailbr.com",
+      "properties": {
+        "address": "familia.melo.casa@mailbr.com"
+      }
+    },
+    {
+      "id": "email_05",
+      "label": "Email",
+      "visible_from_round": 2,
+      "label_display": "patricia.melo.consultoria@mailbr.com",
+      "properties": {
+        "address": "patricia.melo.consultoria@mailbr.com"
+      }
+    },
+    {
+      "id": "email_06",
+      "label": "Email",
+      "visible_from_round": 2,
+      "label_display": "eduardo.vasconcelos.consultor@mailbr.com",
+      "properties": {
+        "address": "eduardo.vasconcelos.consultor@mailbr.com"
+      }
+    },
+    {
+      "id": "email_07",
+      "label": "Email",
+      "visible_from_round": 2,
+      "label_display": "marlene.ferreira63@mailbr.com",
+      "properties": {
+        "address": "marlene.ferreira63@mailbr.com"
+      }
+    },
+    {
+      "id": "email_08",
+      "label": "Email",
+      "visible_from_round": 2,
+      "label_display": "juliana.prado.costura@mailbr.com",
+      "properties": {
+        "address": "juliana.prado.costura@mailbr.com"
+      }
+    },
+    {
+      "id": "email_09",
+      "label": "Email",
+      "visible_from_round": 2,
+      "label_display": "gustavo.souza.comercio@mailbr.com",
+      "properties": {
+        "address": "gustavo.souza.comercio@mailbr.com"
+      }
+    },
+    {
+      "id": "email_10",
+      "label": "Email",
+      "visible_from_round": 2,
+      "label_display": "joana.pereira.hair@mailbr.com",
+      "properties": {
+        "address": "joana.pereira.hair@mailbr.com"
+      }
+    },
+    {
+      "id": "ip_01",
+      "label": "IPAddress",
+      "visible_from_round": 2,
+      "label_display": "LAN House Boa Vista (Wi-Fi público)",
+      "properties": {
+        "address": "191.32.44.201",
+        "asn": "AS28573",
+        "geo_city": "São Paulo"
+      }
+    },
+    {
+      "id": "ip_02",
+      "label": "IPAddress",
+      "visible_from_round": 2,
+      "label_display": "Residência Melo (ISP residencial)",
+      "properties": {
+        "address": "177.84.12.55",
+        "asn": "AS8167",
+        "geo_city": "São Paulo"
+      }
+    },
+    {
+      "id": "ip_03",
+      "label": "IPAddress",
+      "visible_from_round": 2,
+      "label_display": "Residência Vasconcelos (ISP residencial)",
+      "properties": {
+        "address": "179.100.6.140",
+        "asn": "AS7738",
+        "geo_city": "São Paulo"
+      }
+    },
+    {
+      "id": "ip_04",
+      "label": "IPAddress",
+      "visible_from_round": 2,
+      "label_display": "Residência Lima (ISP residencial)",
+      "properties": {
+        "address": "186.220.33.9",
+        "asn": "AS28573",
+        "geo_city": "Campinas"
+      }
+    },
+    {
+      "id": "ip_05",
+      "label": "IPAddress",
+      "visible_from_round": 2,
+      "label_display": "Residência Martins (ISP residencial)",
+      "properties": {
+        "address": "201.17.88.114",
+        "asn": "AS7738",
+        "geo_city": "São Paulo"
+      }
+    },
+    {
+      "id": "address_01",
+      "label": "Address",
+      "visible_from_round": 2,
+      "label_display": "Rua das Palmeiras, 214, ap 32, São Paulo/SP",
+      "properties": {
+        "street": "Rua das Palmeiras, 214, ap 32",
+        "city": "São Paulo",
+        "state": "SP",
+        "zip": "04567-000"
+      }
+    },
+    {
+      "id": "address_02",
+      "label": "Address",
+      "visible_from_round": 2,
+      "label_display": "Av. Interlagos, 3980, ap 11, São Paulo/SP",
+      "properties": {
+        "street": "Av. Interlagos, 3980, ap 11",
+        "city": "São Paulo",
+        "state": "SP",
+        "zip": "04661-100"
+      }
+    },
+    {
+      "id": "address_03",
+      "label": "Address",
+      "visible_from_round": 2,
+      "label_display": "Rua Girassol, 88, São Paulo/SP",
+      "properties": {
+        "street": "Rua Girassol, 88",
+        "city": "São Paulo",
+        "state": "SP",
+        "zip": "05433-020"
+      }
+    },
+    {
+      "id": "address_04",
+      "label": "Address",
+      "visible_from_round": 2,
+      "label_display": "Rua dos Ipês, 550, São Paulo/SP",
+      "properties": {
+        "street": "Rua dos Ipês, 550",
+        "city": "São Paulo",
+        "state": "SP",
+        "zip": "03210-030"
+      }
+    },
+    {
+      "id": "address_05",
+      "label": "Address",
+      "visible_from_round": 2,
+      "label_display": "Rua Voluntários da Pátria, 1220, ap 4, São Paulo/SP",
+      "properties": {
+        "street": "Rua Voluntários da Pátria, 1220, ap 4",
+        "city": "São Paulo",
+        "state": "SP",
+        "zip": "02010-100"
+      }
+    },
+    {
+      "id": "address_06",
+      "label": "Address",
+      "visible_from_round": 2,
+      "label_display": "Rua Bela Vista, 77, São Paulo/SP",
+      "properties": {
+        "street": "Rua Bela Vista, 77",
+        "city": "São Paulo",
+        "state": "SP",
+        "zip": "01310-200"
+      }
+    },
+    {
+      "id": "address_07",
+      "label": "Address",
+      "visible_from_round": 2,
+      "label_display": "Rua Coronel Xavier, 340, São Paulo/SP",
+      "properties": {
+        "street": "Rua Coronel Xavier, 340",
+        "city": "São Paulo",
+        "state": "SP",
+        "zip": "05678-030"
+      }
+    },
+    {
+      "id": "address_08",
+      "label": "Address",
+      "visible_from_round": 2,
+      "label_display": "Rua das Acácias, 12, Campinas/SP",
+      "properties": {
+        "street": "Rua das Acácias, 12",
+        "city": "Campinas",
+        "state": "SP",
+        "zip": "13010-040"
+      }
+    },
+    {
+      "id": "address_09",
+      "label": "Address",
+      "visible_from_round": 2,
+      "label_display": "Rua Marechal Deodoro, 501, São Paulo/SP",
+      "properties": {
+        "street": "Rua Marechal Deodoro, 501",
+        "city": "São Paulo",
+        "state": "SP",
+        "zip": "04730-000"
+      }
+    },
+    {
+      "id": "address_10",
+      "label": "Address",
+      "visible_from_round": 2,
+      "label_display": "Rua São Bento, 245, São Paulo/SP",
+      "properties": {
+        "street": "Rua São Bento, 245",
+        "city": "São Paulo",
+        "state": "SP",
+        "zip": "01011-100"
+      }
+    },
+    {
+      "id": "account_01",
+      "label": "BankAccount",
+      "visible_from_round": 2,
+      "label_display": "Banco Vero ag.0012 — conta **.***-1",
+      "properties": {
+        "bank": "Banco Vero",
+        "branch": "0012",
+        "number_masked": "**.***-1",
+        "opened_at": "2025-08-04T00:00:00Z"
+      }
+    },
+    {
+      "id": "account_02",
+      "label": "BankAccount",
+      "visible_from_round": 2,
+      "label_display": "Banco Ipê ag.0450 — conta **.***-2",
+      "properties": {
+        "bank": "Banco Ipê",
+        "branch": "0450",
+        "number_masked": "**.***-2",
+        "opened_at": "2025-06-11T00:00:00Z"
+      }
+    },
+    {
+      "id": "account_03",
+      "label": "BankAccount",
+      "visible_from_round": 2,
+      "label_display": "Banco Ipê ag.0450 — conta **.***-3",
+      "properties": {
+        "bank": "Banco Ipê",
+        "branch": "0450",
+        "number_masked": "**.***-3",
+        "opened_at": "2025-12-01T00:00:00Z"
+      }
+    },
+    {
+      "id": "account_04",
+      "label": "BankAccount",
+      "visible_from_round": 2,
+      "label_display": "Banco Continental ag.1290 — conta **.***-4",
+      "properties": {
+        "bank": "Banco Continental",
+        "branch": "1290",
+        "number_masked": "**.***-4",
+        "opened_at": "2025-11-20T00:00:00Z"
+      }
+    },
+    {
+      "id": "account_05",
+      "label": "BankAccount",
+      "visible_from_round": 2,
+      "label_display": "Banco Vero ag.0012 — conta **.***-5",
+      "properties": {
+        "bank": "Banco Vero",
+        "branch": "0012",
+        "number_masked": "**.***-5",
+        "opened_at": "2026-03-01T00:00:00Z"
+      }
+    },
+    {
+      "id": "account_06",
+      "label": "BankAccount",
+      "visible_from_round": 2,
+      "label_display": "Banco Vero ag.0012 — conta **.***-6",
+      "properties": {
+        "bank": "Banco Vero",
+        "branch": "0012",
+        "number_masked": "**.***-6",
+        "opened_at": "2024-02-14T00:00:00Z"
+      }
+    },
+    {
+      "id": "account_07",
+      "label": "BankAccount",
+      "visible_from_round": 2,
+      "label_display": "Banco Ipê ag.0450 — conta **.***-7",
+      "properties": {
+        "bank": "Banco Ipê",
+        "branch": "0450",
+        "number_masked": "**.***-7",
+        "opened_at": "2025-09-19T00:00:00Z"
+      }
+    },
+    {
+      "id": "account_08",
+      "label": "BankAccount",
+      "visible_from_round": 2,
+      "label_display": "Banco Ipê ag.0450 — conta **.***-8",
+      "properties": {
+        "bank": "Banco Ipê",
+        "branch": "0450",
+        "number_masked": "**.***-8",
+        "opened_at": "2025-09-22T00:00:00Z"
+      }
+    },
+    {
+      "id": "account_09",
+      "label": "BankAccount",
+      "visible_from_round": 2,
+      "label_display": "Banco Ipê ag.0450 — conta **.***-9",
+      "properties": {
+        "bank": "Banco Ipê",
+        "branch": "0450",
+        "number_masked": "**.***-9",
+        "opened_at": "2025-09-25T00:00:00Z"
+      }
+    },
+    {
+      "id": "account_10",
+      "label": "BankAccount",
+      "visible_from_round": 2,
+      "label_display": "Banco Vero ag.0012 — conta **.***-10",
+      "properties": {
+        "bank": "Banco Vero",
+        "branch": "0012",
+        "number_masked": "**.***-10",
+        "opened_at": "2024-06-30T00:00:00Z"
+      }
+    },
+    {
+      "id": "company_01",
+      "label": "Company",
+      "visible_from_round": 4,
+      "label_display": "Aurora Multiserviços Administrativos LTDA",
+      "properties": {
+        "name": "Aurora Multiserviços Administrativos LTDA",
+        "cnpj_masked": "**.418.902/0001-**",
+        "founded_at": "2025-11-15T00:00:00Z",
+        "sector": "Serviços administrativos e de consultoria"
+      }
+    },
+    {
+      "id": "broker_01",
+      "label": "Broker",
+      "visible_from_round": 4,
+      "label_display": "Marcelo Petri",
+      "properties": {
+        "name": "Marcelo Petri",
+        "license_id": "COR-SP-88214",
+        "active_since": "2019-03-01T00:00:00Z"
+      }
+    },
+    {
+      "id": "broker_02",
+      "label": "Broker",
+      "visible_from_round": 4,
+      "label_display": "Renata Souza",
+      "properties": {
+        "name": "Renata Souza",
+        "license_id": "COR-SP-45107",
+        "active_since": "2015-07-10T00:00:00Z"
+      }
+    },
+    {
+      "id": "document_01",
+      "label": "Document",
+      "visible_from_round": 4,
+      "label_display": "Comprovante de renda — Roberto Alves",
+      "properties": {
+        "doc_type": "comprovante_renda",
+        "issued_at": "2026-01-19T00:00:00Z",
+        "issuer": "Contabilidade Rápida ME"
+      }
+    },
+    {
+      "id": "document_02",
+      "label": "Document",
+      "visible_from_round": 4,
+      "label_display": "Comprovante de renda — R. Alves",
+      "properties": {
+        "doc_type": "comprovante_renda",
+        "issued_at": "2026-01-20T00:00:00Z",
+        "issuer": "Contabilidade Rápida ME"
+      }
+    },
+    {
+      "id": "document_03",
+      "label": "Document",
+      "visible_from_round": 4,
+      "label_display": "Comprovante de renda — Rob. Alves",
+      "properties": {
+        "doc_type": "comprovante_renda",
+        "issued_at": "2026-01-21T00:00:00Z",
+        "issuer": "Contabilidade Rápida ME"
+      }
+    },
+    {
+      "id": "document_04",
+      "label": "Document",
+      "visible_from_round": 4,
+      "label_display": "Comprovante de renda — Anderson Melo",
+      "properties": {
+        "doc_type": "comprovante_renda",
+        "issued_at": "2026-01-11T00:00:00Z",
+        "issuer": "Contabilidade Rápida ME"
+      }
+    },
+    {
+      "id": "document_05",
+      "label": "Document",
+      "visible_from_round": 4,
+      "label_display": "Comprovante de renda — Patrícia Melo",
+      "properties": {
+        "doc_type": "comprovante_renda",
+        "issued_at": "2026-01-14T00:00:00Z",
+        "issuer": "Contabilidade Rápida ME"
+      }
+    },
+    {
+      "id": "transaction_01",
+      "label": "Transaction",
+      "visible_from_round": 4,
+      "label_display": "TED — conta 07 → conta 02",
+      "properties": {
+        "amount": 24800.0,
+        "occurred_at": "2026-01-23T10:00:00Z",
+        "currency": "BRL"
+      }
+    },
+    {
+      "id": "transaction_02",
+      "label": "Transaction",
+      "visible_from_round": 4,
+      "label_display": "TED — conta 08 → conta 02",
+      "properties": {
+        "amount": 23400.0,
+        "occurred_at": "2026-01-24T09:30:00Z",
+        "currency": "BRL"
+      }
+    },
+    {
+      "id": "transaction_03",
+      "label": "Transaction",
+      "visible_from_round": 4,
+      "label_display": "TED — conta 09 → conta 02",
+      "properties": {
+        "amount": 26200.0,
+        "occurred_at": "2026-01-25T11:15:00Z",
+        "currency": "BRL"
+      }
+    },
+    {
+      "id": "transaction_04",
+      "label": "Transaction",
+      "visible_from_round": 4,
+      "label_display": "TED — conta 01 → conta 02",
+      "properties": {
+        "amount": 16500.0,
+        "occurred_at": "2026-01-29T14:20:00Z",
+        "currency": "BRL"
+      }
+    },
+    {
+      "id": "transaction_05",
+      "label": "Transaction",
+      "visible_from_round": 4,
+      "label_display": "TED — conta 02 → conta 03 (consolidação parcial)",
+      "properties": {
+        "amount": 55000.0,
+        "occurred_at": "2026-02-02T08:45:00Z",
+        "currency": "BRL"
+      }
+    },
+    {
+      "id": "transaction_06",
+      "label": "Transaction",
+      "visible_from_round": 4,
+      "label_display": "TED — conta 03 → conta 04 (repasse final)",
+      "properties": {
+        "amount": 52000.0,
+        "occurred_at": "2026-02-06T09:10:00Z",
+        "currency": "BRL"
+      }
+    },
+    {
+      "id": "transaction_07",
+      "label": "Transaction",
+      "visible_from_round": 4,
+      "label_display": "TED — conta 02 → conta 04 (repasse direto)",
+      "properties": {
+        "amount": 34000.0,
+        "occurred_at": "2026-02-03T16:00:00Z",
+        "currency": "BRL"
+      }
+    },
+    {
+      "id": "transaction_08",
+      "label": "Transaction",
+      "visible_from_round": 4,
+      "label_display": "PIX — conta 03 → conta 05 (registro inconsistente)",
+      "properties": {
+        "amount": 4200.0,
+        "occurred_at": "2026-02-10T13:40:00Z",
+        "currency": "BRL"
+      }
+    }
+  ]
+}

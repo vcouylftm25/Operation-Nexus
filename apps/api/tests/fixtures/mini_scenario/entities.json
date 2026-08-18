@@ -1,0 +1,100 @@
+{
+  "entities": [
+    {
+      "id": "person_01",
+      "label": "Person",
+      "visible_from_round": 1,
+      "label_display": "Alice Fixture",
+      "properties": {
+        "name": "Alice Fixture",
+        "cpf_masked": "***.111.111-**",
+        "age": 34,
+        "occupation": "Consultora",
+        "income_declared": 9500.0,
+        "credit_score": 710
+      }
+    },
+    {
+      "id": "person_02",
+      "label": "Person",
+      "visible_from_round": 1,
+      "label_display": "Bruno Fixture",
+      "properties": {
+        "name": "Bruno Fixture",
+        "cpf_masked": "***.222.222-**",
+        "age": 29,
+        "occupation": "Autônomo",
+        "income_declared": 6200.0,
+        "credit_score": 655
+      }
+    },
+    {
+      "id": "device_01",
+      "label": "Device",
+      "visible_from_round": 1,
+      "label_display": "iPhone compartilhado",
+      "properties": {
+        "fingerprint": "fp-mini-0001",
+        "os": "iOS 18",
+        "first_seen": "2026-01-05T10:00:00Z"
+      }
+    },
+    {
+      "id": "phone_01",
+      "label": "Phone",
+      "visible_from_round": 2,
+      "label_display": "Linha pré-paga",
+      "properties": {
+        "number_masked": "+55 11 9****-1234",
+        "carrier": "Vivo"
+      }
+    },
+    {
+      "id": "account_01",
+      "label": "BankAccount",
+      "visible_from_round": 1,
+      "label_display": "Conta corrente — Alice",
+      "properties": {
+        "bank": "Banco Fixture",
+        "branch": "0001",
+        "number_masked": "****-01",
+        "opened_at": "2020-03-01T00:00:00Z"
+      }
+    },
+    {
+      "id": "account_02",
+      "label": "BankAccount",
+      "visible_from_round": 3,
+      "label_display": "Conta corrente — Bruno",
+      "properties": {
+        "bank": "Banco Fixture",
+        "branch": "0002",
+        "number_masked": "****-02",
+        "opened_at": "2021-07-14T00:00:00Z"
+      }
+    },
+    {
+      "id": "company_01",
+      "label": "Company",
+      "visible_from_round": 2,
+      "label_display": "Fixture Consultoria Ltda.",
+      "properties": {
+        "name": "Fixture Consultoria Ltda.",
+        "cnpj_masked": "**.***.***/0001-**",
+        "founded_at": "2015-06-01T00:00:00Z",
+        "sector": "Serviços"
+      }
+    },
+    {
+      "id": "transaction_01",
+      "label": "Transaction",
+      "visible_from_round": 4,
+      "label_display": "Transferência — R$ 9.800",
+      "properties": {
+        "amount": 9800.0,
+        "occurred_at": "2026-03-10T12:00:00Z",
+        "currency": "BRL"
+      }
+    }
+  ]
+}
