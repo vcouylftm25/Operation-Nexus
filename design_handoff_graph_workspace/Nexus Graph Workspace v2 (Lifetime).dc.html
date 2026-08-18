@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/new-lifetime-tech-6beb0d13-13a3-48b7-861f-91d1566fbde0/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/new-lifetime-tech-6beb0d13-13a3-48b7-861f-91d1566fbde0/tokens/colors.css">
+<link rel="stylesheet" href="_ds/new-lifetime-tech-6beb0d13-13a3-48b7-861f-91d1566fbde0/tokens/typography.css">
+<link rel="stylesheet" href="_ds/new-lifetime-tech-6beb0d13-13a3-48b7-861f-91d1566fbde0/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/new-lifetime-tech-6beb0d13-13a3-48b7-861f-91d1566fbde0/styles.css">
+<script src="_ds/new-lifetime-tech-6beb0d13-13a3-48b7-861f-91d1566fbde0/_ds_bundle.js"></script>
+<style>
+
+:root{--nx-bg:#F4F2EC;--nx-surface:#FAF8F4;--nx-card:#FFFFFF;--nx-elev:#F4F2EC;--nx-canvas:#FFFFFF;--nx-node-fill:#FFFFFF;--nx-ink:#141210;--nx-muted:#5C6672;--nx-accent:#F5540A;--nx-accent-text:#D23B0F;--nx-on-accent:#FFFFFF;--nx-danger:#C62828;--nx-attention:#C6892A;--nx-explained:#2F9E5E;--nx-line:rgba(20,18,16,.09);--nx-line-2:rgba(20,18,16,.13);--nx-line-3:rgba(20,18,16,.20);--nx-edge:rgba(20,18,16,.22);--nx-node-stroke:rgba(20,18,16,.18);--nx-grid:rgba(20,18,16,.07);--nx-accent-06:rgba(245,84,10,.06);--nx-accent-08:rgba(245,84,10,.10);--nx-accent-18:rgba(245,84,10,.16);--nx-accent-28:rgba(245,84,10,.26);--nx-accent-30:rgba(245,84,10,.30);--nx-accent-35:rgba(245,84,10,.36);--nx-accent-45:rgba(245,84,10,.45);--nx-shadow-1:rgba(20,18,16,.05);--nx-shadow-2:rgba(20,18,16,.09);--nx-shadow-3:rgba(20,18,16,.14);--nx-backdrop:rgba(20,18,16,.30);--nx-glass:rgba(255,255,255,.92)}
+[data-nx-theme="dark"]{--nx-bg:#070A0F;--nx-surface:#0B0F16;--nx-card:#0D121B;--nx-elev:#111722;--nx-canvas:#070A0F;--nx-node-fill:#111722;--nx-ink:#F5F7FA;--nx-muted:#96A2B0;--nx-accent:#2FD08A;--nx-accent-text:#4FE0A4;--nx-on-accent:#06140E;--nx-danger:#FF7A6B;--nx-attention:#E3B04B;--nx-explained:#9FB3C7;--nx-line:rgba(255,255,255,.09);--nx-line-2:rgba(255,255,255,.13);--nx-line-3:rgba(255,255,255,.22);--nx-edge:rgba(255,255,255,.20);--nx-node-stroke:rgba(255,255,255,.22);--nx-grid:rgba(255,255,255,.05);--nx-accent-06:rgba(47,208,138,.08);--nx-accent-08:rgba(47,208,138,.12);--nx-accent-18:rgba(47,208,138,.18);--nx-accent-28:rgba(47,208,138,.28);--nx-accent-30:rgba(47,208,138,.32);--nx-accent-35:rgba(47,208,138,.38);--nx-accent-45:rgba(47,208,138,.50);--nx-shadow-1:rgba(0,0,0,.35);--nx-shadow-2:rgba(0,0,0,.45);--nx-shadow-3:rgba(0,0,0,.55);--nx-backdrop:rgba(3,5,8,.70);--nx-glass:rgba(11,15,22,.92)}
+html,body{transition:background 220ms cubic-bezier(.4,0,.2,1)}
+html,body{margin:0;padding:0;background:var(--nx-bg);color:var(--nx-ink);font-family:"Urbane",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+a{color:var(--nx-accent);text-decoration:none}
+a:hover{color:var(--nx-accent-text)}
+input,textarea,button{font-family:inherit}
+::selection{background:var(--nx-accent-28)}
+@keyframes nxPulse{0%{transform:scale(.62);opacity:0}45%{opacity:1}100%{transform:scale(1);opacity:1}}
+@keyframes nxHalo{0%{opacity:.55;r:14}100%{opacity:0;r:46}}
+@keyframes nxDraw{to{stroke-dashoffset:0}}
+@keyframes nxRise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes nxBreathe{0%,100%{opacity:.35}50%{opacity:.9}}
+</style>
+</helmet>
+<div data-nx-theme="{{ theme }}" style="color:var(--nx-ink);height:100vh;min-width:1240px;display:grid;grid-template-rows:54px 38px minmax(0,1fr) 104px;background:var(--nx-bg);overflow:hidden">
+
+  <header style="display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid var(--nx-line);background:var(--nx-card)">
+    <div style="display:flex;align-items:center;gap:18px">
+      <div style="display:flex;align-items:center;gap:9px">
+        <div style="width:8px;height:8px;border-radius:50%;background:var(--nx-accent);box-shadow:0 0 12px var(--nx-accent-45)"></div>
+        <span style="font-size:14px;font-weight:600;letter-spacing:.20em">NEXUS</span>
+      </div>
+      <div style="width:1px;height:18px;background:var(--nx-line-2)"></div>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--nx-muted)">{{ team }}</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--nx-muted)">ROUND 02</span>
+      <span style="font-size:11px;letter-spacing:.16em;color:var(--nx-ink)">CONEXÕES</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:18px">
+      <div style="display:flex;gap:2px;padding:2px;border:1px solid var(--nx-line);border-radius:10px;background:var(--nx-elev)">
+        <div onClick="{{ setLight }}" style="{{ lightBtn }}">
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round">
+            <path d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10"></path>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+        </div>
+        <div onClick="{{ setDark }}" style="{{ darkBtn }}">
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round">
+            <path d="M12 3a6.4 6.4 0 0 0 9 9 9 9 0 1 1-9-9z"></path>
+          </svg>
+        </div>
+      </div>
+      <div style="display:flex;align-items:baseline;gap:6px;position:relative">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:500;color:{{ creditColor }}">{{ credits }}</span>
+        <span style="font-size:10px;letter-spacing:.16em;color:var(--nx-muted)">INTEL</span>
+        <span style="position:absolute;left:0;top:-14px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--nx-danger);pointer-events:none" style-hover="">{{ spendFlash }}</span>
+      </div>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:500;letter-spacing:.04em;color:{{ timerColor }}">{{ clock }}</span>
+    </div>
+  </header>
+
+  <div style="display:flex;align-items:center;gap:12px;padding:0 20px;border-bottom:1px solid var(--nx-line);background:var(--nx-card)">
+    <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.18em;color:var(--nx-accent-text)">MISSÃO</span>
+    <span style="font-size:12.5px;color:var(--nx-muted)">Descubra como os perfis escalados se relacionam. Marque o que acredita estar acontecendo — e trave o cluster que merece escalonamento.</span>
+  </div>
+
+  <div style="display:grid;grid-template-columns:304px minmax(0,1fr) 344px;min-height:0">
+
+    <aside style="border-right:1px solid var(--nx-line);background:var(--nx-surface);overflow-y:auto;min-height:0">
+      <sc-if value="{{ hasInsp }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:18px 18px 24px;animation:nxRise .28s cubic-bezier(.22,1,.36,1)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.18em;color:var(--nx-muted)">{{ insp.kind }}</span>
+            <span onClick="{{ clearSel }}" style="cursor:pointer;font-size:11px;color:var(--nx-muted);padding:2px 6px;border-radius:6px" style-hover="color:var(--nx-ink);background:var(--nx-line)">FECHAR ✕</span>
+          </div>
+          <div style="font-size:19px;font-weight:500;letter-spacing:-.01em;line-height:1.2">{{ insp.title }}</div>
+          <div style="font-size:12px;color:var(--nx-muted);margin-top:5px">{{ insp.sub }}</div>
+
+          <sc-if value="{{ insp.hasMark }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;align-items:center;gap:8px;margin-top:14px;padding:9px 11px;border:1px solid var(--nx-line);border-radius:10px;background:var(--nx-card)">
+              <span style="width:8px;height:8px;border-radius:50%;background:{{ insp.markColor }}"></span>
+              <span style="font-size:11.5px;color:var(--nx-ink)">{{ insp.markLabel }}</span>
+            </div>
+          </sc-if>
+
+          <div style="margin-top:20px;display:flex;flex-direction:column;gap:0">
+            <sc-for list="{{ insp.rows }}" as="r" hint-placeholder-count="4">
+              <div style="display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--nx-accent-06)">
+                <span style="font-size:10.5px;letter-spacing:.10em;color:var(--nx-muted);text-transform:uppercase">{{ r.k }}</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--nx-ink);text-align:right">{{ r.v }}</span>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="margin-top:22px;font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.18em;color:var(--nx-muted)">CLASSIFICAR</div>
+          <div style="display:flex;gap:7px;margin-top:9px">
+            <sc-for list="{{ insp.marks }}" as="m" hint-placeholder-count="3">
+              <div onClick="{{ m.onClick }}" style="{{ m.style }}" style-hover="border-color:var(--nx-line-3)">
+                <span style="width:7px;height:7px;border-radius:50%;background:{{ m.color }}"></span>
+                <span>{{ m.label }}</span>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="margin-top:22px;font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.18em;color:var(--nx-muted)">INVESTIGAÇÕES DISPONÍVEIS</div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
+            <sc-for list="{{ insp.actions }}" as="a" hint-placeholder-count="3">
+              <div onClick="{{ a.onClick }}" style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 13px;border:1px solid var(--nx-line-2);border-radius:10px;background:var(--nx-elev);cursor:pointer;transition:all 160ms cubic-bezier(.4,0,.2,1)" style-hover="border-color:var(--nx-accent-45);background:#EFEBE2;transform:translateY(-1px)">
+                <span style="font-size:12px;color:var(--nx-ink)">{{ a.label }}</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--nx-accent-text)">{{ a.cost }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ noInsp }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:18px 18px 26px">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.18em;color:var(--nx-muted)">CASE FILES</div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+            <sc-for list="{{ cases }}" as="c" hint-placeholder-count="3">
+              <div onClick="{{ c.onClick }}" style="padding:13px;border:1px solid var(--nx-line);border-left:2px solid {{ c.accent }};border-radius:12px;background:var(--nx-card);box-shadow:0 1px 2px var(--nx-shadow-1);cursor:pointer;transition:all 160ms cubic-bezier(.4,0,.2,1)" style-hover="background:var(--nx-card);box-shadow:0 4px 14px var(--nx-shadow-2);border-color:var(--nx-line-2)">
+                <div style="display:flex;justify-content:space-between;align-items:baseline">
+                  <span style="font-size:13px;font-weight:500">{{ c.name }}</span>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:var(--nx-muted)">{{ c.tag }}</span>
+                </div>
+                <div style="font-size:11px;color:var(--nx-muted);margin-top:4px">{{ c.sub }}</div>
+                <div style="display:flex;gap:14px;margin-top:9px">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--nx-muted)">{{ c.conns }}</span>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:{{ c.stateColor }}">{{ c.state }}</span>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="margin-top:24px;font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.18em;color:var(--nx-muted)">REDE DESCOBERTA</div>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <div style="flex:1;padding:12px;border:1px solid var(--nx-line);border-radius:10px;background:var(--nx-card)">
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:19px;font-weight:500">{{ nodeCount }}</div>
+              <div style="font-size:10px;letter-spacing:.12em;color:var(--nx-muted);margin-top:2px">ENTIDADES</div>
+            </div>
+            <div style="flex:1;padding:12px;border:1px solid var(--nx-line);border-radius:10px;background:var(--nx-card)">
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:19px;font-weight:500">{{ edgeCount }}</div>
+              <div style="font-size:10px;letter-spacing:.12em;color:var(--nx-muted);margin-top:2px">RELAÇÕES</div>
+            </div>
+          </div>
+
+          <sc-if value="{{ hasHidden }}" hint-placeholder-val="{{ true }}">
+            <div style="margin-top:22px">
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.18em;color:var(--nx-muted)">{{ hiddenLabel }}</div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:9px">
+                <sc-for list="{{ hiddenList }}" as="h" hint-placeholder-count="2">
+                  <div onClick="{{ h.onClick }}" style="display:flex;align-items:center;gap:6px;padding:6px 9px;border:1px dashed var(--nx-line-3);border-radius:999px;cursor:pointer;font-size:11px;color:var(--nx-muted)" style-hover="color:var(--nx-ink);border-color:rgba(245,84,10,.4)">
+                    <span>{{ h.name }}</span>
+                    <span style="font-size:10px">↺</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <div style="margin-top:24px;padding:13px;border:1px solid var(--nx-line);border-radius:10px;background:var(--nx-card)">
+            <div style="font-size:11px;color:var(--nx-muted);line-height:1.55">Clique para inspecionar · duplo clique expande · <span style="color:var(--nx-ink)">shift + clique</span> seleciona vários · arraste para organizar.</div>
+          </div>
+        </div>
+      </sc-if>
+    </aside>
+
+    <section style="position:relative;min-width:0;min-height:0;background:var(--nx-card);display:flex;flex-direction:column">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 14px;border-bottom:1px solid var(--nx-line);background:var(--nx-card)">
+        <div style="display:flex;gap:3px;padding:3px;border:1px solid var(--nx-line);border-radius:10px;background:var(--nx-elev)">
+          <sc-for list="{{ modes }}" as="m" hint-placeholder-count="3">
+            <div onClick="{{ m.onClick }}" style="{{ m.style }}" style-hover="color:var(--nx-ink)">{{ m.label }}</div>
+          </sc-for>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="display:flex;align-items:center;gap:7px;padding:6px 10px;border:1px solid var(--nx-line-2);border-radius:8px;background:var(--nx-card)">
+            <span style="font-size:11px;color:var(--nx-muted)">⌕</span>
+            <input value="{{ search }}" onChange="{{ onSearch }}" onKeyDown="{{ onSearchKey }}" placeholder="Buscar entidade" style="width:150px;border:none;outline:none;background:transparent;color:var(--nx-ink);font-size:11.5px"/>
+          </div>
+          <sc-for list="{{ tools }}" as="t" hint-placeholder-count="4">
+            <div onClick="{{ t.onClick }}" style="{{ t.style }}" style-hover="border-color:var(--nx-line-3);color:var(--nx-ink)">{{ t.label }}</div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="position:relative;flex:1;min-height:0">
+        <svg ref="{{ svgRef }}" onWheel="{{ onWheel }}" onPointerDown="{{ onBgDown }}" style="position:absolute;inset:0;width:100%;height:100%;cursor:{{ canvasCursor }};touch-action:none;display:block">
+          <rect x="0" y="0" width="100%" height="100%" style="fill:var(--nx-canvas)"></rect>
+          <rect x="0" y="0" width="100%" height="100%" fill="url(#nxGrid)" opacity="0.75"></rect>
+          <defs>
+            <pattern id="nxGrid" width="34" height="34" patternUnits="userSpaceOnUse">
+              <circle cx="1" cy="1" r="1" style="fill:var(--nx-grid)"></circle>
+            </pattern>
+          </defs>
+          <g transform="{{ camTf }}">
+            <sc-for list="{{ edges }}" as="e" hint-placeholder-count="4">
+              <g onClick="{{ e.onClick }}" style="cursor:pointer">
+                <path d="{{ e.d }}" style="stroke:transparent;stroke-width:14;fill:none"></path>
+                <path d="{{ e.d }}" style="{{ e.st }}"></path>
+                <path d="{{ e.arrow }}" style="{{ e.arrowSt }}"></path>
+              </g>
+            </sc-for>
+            <sc-for list="{{ nodes }}" as="n" hint-placeholder-count="5">
+              <g transform="{{ n.tf }}" onPointerDown="{{ n.onDown }}" onClick="{{ n.onClick }}" onDoubleClick="{{ n.onDbl }}" onPointerEnter="{{ n.onEnter }}" onPointerLeave="{{ n.onLeave }}" style="{{ n.gs }}">
+                <circle cx="0" cy="0" r="0" style="{{ n.haloSt }}"></circle>
+                <path d="{{ n.ring }}" style="{{ n.ringSt }}"></path>
+                <path d="{{ n.d }}" style="{{ n.st }}"></path>
+                <g transform="{{ n.iconTf }}">
+                  <path d="{{ n.i1 }}" style="{{ n.iconSt }}"></path>
+                  <path d="{{ n.i2 }}" style="{{ n.iconSt }}"></path>
+                </g>
+              </g>
+            </sc-for>
+          </g>
+        </svg>
+
+        <div style="position:absolute;inset:0;pointer-events:none;overflow:hidden">
+          <sc-for list="{{ edgeLabels }}" as="el" hint-placeholder-count="3">
+            <div style="{{ el.st }}">{{ el.label }}</div>
+          </sc-for>
+          <sc-for list="{{ nodeLabels }}" as="nl" hint-placeholder-count="5">
+            <div style="{{ nl.wrapSt }}">
+              <div style="{{ nl.nameSt }}">{{ nl.name }}</div>
+              <div style="{{ nl.pinSt }}">FIXADO</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="{{ legendSt }}">
+          <sc-for list="{{ legend }}" as="l" hint-placeholder-count="4">
+            <div style="display:flex;align-items:center;gap:9px">
+              <svg viewBox="0 0 24 24" style="width:13px;height:13px;flex:none;fill:none;stroke:var(--nx-muted);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round">
+                <path d="{{ l.i1 }}"></path>
+                <path d="{{ l.i2 }}"></path>
+              </svg>
+              <span style="font-size:10px;letter-spacing:.08em;color:var(--nx-muted)">{{ l.label }}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ moneyEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:290px;padding:18px;border:1px solid var(--nx-accent-28);border-radius:16px;background:var(--nx-card);text-align:center;animation:nxRise .28s cubic-bezier(.22,1,.36,1)">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.18em;color:var(--nx-accent-text)">MONEY FLOW</div>
+            <div style="font-size:12.5px;color:var(--nx-ink);line-height:1.55;margin-top:9px">Nenhum rastro financeiro descoberto ainda. Expanda pessoas e contas para revelar transferências.</div>
+            <div onClick="{{ backToNetwork }}" style="margin-top:14px;padding:8px 12px;border:1px solid var(--nx-accent-35);border-radius:9px;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--nx-accent-text)">← VOLTAR PARA NETWORK</div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ hasPath }}" hint-placeholder-val="{{ true }}">
+          <div style="position:absolute;right:14px;top:14px;width:270px;padding:14px;border:1px solid var(--nx-accent-35);border-radius:16px;background:var(--nx-card);animation:nxRise .32s cubic-bezier(.22,1,.36,1)">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.16em;color:var(--nx-accent-text)">{{ pathTitle }}</span>
+              <span onClick="{{ clearPath }}" style="cursor:pointer;font-size:11px;color:var(--nx-muted)">✕</span>
+            </div>
+            <div style="margin-top:11px;display:flex;flex-direction:column;gap:0">
+              <sc-for list="{{ pathSteps }}" as="p" hint-placeholder-count="4">
+                <div>
+                  <div style="font-size:12.5px;color:var(--nx-ink)">{{ p.name }}</div>
+                  <div style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.10em;color:var(--nx-muted);padding:3px 0 3px 2px">{{ p.rel }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ multiSel }}" hint-placeholder-val="{{ true }}">
+          <div style="position:absolute;left:50%;bottom:16px;transform:translateX(-50%);display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--nx-line-2);border-radius:16px;background:var(--nx-card);animation:nxRise .24s cubic-bezier(.22,1,.36,1)">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;color:var(--nx-accent-text)">{{ selLabel }}</span>
+            <div style="width:1px;height:18px;background:var(--nx-line-2)"></div>
+            <sc-for list="{{ selActions }}" as="a" hint-placeholder-count="3">
+              <div onClick="{{ a.onClick }}" style="display:flex;align-items:center;gap:7px;padding:6px 10px;border:1px solid var(--nx-line-2);border-radius:8px;cursor:pointer;transition:all 160ms cubic-bezier(.4,0,.2,1)" style-hover="border-color:var(--nx-accent-45);background:var(--nx-accent-08)">
+                <span style="font-size:11.5px;color:var(--nx-ink)">{{ a.label }}</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--nx-accent-text)">{{ a.cost }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+      </div>
+
+      <sc-if value="{{ isTimeline }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:none;padding:14px 16px 16px;border-top:1px solid var(--nx-line);background:var(--nx-card);animation:nxRise .3s cubic-bezier(.22,1,.36,1)">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.18em;color:var(--nx-muted)">LINHA DO TEMPO · EVENTOS DESCOBERTOS</span>
+              <span style="font-size:10.5px;color:{{ conflictColor }}">{{ conflictLabel }}</span>
+            </div>
+            <div style="display:flex;align-items:stretch;gap:0;margin-top:12px;overflow-x:auto">
+              <sc-for list="{{ timeline }}" as="t" hint-placeholder-count="4">
+                <div onClick="{{ t.onClick }}" style="min-width:132px;padding:0 14px 2px;border-left:1px solid {{ t.accent }};cursor:pointer">
+                  <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.10em;color:{{ t.dateColor }}">{{ t.date }}</div>
+                  <div style="font-size:12px;color:var(--nx-ink);margin-top:5px">{{ t.title }}</div>
+                  <div style="font-size:10.5px;color:var(--nx-muted);margin-top:3px">{{ t.sub }}</div>
+                </div>
+              </sc-for>
+            </div>
+        </div>
+      </sc-if>
+    </section>
+
+    <aside style="border-left:1px solid var(--nx-line);background:var(--nx-surface);display:flex;flex-direction:column;min-height:0">
+      <div style="padding:15px 16px;border-bottom:1px solid var(--nx-line)">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="width:6px;height:6px;border-radius:50%;background:var(--nx-accent);animation:nxBreathe 2.6s ease-in-out infinite"></span>
+          <span style="font-size:13px;font-weight:600;letter-spacing:.06em">NEXUS AI</span>
+        </div>
+        <div style="font-size:11px;color:var(--nx-muted);margin-top:4px">Investigation copilot · acessa apenas o contexto já descoberto</div>
+      </div>
+
+      <div style="flex:1;overflow-y:auto;padding:14px 16px;min-height:0;display:flex;flex-direction:column;gap:12px">
+        <sc-for list="{{ feed }}" as="f" hint-placeholder-count="1">
+          <div style="{{ f.wrapStyle }}">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.16em;color:{{ f.accent }}">{{ f.role }}</div>
+            <div style="font-size:12.5px;line-height:1.6;color:var(--nx-ink);margin-top:7px;white-space:pre-line">{{ f.text }}</div>
+            <div style="display:flex;flex-direction:column;gap:5px;margin-top:9px">
+              <sc-for list="{{ f.bullets }}" as="b" hint-placeholder-count="0">
+                <div style="display:flex;gap:8px;font-size:11.5px;color:var(--nx-muted)">
+                  <span style="color:var(--nx-accent-text)">•</span>
+                  <span>{{ b.text }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px;margin-top:9px">
+              <sc-for list="{{ f.steps }}" as="s" hint-placeholder-count="0">
+                <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--nx-muted)">
+                  <span>{{ s.label }}</span>
+                  <span style="color:{{ s.color }}">{{ s.mark }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <div onClick="{{ f.onFocus }}" style="{{ f.ctaStyle }}" style-hover="border-color:var(--nx-accent-45)">{{ f.cta }}</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="padding:12px 16px 14px;border-top:1px solid var(--nx-line)">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.18em;color:var(--nx-muted)">AÇÕES SUGERIDAS</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:9px">
+          <sc-for list="{{ quick }}" as="q" hint-placeholder-count="5">
+            <div onClick="{{ q.onClick }}" style="display:flex;align-items:center;gap:6px;padding:7px 10px;border:1px solid var(--nx-line-2);border-radius:999px;background:var(--nx-card);cursor:pointer;transition:all 160ms cubic-bezier(.4,0,.2,1)" style-hover="border-color:var(--nx-accent-45);background:var(--nx-elev)">
+              <span style="font-size:11.5px;color:var(--nx-ink)">{{ q.label }}</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--nx-accent-text)">{{ q.cost }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:12px;padding:10px 12px;border:1px solid var(--nx-line-2);border-radius:10px;background:var(--nx-card)">
+          <input value="{{ ask }}" onChange="{{ onAsk }}" onKeyDown="{{ onAskKey }}" placeholder="O que você quer investigar?" style="flex:1;border:none;outline:none;background:transparent;color:var(--nx-ink);font-size:12px"/>
+          <span onClick="{{ sendAsk }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.10em;color:var(--nx-accent-text)">ENVIAR</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <footer style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0 20px;border-top:1px solid var(--nx-line);background:var(--nx-surface)">
+    <div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.18em;color:var(--nx-muted)">INVESTIGATION BOARD</div>
+      <div style="display:flex;gap:8px;margin-top:9px">
+        <sc-for list="{{ board }}" as="b" hint-placeholder-count="3">
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--nx-line);border-radius:10px;background:var(--nx-card)">
+            <span style="width:7px;height:7px;border-radius:50%;background:{{ b.color }}"></span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--nx-ink)">{{ b.count }}</span>
+            <span style="font-size:10.5px;letter-spacing:.10em;color:var(--nx-muted)">{{ b.label }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px">
+      <span style="font-size:11.5px;color:var(--nx-muted);max-width:280px;text-align:right">{{ lockHint }}</span>
+      <div onClick="{{ openLock }}" style="{{ lockStyle }}" style-hover="transform:translateY(-1px)">TRAVAR CLUSTER</div>
+    </div>
+  </footer>
+
+  <sc-if value="{{ hasModal }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeModal }}" style="position:fixed;inset:0;background:var(--nx-backdrop);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;z-index:60">
+      <div onClick="{{ stop }}" style="width:{{ modal.width }};padding:26px;border:1px solid var(--nx-line-2);border-radius:16px;background:var(--nx-card);box-shadow:0 30px 80px var(--nx-shadow-3);animation:nxRise .28s cubic-bezier(.22,1,.36,1)">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.18em;color:{{ modal.accent }}">{{ modal.eyebrow }}</div>
+        <div style="font-size:21px;font-weight:500;letter-spacing:-.01em;margin-top:12px;line-height:1.25">{{ modal.title }}</div>
+        <div style="font-size:12.5px;color:var(--nx-muted);line-height:1.6;margin-top:10px;white-space:pre-line">{{ modal.body }}</div>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-top:14px">
+          <sc-for list="{{ modal.list }}" as="l" hint-placeholder-count="0">
+            <div style="display:flex;justify-content:space-between;padding:8px 11px;border:1px solid var(--nx-line);border-radius:9px;background:var(--nx-elev)">
+              <span style="font-size:12px;color:var(--nx-ink)">{{ l.name }}</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--nx-muted)">{{ l.meta }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <sc-if value="{{ modal.hasNote }}" hint-placeholder-val="{{ false }}">
+          <textarea value="{{ note }}" onChange="{{ onNote }}" placeholder="Por quê? Ex.: device compartilhado sem relação pessoal conhecida e propostas próximas no tempo." style="width:100%;height:74px;margin-top:14px;padding:11px;border:1px solid var(--nx-line-2);border-radius:10px;background:var(--nx-card);color:var(--nx-ink);font-size:12px;line-height:1.5;resize:none;outline:none"></textarea>
+        </sc-if>
+        <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:20px">
+          <div onClick="{{ closeModal }}" style="padding:10px 16px;border:1px solid var(--nx-line-2);border-radius:10px;cursor:pointer;font-size:12px;letter-spacing:.06em;color:var(--nx-muted)" style-hover="color:var(--nx-ink)">{{ modal.cancel }}</div>
+          <div onClick="{{ modal.onConfirm }}" style="{{ modal.confirmStyle }}" style-hover="transform:translateY(-1px)">{{ modal.confirm }}</div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;right:360px;top:112px;width:250px;padding:14px 15px;border:1px solid {{ toast.border }};border-radius:16px;background:var(--nx-card);box-shadow:0 18px 44px var(--nx-shadow-3);z-index:50;animation:nxRise .3s cubic-bezier(.22,1,.36,1)">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.18em;color:{{ toast.accent }}">{{ toast.eyebrow }}</div>
+      <div style="font-size:12.5px;color:var(--nx-ink);line-height:1.55;margin-top:8px;white-space:pre-line">{{ toast.text }}</div>
+      <div onClick="{{ closeToast }}" style="margin-top:12px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--nx-muted);cursor:pointer" style-hover="color:var(--nx-ink)">{{ toast.cta }}</div>
+    </div>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900},&quot;teamName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;TEAM ALPHA&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;startCredits&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:72,&quot;min&quot;:10,&quot;max&quot;:200,&quot;tsType&quot;:&quot;number&quot;},&quot;initialMode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;network&quot;,&quot;options&quot;:[&quot;network&quot;,&quot;money&quot;,&quot;timeline&quot;],&quot;tsType&quot;:&quot;string&quot;},&quot;linkDistance&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:165,&quot;min&quot;:110,&quot;max&quot;:260,&quot;step&quot;:5,&quot;unit&quot;:&quot;px&quot;,&quot;tsType&quot;:&quot;number&quot;}}">
+class Component extends DCLogic {
+  P = { am: 'var(--nx-accent)', st: 'var(--nx-accent-text)', at: 'var(--nx-attention)', gr: 'var(--nx-explained)', ok: 'var(--nx-accent)', rd: 'var(--nx-danger)', t1: 'var(--nx-ink)', t2: 'var(--nx-muted)' };
+
+  TY = {
+    person: { r: 27, label: 'Pessoa', i1: 'M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2', i2: 'M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8' },
+    device: { r: 23, label: 'Device', i1: 'M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z', i2: 'M11 18h2' },
+    account: { r: 24, label: 'Conta', i1: 'M4 5h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z', i2: 'M2 10h20' },
+    company: { r: 27, label: 'Empresa', i1: 'M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18M3 22h18', i2: 'M10 7h4M10 11h4M10 15h4' },
+    ip: { r: 21, label: 'IP', i1: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18', i2: 'M3 12h18M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18' },
+    address: { r: 21, label: 'Endereço', i1: 'M3 10l9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z', i2: 'M9 22V12h6v10' },
+    message: { r: 21, label: 'Mensagem', i1: 'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z', i2: 'M8 9h8M8 13h5' },
+    application: { r: 21, label: 'Proposta', i1: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z', i2: 'M14 2v6h6M8 15h6' }
+  };
+
+  W = {
+    nodes: {
+      p_anderson: { type: 'person', name: 'Anderson Melo', sub: 'Pessoa investigada', rows: [['idade', '38'], ['profissão', 'Autônomo'], ['score', '648'], ['crédito', 'R$ 62.000'], ['status', 'Aprovado']] },
+      p_marlene: { type: 'person', name: 'Marlene Ferreira', sub: 'Pessoa investigada', rows: [['idade', '44'], ['profissão', 'Analista adm.'], ['score', '312'], ['crédito', 'R$ 48.000'], ['status', 'Aprovado']] },
+      p_juliana: { type: 'person', name: 'Juliana Prado', sub: 'Pessoa investigada', rows: [['idade', '29'], ['profissão', 'Designer'], ['score', '702'], ['crédito', 'R$ 31.000'], ['status', 'Aprovado']] },
+      p_camila: { type: 'person', name: 'Camila Melo', sub: 'Pessoa', rows: [['idade', '36'], ['profissão', 'Enfermeira'], ['score', '691'], ['propostas', '1']] },
+      p_roberto: { type: 'person', name: 'Roberto Alves', sub: 'Pessoa', rows: [['idade', '41'], ['profissão', 'Comerciante'], ['score', '588'], ['propostas', '3']] },
+      p_patricia: { type: 'person', name: 'Patrícia Melo', sub: 'Pessoa', rows: [['idade', '61'], ['profissão', 'Aposentada'], ['score', '744'], ['propostas', '0']] },
+      p_eduardo: { type: 'person', name: 'Eduardo Vasconcelos', sub: 'Pessoa', rows: [['idade', '52'], ['profissão', 'Consultor'], ['score', '801'], ['propostas', '0']] },
+      d_17: { type: 'device', name: 'Device 7F-A92', sub: 'MacBook Pro', rows: [['fingerprint', '7F-A92-3311'], ['sessões', '46'], ['primeira vez', '12 jan 2026'], ['origem', 'Telemetria']] },
+      d_04: { type: 'device', name: 'Device 3C-B11', sub: 'Windows 11', rows: [['fingerprint', '3C-B11-0087'], ['sessões', '12'], ['origem', 'Telemetria']] },
+      ip_191: { type: 'ip', name: 'IP 191.32.8.14', sub: 'Infra compartilhada', rows: [['ASN', 'AS28573'], ['clientes vistos', '1.284'], ['tipo', 'CGNAT móvel']] },
+      ad_04: { type: 'address', name: 'R. das Acácias, 402', sub: 'Endereço', rows: [['cidade', 'Campinas / SP'], ['moradores', '2'], ['origem', 'Cadastro']] },
+      ac_01: { type: 'account', name: 'Conta ****8921', sub: 'Conta corrente', rows: [['titular', 'Anderson Melo'], ['aberta em', '02 dez 2025'], ['movimentação', 'R$ 64.100']] },
+      ac_02: { type: 'account', name: 'Conta ****4410', sub: 'Conta corrente', rows: [['titular', 'Patrícia Melo'], ['aberta em', '01 mar 2026'], ['movimentação', 'R$ 60.300']] },
+      ac_04: { type: 'account', name: 'Conta ****7702', sub: 'Conta PJ', rows: [['titular', 'Aurora Multiserviços'], ['aberta em', '18 out 2025'], ['movimentação', 'R$ 212.900']] },
+      co_aurora: { type: 'company', name: 'Aurora Multiserviços', sub: 'Empresa', rows: [['CNPJ', '48.221.***/0001-09'], ['abertura', '2025'], ['funcionários', '0'], ['atividade', 'Serviços diversos']] },
+      app_07: { type: 'application', name: 'Proposta #7', sub: 'Solicitação de crédito', rows: [['valor', 'R$ 54.000'], ['data', '14 jan 2026'], ['status', 'Aprovado']] },
+      msg_05: { type: 'message', name: 'WhatsApp · 05 jan', sub: 'Material recuperado', rows: [['origem', 'Device apreendido'], ['participantes', '2'], ['relevância', 'Alta']] }
+    },
+    edges: [
+      { id: 'e_a_d17', a: 'p_anderson', b: 'd_17', type: 'USED_DEVICE', first: '12 jan 2026 · 14:42', src: 'Telemetria de aplicação' },
+      { id: 'e_r_d17', a: 'p_roberto', b: 'd_17', type: 'USED_DEVICE', first: '13 jan 2026 · 09:07', src: 'Telemetria de aplicação' },
+      { id: 'e_c_d17', a: 'p_camila', b: 'd_17', type: 'USED_DEVICE', first: '12 jan 2026 · 21:15', src: 'Telemetria de aplicação' },
+      { id: 'e_m_ip', a: 'p_marlene', b: 'ip_191', type: 'FROM_IP', first: '09 jan 2026 · 11:20', src: 'Log de sessão' },
+      { id: 'e_j_ip', a: 'p_juliana', b: 'ip_191', type: 'FROM_IP', first: '11 jan 2026 · 18:02', src: 'Log de sessão' },
+      { id: 'e_r_ip', a: 'p_roberto', b: 'ip_191', type: 'FROM_IP', first: '13 jan 2026 · 09:05', src: 'Log de sessão' },
+      { id: 'e_a_c', a: 'p_anderson', b: 'p_camila', type: 'SPOUSE', late: true, first: 'Cadastro 2019', src: 'Registro civil declarado' },
+      { id: 'e_a_ad', a: 'p_anderson', b: 'ad_04', type: 'LIVES_AT', first: '2019', src: 'Cadastro' },
+      { id: 'e_c_ad', a: 'p_camila', b: 'ad_04', type: 'LIVES_AT', first: '2019', src: 'Cadastro' },
+      { id: 'e_a_ac1', a: 'p_anderson', b: 'ac_01', type: 'OWNS', dir: true, money: true, first: '02 dez 2025', src: 'Cadastro bancário' },
+      { id: 'e_ac1_ac2', a: 'ac_01', b: 'ac_02', type: 'TRANSFERRED_TO', dir: true, money: true, amount: 'R$ 38.400', date: '10 fev 2026', first: '10 fev 2026 · 16:32', src: 'Registro transacional' },
+      { id: 'e_pa_ac2', a: 'p_patricia', b: 'ac_02', type: 'OWNS', dir: true, money: true, first: '01 mar 2026', src: 'Cadastro bancário' },
+      { id: 'e_a_pa', a: 'p_anderson', b: 'p_patricia', type: 'MOTHER_OF', first: 'Cadastro', src: 'Registro civil declarado' },
+      { id: 'e_ac2_ac4', a: 'ac_02', b: 'ac_04', type: 'TRANSFERRED_TO', dir: true, money: true, amount: 'R$ 21.900', date: '14 mar 2026', first: '14 mar 2026 · 10:11', src: 'Registro transacional' },
+      { id: 'e_ac4_co', a: 'ac_04', b: 'co_aurora', type: 'OWNED_BY', dir: true, money: true, first: '18 out 2025', src: 'Cadastro PJ' },
+      { id: 'e_co_ed', a: 'co_aurora', b: 'p_eduardo', type: 'CONTROLLED_BY', dir: true, money: true, first: '2025', src: 'Quadro societário' },
+      { id: 'e_ed_d04', a: 'p_eduardo', b: 'd_04', type: 'USED_DEVICE', first: '20 fev 2026', src: 'Telemetria de aplicação' },
+      { id: 'e_r_app', a: 'p_roberto', b: 'app_07', type: 'APPLIED', dir: true, first: '14 jan 2026', src: 'Originação' },
+      { id: 'e_msg_ed', a: 'msg_05', b: 'p_eduardo', type: 'SENT_BY', dir: true, first: '05 jan 2026 · 19:40', src: 'Device apreendido' },
+      { id: 'e_msg_a', a: 'msg_05', b: 'p_anderson', type: 'MENTIONS', dir: true, first: '05 jan 2026 · 19:40', src: 'Device apreendido' }
+    ]
+  };
+
+  state = {
+    dn: ['p_anderson', 'p_marlene', 'p_juliana', 'd_17', 'ip_191'],
+    de: ['e_a_d17', 'e_m_ip', 'e_j_ip'],
+    sel: [], selEdge: null, hover: null,
+    mode: 'network', credits: 72, marks: {}, hidden: [], focus: null,
+    path: null, toast: null, modal: null, feed: [], ask: '', search: '', note: '',
+    secs: 892, tick: 0, spend: null, recent: {}, seen: {}, expanded: {}, theme: 'light'
+  };
+
+  L() { return this.props.linkDistance ?? 165; }
+
+  cam = { x: 0, y: 0, k: 1 };
+  pos = {};
+  drag = null;
+  pan = null;
+
+  componentDidMount() {
+    const seedAt = { p_anderson: [430, 250], p_marlene: [700, 430], p_juliana: [760, 250], d_17: [330, 420], ip_191: [640, 330] };
+    this.state.dn.forEach((id, i) => {
+      const s = seedAt[id] || [500 + Math.cos(i) * 120, 330 + Math.sin(i) * 110];
+      this.pos[id] = { x: s[0], y: s[1], vx: 0, vy: 0, pin: false };
+    });
+    if (this.props.startCredits) this.setState({ credits: this.props.startCredits });
+    if (this.props.initialMode) this.setState({ mode: this.props.initialMode });
+    this.raf = requestAnimationFrame(this.loop);
+    this.clockId = setInterval(() => this.setState(s => ({ secs: Math.max(0, s.secs - 1) })), 1000);
+    this.pushAI({
+      role: 'NEXUS AI', text: 'Novas fontes liberadas para este round: dispositivos, telefones, IPs, endereços e contas.\nSelecione uma entidade e expanda para começar a mapear as relações.',
+      bullets: [{ text: '3 perfis escalados no Round 01 já estão no canvas' }, { text: 'Eu só vejo o que sua equipe descobriu' }]
+    });
+    window.addEventListener('keydown', this.onKey);
+  }
+
+  componentWillUnmount() {
+    cancelAnimationFrame(this.raf);
+    clearInterval(this.clockId);
+    window.removeEventListener('keydown', this.onKey);
+  }
+
+  measure() {
+    if (!this.svg) return;
+    const r = this.svg.getBoundingClientRect();
+    if (r.width <= 40) return;
+    if (this.vw && Math.abs(r.width - this.vw) < 1 && Math.abs(r.height - this.vh) < 1) return;
+    const first = !this._seeded;
+    this.vw = r.width; this.vh = r.height;
+    if (first) {
+      this._seeded = true;
+      Object.keys(this.pos).forEach(id => {
+        const p = this.pos[id];
+        p.x = (p.x / 1000) * this.vw; p.y = (p.y / 660) * this.vh;
+      });
+    }
+    if (!this._fitted) { this._fitted = true; setTimeout(() => this.fitTo(this.visibleIds()), 420); }
+    this.setState(s => ({ tick: s.tick + 1 }));
+  }
+
+  onKey = (e) => {
+    if (e.key === 'Escape') this.setState({ modal: null, toast: null, sel: [], selEdge: null, path: null, focus: null });
+  };
+
+  /* ---------- graph helpers ---------- */
+  visibleIds() { return this.state.dn.filter(id => !this.state.hidden.includes(id)); }
+
+  visEdges() {
+    const vis = this.visibleIds();
+    return this.W.edges.filter(e => this.state.de.includes(e.id) && vis.includes(e.a) && vis.includes(e.b));
+  }
+
+  neighborsOf(id, discoveredOnly) {
+    const src = discoveredOnly ? this.W.edges.filter(e => this.state.de.includes(e.id)) : this.W.edges;
+    const out = [];
+    src.forEach(e => { if (e.a === id) out.push(e.b); else if (e.b === id) out.push(e.a); });
+    return out;
+  }
+
+  isMoney(e) { return !!e.money; }
+
+  /* ---------- physics ---------- */
+  loop = () => {
+    if (!this.vw && this.svg) {
+      this.measure();
+      if (window.ResizeObserver && !this.ro) { this.ro = new ResizeObserver(() => this.measure()); this.ro.observe(this.svg); }
+    }
+    this.step();
+    this.raf = requestAnimationFrame(this.loop);
+  };
+
+  step() {
+    const ids = this.visibleIds().filter(id => this.pos[id]);
+    const edges = this.visEdges();
+    ids.forEach(a => {
+      const pa = this.pos[a]; let fx = ((this.vw || 1000) / 2 - pa.x) * 0.010, fy = ((this.vh || 660) / 2 - pa.y) * 0.012;
+      ids.forEach(b => {
+        if (a === b) return;
+        const pb = this.pos[b];
+        let dx = pa.x - pb.x, dy = pa.y - pb.y, d2 = dx * dx + dy * dy;
+        if (d2 < 4) { dx = Math.random() - 0.5; dy = Math.random() - 0.5; d2 = 4; }
+        if (d2 > 260000) return;
+        const d = Math.sqrt(d2), f = Math.min(3.2, 34000 / d2);
+        fx += (dx / d) * f; fy += (dy / d) * f;
+      });
+      pa.fx = fx; pa.fy = fy;
+    });
+    edges.forEach(e => {
+      const pa = this.pos[e.a], pb = this.pos[e.b];
+      if (!pa || !pb) return;
+      const dx = pb.x - pa.x, dy = pb.y - pa.y, d = Math.max(1, Math.hypot(dx, dy));
+      const f = (d - this.L()) * 0.016, ux = dx / d, uy = dy / d;
+      pa.fx += ux * f; pa.fy += uy * f; pb.fx -= ux * f; pb.fy -= uy * f;
+    });
+    let moved = 0;
+    ids.forEach(id => {
+      const p = this.pos[id];
+      if (p.pin || (this.drag && this.drag.id === id)) { p.vx = 0; p.vy = 0; return; }
+      p.vx = (p.vx + (p.fx || 0) * 0.55) * 0.80;
+      p.vy = (p.vy + (p.fy || 0) * 0.55) * 0.80;
+      p.vx = Math.max(-9, Math.min(9, p.vx)); p.vy = Math.max(-9, Math.min(9, p.vy));
+      p.x += p.vx; p.y += p.vy;
+      moved += Math.abs(p.vx) + Math.abs(p.vy);
+    });
+    if (this.camAnim) this.stepCam();
+    if (moved > 0.25 || this.drag || this.pan || this.camAnim) this.setState(s => ({ tick: s.tick + 1 }));
+  }
+
+  stepCam() {
+    const a = this.camAnim, t = Math.min(1, (performance.now() - a.t0) / 460);
+    const e = 1 - Math.pow(1 - t, 3);
+    this.cam = { x: a.from.x + (a.to.x - a.from.x) * e, y: a.from.y + (a.to.y - a.from.y) * e, k: a.from.k + (a.to.k - a.from.k) * e };
+    if (t >= 1) this.camAnim = null;
+  }
+
+  fitTo(ids) {
+    const pts = ids.map(i => this.pos[i]).filter(Boolean);
+    if (!pts.length) return;
+    const xs = pts.map(p => p.x), ys = pts.map(p => p.y);
+    const minX = Math.min(...xs) - 90, maxX = Math.max(...xs) + 90;
+    const minY = Math.min(...ys) - 90, maxY = Math.max(...ys) + 90;
+    const vw = this.vw || 1000, vh = this.vh || 660;
+    const k = Math.max(0.55, Math.min(1.9, Math.min(vw / (maxX - minX), vh / (maxY - minY))));
+    const cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
+    this.camAnim = { t0: performance.now(), from: { ...this.cam }, to: { k, x: vw / 2 - cx * k, y: vh / 2 - cy * k } };
+  }
+
+  /* ---------- interaction ---------- */
+  onWheel = (ev) => {
+    ev.preventDefault();
+    const k = Math.max(0.45, Math.min(2.6, this.cam.k * (ev.deltaY > 0 ? 0.9 : 1.11)));
+    const r = this.svg.getBoundingClientRect();
+    const mx = ev.clientX - r.left, my = ev.clientY - r.top;
+    const wx = (mx - this.cam.x) / this.cam.k, wy = (my - this.cam.y) / this.cam.k;
+    this.cam = { k, x: mx - wx * k, y: my - wy * k };
+    this.setState(s => ({ tick: s.tick + 1 }));
+  };
+
+  onBgDown = (ev) => {
+    if (ev.target.tagName !== 'rect' && ev.target.tagName !== 'svg') return;
+    this.pan = { x: ev.clientX, y: ev.clientY, cx: this.cam.x, cy: this.cam.y, s: 1 };
+    const move = (e) => {
+      this.cam = { ...this.cam, x: this.pan.cx + (e.clientX - this.pan.x) * this.pan.s, y: this.pan.cy + (e.clientY - this.pan.y) * this.pan.s };
+    };
+    const up = () => { this.pan = null; window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); };
+    window.addEventListener('pointermove', move); window.addEventListener('pointerup', up);
+  };
+
+  startDrag(id, ev) {
+    ev.stopPropagation();
+    const s = 1 / this.cam.k;
+    const p = this.pos[id];
+    this.drag = { id, x0: ev.clientX, y0: ev.clientY, px: p.x, py: p.y, s, moved: false };
+    const move = (e) => {
+      const d = this.drag; if (!d) return;
+      const dx = (e.clientX - d.x0) * d.s, dy = (e.clientY - d.y0) * d.s;
+      if (Math.abs(dx) + Math.abs(dy) > 3) d.moved = true;
+      this.pos[id].x = d.px + dx; this.pos[id].y = d.py + dy;
+      this.pos[id].vx = 0; this.pos[id].vy = 0;
+    };
+    const up = () => {
+      if (this.drag && this.drag.moved) this.pos[id].pin = true;
+      this.drag = null;
+      window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up);
+      this.setState(s2 => ({ tick: s2.tick + 1 }));
+    };
+    window.addEventListener('pointermove', move); window.addEventListener('pointerup', up);
+  }
+
+  selectNode(id, ev) {
+    if (this.drag && this.drag.moved) return;
+    const shift = ev && ev.shiftKey;
+    this.setState(s => {
+      let sel;
+      if (shift) sel = s.sel.includes(id) ? s.sel.filter(x => x !== id) : s.sel.concat([id]);
+      else sel = s.sel.length === 1 && s.sel[0] === id ? [] : [id];
+      return { sel, selEdge: null };
+    });
+  }
+
+  /* ---------- credits & feedback ---------- */
+  spend(cost, label) {
+    if (this.state.credits < cost) {
+      this.setState({
+        modal: {
+          kind: 'insufficient', width: '430px', accent: this.P.rd, eyebrow: 'INTEL INSUFICIENTE',
+          title: 'Sua equipe não tem créditos para isso.',
+          body: 'Esta investigação custa ' + cost + ' créditos. Sua equipe possui ' + this.state.credits + '.\nTente uma análise mais específica.',
+          cancel: 'VOLTAR', confirm: 'ENTENDI', confirmStyle: this.btn(this.P.am)
+        }
+      });
+      return false;
+    }
+    this.setState(s => ({ credits: s.credits - cost, spend: '−' + cost }));
+    setTimeout(() => this.setState({ spend: null }), 900);
+    return true;
+  }
+
+  btn(color) {
+    const fill = color === this.P.am ? 'var(--nx-accent-text)' : color;
+    return 'padding:10px 18px;border-radius:10px;border:1px solid ' + fill + ';background:' + fill + ';color:var(--nx-on-accent);font-size:12px;font-weight:600;letter-spacing:.08em;cursor:pointer;transition:all 170ms cubic-bezier(.4,0,.2,1)';
+  }
+
+  toast(eyebrow, text, accent, cta) {
+    this.setState({ toast: { eyebrow, text, accent: accent || 'var(--nx-accent-text)', border: 'var(--nx-accent-30)', cta: cta || 'ENTENDI' } });
+  }
+
+  once(key) {
+    if (this.state.seen[key]) return false;
+    this.setState(s => ({ seen: { ...s.seen, [key]: true } }));
+    return true;
+  }
+
+  pushAI(entry) { this.setState(s => ({ feed: s.feed.concat([{ ...entry, id: 'f' + s.feed.length }]) })); }
+
+  runTrace(question, resolve) {
+    const idx = this.state.feed.length + 1;
+    this.pushAI({ role: 'VOCÊ', text: question, self: true });
+    this.pushAI({ role: 'NEXUS AI', text: 'Investigando...', steps: [{ label: 'Interpretando pergunta', mark: '···' }, { label: 'Consultando relações', mark: '' }, { label: 'Recuperando evidências', mark: '' }] });
+    const setSteps = (steps, text, extra) => this.setState(s => {
+      const feed = s.feed.slice();
+      feed[idx] = { ...feed[idx], steps, text: text || feed[idx].text, ...(extra || {}) };
+      return { feed };
+    });
+    setTimeout(() => setSteps([{ label: 'Interpretando pergunta', mark: '✓' }, { label: 'Consultando relações', mark: '···' }, { label: 'Recuperando evidências', mark: '' }]), 420);
+    setTimeout(() => setSteps([{ label: 'Interpretando pergunta', mark: '✓' }, { label: 'Consultando relações', mark: '✓' }, { label: 'Recuperando evidências', mark: '···' }]), 900);
+    setTimeout(() => {
+      const r = resolve();
+      setSteps([{ label: 'Interpretando pergunta', mark: '✓' }, { label: 'Consultando relações', mark: '✓' }, { label: 'Recuperando evidências', mark: '✓' }], r.text, { bullets: r.bullets, focus: r.focus, cta: r.cta });
+    }, 1450);
+  }
+
+  /* ---------- discovery ---------- */
+  reveal(edgeIds, originId) {
+    const newNodes = [], newEdges = [];
+    edgeIds.forEach(eid => {
+      const e = this.W.edges.find(x => x.id === eid);
+      if (!e || this.state.de.includes(eid)) return;
+      newEdges.push(eid);
+      [e.a, e.b].forEach(n => {
+        if (!this.state.dn.includes(n) && !newNodes.includes(n)) newNodes.push(n);
+      });
+    });
+    const o = originId && this.pos[originId] ? this.pos[originId] : { x: 500, y: 330 };
+    newNodes.forEach((n, i) => {
+      const ang = (i / Math.max(1, newNodes.length)) * Math.PI * 2 + Math.random();
+      this.pos[n] = { x: o.x + Math.cos(ang) * 40, y: o.y + Math.sin(ang) * 40, vx: 0, vy: 0, pin: false };
+    });
+    const recent = {};
+    newNodes.forEach(n => { recent[n] = 1; });
+    newEdges.forEach(e => { recent[e] = 1; });
+    this.setState(s => ({
+      dn: s.dn.concat(newNodes.filter(n => !s.dn.includes(n))),
+      de: s.de.concat(newEdges.filter(e => !s.de.includes(e))),
+      hidden: s.hidden.filter(h => !newNodes.includes(h)),
+      recent: { ...s.recent, ...recent }
+    }));
+    setTimeout(() => this.setState(s => {
+      const r = { ...s.recent };
+      Object.keys(recent).forEach(k => delete r[k]);
+      return { recent: r };
+    }), 2200);
+    return { newNodes, newEdges };
+  }
+
+  doExpand(id) {
+    const cost = 15;
+    const cand = this.W.edges.filter(e => (e.a === id || e.b === id) && !this.state.de.includes(e.id));
+    const fresh = cand.filter(e => !e.late);
+    const late = cand.filter(e => e.late);
+    const chosen = fresh.length ? fresh.slice(0, 5) : late;
+    if (!chosen.length) { this.toast('SEM NOVIDADE', 'Nenhuma nova conexão direta a partir desta entidade.', this.P.t2, 'OK'); return; }
+    if (!this.spend(cost)) return;
+    const res = this.reveal(chosen.map(e => e.id), id);
+    this.setState({ modal: null, sel: [id] });
+    if (!fresh.length && late.length) {
+      this.toast('NOVO CONTEXTO', 'Relação familiar identificada entre duas entidades que sua equipe já havia conectado por device.', this.P.ok, 'ENTENDI');
+    } else if (this.once('concept_edge')) {
+      this.toast('GRAPH CONCEPT', 'Você acabou de descobrir relações.\n\nPerson → USED_DEVICE → Device\n\nPerson e Device são nós. USED_DEVICE é uma aresta.', this.P.am, 'ENTENDI');
+    }
+    setTimeout(() => this.fitTo(this.visibleIds()), 260);
+    this.pushAI({ role: 'NEXUS AI', text: 'Expansão de ' + this.W.nodes[id].name + ' retornou ' + res.newEdges.length + ' relação(ões) e ' + res.newNodes.length + ' nova(s) entidade(s).' });
+  }
+
+  askExpand(id) {
+    const n = this.W.nodes[id];
+    this.setState({
+      modal: {
+        kind: 'expand', width: '410px', accent: 'var(--nx-accent-text)', eyebrow: 'EXPANDIR ENTIDADE',
+        title: 'Expandir ' + n.name + '?',
+        body: 'Mostrar conexões diretas descobertas a partir desta entidade.\n15 Intel Credits.',
+        cancel: 'CANCELAR', confirm: 'CONFIRMAR', confirmStyle: this.btn(this.P.am),
+        onConfirm: () => this.doExpand(id)
+      }
+    });
+  }
+
+  findShared() {
+    const sel = this.state.sel;
+    if (sel.length < 2) return;
+    if (!this.spend(10)) return;
+    const shared = [];
+    this.W.nodes && Object.keys(this.W.nodes).forEach(cand => {
+      if (sel.includes(cand)) return;
+      const linked = sel.every(s => this.neighborsOf(s, false).includes(cand));
+      if (linked) shared.push(cand);
+    });
+    const eids = [];
+    shared.forEach(c => sel.forEach(s => {
+      const e = this.W.edges.find(x => (x.a === s && x.b === c) || (x.b === s && x.a === c));
+      if (e) eids.push(e.id);
+    }));
+    this.reveal(eids, sel[0]);
+    const names = shared.map(s => this.W.nodes[s].name);
+    this.runTrace('Quais entidades ' + sel.map(s => this.W.nodes[s].name).join(' e ') + ' compartilham?', () => ({
+      text: names.length ? 'Encontrei ' + names.length + ' entidade(s) compartilhada(s). O compartilhamento de device é mais específico do que IP — IPs móveis são reaproveitados por muitos clientes.' : 'Não encontrei entidades compartilhadas entre essas seleções.',
+      bullets: names.map(n => ({ text: n })), focus: sel.concat(shared), cta: names.length ? 'VER NO GRAFO' : ''
+    }));
+    setTimeout(() => this.fitTo(sel.concat(shared)), 200);
+  }
+
+  findPath() {
+    const sel = this.state.sel;
+    if (sel.length !== 2) return;
+    if (!this.spend(15)) return;
+    const [from, to] = sel;
+    const prev = {}, q = [from], seen = { [from]: true };
+    while (q.length) {
+      const cur = q.shift();
+      if (cur === to) break;
+      this.W.edges.forEach(e => {
+        const nb = e.a === cur ? e.b : (e.b === cur ? e.a : null);
+        if (!nb || seen[nb]) return;
+        seen[nb] = true; prev[nb] = { node: cur, edge: e.id }; q.push(nb);
+      });
+    }
+    if (!seen[to]) { this.toast('SEM CAMINHO', 'Não existe caminho conhecido entre essas duas entidades.', this.P.t2, 'OK'); return; }
+    const nodesP = [to], edgesP = [];
+    let cur = to;
+    while (prev[cur]) { edgesP.unshift(prev[cur].edge); cur = prev[cur].node; nodesP.unshift(cur); }
+    this.reveal(edgesP, from);
+    this.setState({ path: { nodes: nodesP, edges: edgesP }, sel: [] });
+    setTimeout(() => this.fitTo(nodesP), 240);
+    if (edgesP.length >= 3 && this.once('concept_hops')) {
+      setTimeout(() => this.toast('GRAPH CONCEPT', 'Esse resultado exigiu ' + edgesP.length + ' hops.\n\nÉ aqui que grafos começam a ficar interessantes: a relação não estava em nenhuma linha de tabela.', this.P.am, 'ENTENDI'), 1200);
+    }
+    this.pushAI({ role: 'NEXUS AI', text: 'Caminho de ' + edgesP.length + ' hops encontrado entre ' + this.W.nodes[from].name + ' e ' + this.W.nodes[to].name + '.', bullets: nodesP.map(n => ({ text: this.W.nodes[n].name })), focus: nodesP, cta: 'VER NO GRAFO' });
+  }
+
+  searchEvidence() {
+    if (!this.spend(20)) return;
+    this.reveal(['e_msg_ed', 'e_msg_a'], 'p_anderson');
+    this.runTrace('Buscar evidências sobre as entidades investigadas', () => ({
+      text: 'Recuperei material com alta relevância semântica para "colocar no nome" e "a gente resolve". A busca não procurou as mesmas palavras — encontrou conteúdo relacionado e depois o grafo trouxe as entidades conectadas.',
+      bullets: [{ text: 'WhatsApp · 05 jan · alta relevância' }, { text: 'Remetente e pessoa mencionada já estão no canvas' }],
+      focus: ['msg_05'], cta: 'VER NO GRAFO'
+    }));
+  }
+
+  /* ---------- view builders ---------- */
+  roundRect(x, y, w, h, r) {
+    return 'M ' + (x + r) + ',' + y + ' h ' + (w - 2 * r) + ' a ' + r + ',' + r + ' 0 0 1 ' + r + ',' + r + ' v ' + (h - 2 * r) + ' a ' + r + ',' + r + ' 0 0 1 ' + (-r) + ',' + r + ' h ' + (-(w - 2 * r)) + ' a ' + r + ',' + r + ' 0 0 1 ' + (-r) + ',' + (-r) + ' v ' + (-(h - 2 * r)) + ' a ' + r + ',' + r + ' 0 0 1 ' + r + ',' + (-r) + ' Z';
+  }
+
+  shapeD(type, r) {
+    if (type === 'person') return 'M ' + (-r) + ',0 a ' + r + ',' + r + ' 0 1,0 ' + (2 * r) + ',0 a ' + r + ',' + r + ' 0 1,0 ' + (-2 * r) + ',0';
+    if (type === 'account') return 'M 0,' + (-r) + ' L ' + r + ',0 L 0,' + r + ' L ' + (-r) + ',0 Z';
+    if (type === 'company') return this.roundRect(-r * 1.25, -r * 0.9, r * 2.5, r * 1.8, 4);
+    if (type === 'device') return this.roundRect(-r * 0.85, -r * 0.85, r * 1.7, r * 1.7, 7);
+    if (type === 'ip') {
+      const a = r, b = r * 0.86;
+      return 'M ' + (-a / 2) + ',' + (-b) + ' L ' + (a / 2) + ',' + (-b) + ' L ' + a + ',0 L ' + (a / 2) + ',' + b + ' L ' + (-a / 2) + ',' + b + ' L ' + (-a) + ',0 Z';
+    }
+    if (type === 'message') return 'M ' + (-r * 0.72) + ',' + (-r * 0.9) + ' h ' + (r * 1.16) + ' l ' + (r * 0.28) + ',' + (r * 0.34) + ' v ' + (r * 1.46) + ' h ' + (-r * 1.44) + ' Z';
+    return this.roundRect(-r * 0.82, -r * 0.82, r * 1.64, r * 1.64, 3);
+  }
+
+  markColor(m) { return m === 'suspect' ? this.P.rd : m === 'explained' ? this.P.gr : m === 'uncertain' ? this.P.at : null; }
+  markLabel(m) { return m === 'suspect' ? 'Suspeito' : m === 'explained' ? 'Explicado' : m === 'uncertain' ? 'Incerto' : ''; }
+
+  renderVals() {
+    const S = this.state, P = this.P;
+    const vis = this.visibleIds();
+    const edges = this.visEdges();
+    const focusSet = S.focus ? [S.focus].concat(this.neighborsOf(S.focus, true)) : null;
+    const selSet = S.sel.slice();
+    let halo = null;
+    if (selSet.length) {
+      halo = selSet.slice();
+      selSet.forEach(s => this.neighborsOf(s, true).forEach(n => { if (!halo.includes(n)) halo.push(n); }));
+    }
+    const hasMoneyEdge = edges.some(e => e.money);
+    const moneyMode = S.mode === 'money' && hasMoneyEdge;
+    const pathNodes = S.path ? S.path.nodes : null;
+    const pathEdges = S.path ? S.path.edges : null;
+
+    const nodeOp = (id) => {
+      if (focusSet && !focusSet.includes(id)) return 0.06;
+      if (pathNodes) return pathNodes.includes(id) ? 1 : 0.15;
+      if (halo) return halo.includes(id) ? 1 : 0.35;
+      if (moneyMode) {
+        const inMoney = this.W.edges.some(e => e.money && S.de.includes(e.id) && (e.a === id || e.b === id));
+        return inMoney ? 1 : 0.18;
+      }
+      if (S.hover) {
+        const hSet = [S.hover].concat(this.neighborsOf(S.hover, true));
+        return hSet.includes(id) ? 1 : 0.35;
+      }
+      return 1;
+    };
+
+    const nodes = vis.filter(id => this.pos[id]).map(id => {
+      const n = this.W.nodes[id], t = this.TY[n.type], r = t.r, p = this.pos[id];
+      const sel = S.sel.includes(id);
+      const mark = this.markColor(S.marks[id]);
+      const isRecent = !!S.recent[id];
+      const op = nodeOp(id);
+      const stroke = sel ? P.am : (mark || 'var(--nx-node-stroke)');
+      const isz = r * 0.048;
+      return {
+        id, name: n.name, sub: t.label,
+        i1: t.i1, i2: t.i2 || '',
+        iconTf: 'translate(' + (-12 * isz).toFixed(2) + ',' + (-12 * isz).toFixed(2) + ') scale(' + isz.toFixed(3) + ')',
+        iconSt: { fill: 'none', stroke: sel ? P.am : P.t2, strokeWidth: 1.5 / isz, strokeLinecap: 'round', strokeLinejoin: 'round', opacity: op * 0.95, pointerEvents: 'none' },
+        tf: 'translate(' + p.x.toFixed(2) + ',' + p.y.toFixed(2) + ')',
+        d: this.shapeD(n.type, r),
+        ring: sel || mark ? this.shapeD(n.type, r + 6) : '',
+        ringSt: { fill: 'none', stroke: sel ? 'var(--nx-accent-35)' : (mark ? mark : 'transparent'), strokeWidth: 1, opacity: sel ? 1 : 0.4 },
+        st: { fill: 'var(--nx-node-fill)', stroke, strokeWidth: sel ? 1.8 : 1.2, opacity: op },
+        gs: {
+          cursor: 'pointer', opacity: 1,
+          transformOrigin: 'center',
+          animation: isRecent ? 'nxPulse 620ms cubic-bezier(.22,1,.36,1)' : undefined
+        },
+        haloSt: { fill: 'none', stroke: P.am, strokeWidth: 1, opacity: 0, animation: isRecent ? 'nxHalo 1.4s ease-out' : undefined },
+        _lab: { x: p.x, y: p.y, r, op, sel, glyph: t.glyph, name: n.name, sub: t.label, pin: p.pin },
+        onDown: (ev) => this.startDrag(id, ev),
+        onClick: (ev) => { ev.stopPropagation(); this.selectNode(id, ev); },
+        onDbl: (ev) => { ev.stopPropagation(); this.askExpand(id); },
+        onEnter: () => { if (!this.drag) this.setState({ hover: id }); },
+        onLeave: () => { if (this.state.hover === id) this.setState({ hover: null }); }
+      };
+    });
+
+    const viewEdges = edges.map(e => {
+      const pa = this.pos[e.a], pb = this.pos[e.b];
+      const ra = this.TY[this.W.nodes[e.a].type].r + 4, rb = this.TY[this.W.nodes[e.b].type].r + 4;
+      const dx = pb.x - pa.x, dy = pb.y - pa.y, d = Math.max(1, Math.hypot(dx, dy));
+      const ux = dx / d, uy = dy / d;
+      const x1 = pa.x + ux * ra, y1 = pa.y + uy * ra, x2 = pb.x - ux * rb, y2 = pb.y - uy * rb;
+      const mark = this.markColor(S.marks[e.id]);
+      const selE = S.selEdge === e.id;
+      const inPath = pathEdges && pathEdges.includes(e.id);
+      let op = 1, color = mark || 'var(--nx-edge)', w = 1.1;
+      if (pathEdges) { op = inPath ? 1 : 0.10; if (inPath) { color = P.am; w = 2.2; } }
+      else if (focusSet) op = (focusSet.includes(e.a) && focusSet.includes(e.b)) ? 1 : 0.05;
+      else if (moneyMode) { if (e.money) { color = P.am; w = 2; } else { op = 0.08; } }
+      else if (halo) op = (halo.includes(e.a) && halo.includes(e.b)) ? 1 : 0.12;
+      else if (S.hover) op = (e.a === S.hover || e.b === S.hover) ? 1 : 0.22;
+      if (selE) { color = P.am; w = 2; }
+      const isRecent = !!S.recent[e.id];
+      const showLabel = selE || inPath || S.hover === e.a || S.hover === e.b || this.cam.k > 1.25 || (moneyMode && e.money);
+      const label = moneyMode && e.amount ? e.amount : e.type.replace(/_/g, ' ');
+      const ah = 7;
+      const arrow = e.dir ? 'M ' + x2 + ',' + y2 + ' L ' + (x2 - ux * ah - uy * ah * 0.55) + ',' + (y2 - uy * ah + ux * ah * 0.55) + ' L ' + (x2 - ux * ah + uy * ah * 0.55) + ',' + (y2 - uy * ah - ux * ah * 0.55) + ' Z' : '';
+      return {
+        id: e.id, label,
+        d: 'M ' + x1.toFixed(1) + ',' + y1.toFixed(1) + ' L ' + x2.toFixed(1) + ',' + y2.toFixed(1),
+        st: {
+          stroke: color, strokeWidth: w, fill: 'none', opacity: op,
+          strokeDasharray: isRecent ? d : undefined,
+          strokeDashoffset: isRecent ? 0 : undefined,
+          animation: isRecent ? 'nxDraw 520ms cubic-bezier(.22,1,.36,1)' : undefined
+        },
+        arrow, arrowSt: { fill: color, opacity: op },
+        _lab: { x: (x1 + x2) / 2, y: (y1 + y2) / 2, label, op: showLabel ? op * 0.95 : 0, color: inPath || selE || (moneyMode && e.money) ? P.st : P.t2 },
+        onClick: (ev) => { ev.stopPropagation(); this.setState({ selEdge: e.id, sel: [] }); }
+      };
+    });
+
+    /* inspector */
+    let insp = null;
+    if (S.selEdge) {
+      const e = this.W.edges.find(x => x.id === S.selEdge);
+      const na = this.W.nodes[e.a], nb = this.W.nodes[e.b];
+      const rows = [['origem', na.name], ['destino', nb.name], ['first seen', e.first], ['fonte', e.src]];
+      if (e.amount) rows.splice(2, 0, ['valor', e.amount], ['data', e.date]);
+      insp = {
+        kind: 'RELAÇÃO', title: e.type.replace(/_/g, ' '), sub: na.name + ' → ' + nb.name,
+        rows: rows.map(r => ({ k: r[0], v: r[1] })),
+        hasMark: !!S.marks[e.id], markColor: this.markColor(S.marks[e.id]) || 'transparent', markLabel: this.markLabel(S.marks[e.id]),
+        marks: this.markButtons(e.id),
+        actions: [
+          { label: 'Ver evento na timeline', cost: '10 CR', onClick: () => { if (this.spend(10)) this.setState({ mode: 'timeline' }); } },
+          { label: 'Expandir ' + nb.name, cost: '15 CR', onClick: () => this.askExpand(e.b) }
+        ]
+      };
+    } else if (S.sel.length === 1) {
+      const id = S.sel[0], n = this.W.nodes[id];
+      const conns = this.neighborsOf(id, true).length;
+      insp = {
+        kind: (this.TY[n.type].label || '').toUpperCase(), title: n.name, sub: n.sub,
+        rows: n.rows.map(r => ({ k: r[0], v: r[1] })).concat([{ k: conns === 1 ? 'conexão descoberta' : 'conexões descobertas', v: String(conns) }]),
+        hasMark: !!S.marks[id], markColor: this.markColor(S.marks[id]) || 'transparent', markLabel: this.markLabel(S.marks[id]),
+        marks: this.markButtons(id),
+        actions: [
+          { label: 'Expandir conexões', cost: '15 CR', onClick: () => this.askExpand(id) },
+          { label: 'Buscar entidades em comum', cost: '10 CR', onClick: () => this.setState({ toast: { eyebrow: 'SELEÇÃO', text: 'Selecione ao menos duas entidades com Shift + clique para comparar conexões.', accent: P.am, border: 'var(--nx-accent-30)', cta: 'OK' } }) },
+          { label: this.pos[id] && this.pos[id].pin ? 'Soltar posição' : 'Fixar posição (pin)', cost: 'FREE', onClick: () => { this.pos[id].pin = !this.pos[id].pin; this.setState(s => ({ tick: s.tick + 1 })); } },
+          { label: S.focus === id ? 'Sair do focus mode' : 'Focus: só esta vizinhança', cost: 'FREE', onClick: () => this.setState(s => ({ focus: s.focus === id ? null : id })) },
+          { label: 'Ocultar do canvas', cost: 'FREE', onClick: () => this.setState(s => ({ hidden: s.hidden.concat([id]), sel: [], focus: null })) }
+        ]
+      };
+    }
+
+    const modeDef = [['network', 'NETWORK'], ['money', 'MONEY FLOW'], ['timeline', 'TIMELINE']];
+    const modes = modeDef.map(m => ({
+      label: m[1],
+      style: 'padding:6px 13px;border-radius:7px;cursor:pointer;font-family:\'IBM Plex Mono\',monospace;font-size:10px;letter-spacing:.14em;transition:all 170ms cubic-bezier(.4,0,.2,1);' + (S.mode === m[0] ? 'background:var(--nx-accent-text);color:var(--nx-on-accent);box-shadow:0 1px 2px var(--nx-shadow-1);' : 'color:var(--nx-muted);'),
+      onClick: () => this.setState({ mode: m[0], path: m[0] === 'network' ? S.path : null })
+    }));
+
+    const toolStyle = 'padding:6px 10px;border:1px solid var(--nx-line-2);border-radius:8px;cursor:pointer;font-family:\'IBM Plex Mono\',monospace;font-size:10px;letter-spacing:.10em;color:var(--nx-muted);transition:all 160ms cubic-bezier(.4,0,.2,1)';
+    const tools = [
+      { label: 'FIT', style: toolStyle, onClick: () => this.fitTo(vis) },
+      { label: '−', style: toolStyle, onClick: () => { this.cam = { ...this.cam, k: Math.max(0.45, this.cam.k * 0.88) }; this.setState(s => ({ tick: s.tick + 1 })); } },
+      { label: '+', style: toolStyle, onClick: () => { this.cam = { ...this.cam, k: Math.min(2.6, this.cam.k * 1.14) }; this.setState(s => ({ tick: s.tick + 1 })); } },
+      { label: S.focus ? '← FULL NETWORK' : 'UNPIN ALL', style: toolStyle, onClick: () => { if (S.focus) this.setState({ focus: null }); else { vis.forEach(i => { if (this.pos[i]) this.pos[i].pin = false; }); this.setState(s => ({ tick: s.tick + 1 })); } } }
+    ];
+
+    const quick = [
+      { label: 'Conexões em comum', cost: '10', onClick: () => this.findShared() },
+      { label: 'Encontrar caminho', cost: '15', onClick: () => this.findPath() },
+      { label: 'Buscar evidências', cost: '20', onClick: () => this.searchEvidence() },
+      { label: 'Testar hipótese', cost: '25', onClick: () => { if (!this.spend(25)) return; this.runTrace('Nossa hipótese é que o device compartilhado indica coordenação. Isso se sustenta?', () => ({ text: 'Device compartilhado é um sinal forte, mas não é prova de coordenação: coabitação e uso familiar produzem o mesmo padrão. O que diferencia é ausência de vínculo pessoal conhecido somada a propostas próximas no tempo.', bullets: [{ text: 'Verifique se há relação declarada entre os titulares' }, { text: 'Compare as datas das propostas no modo Timeline' }], cta: '' })); } }
+    ];
+
+    const feed = S.feed.map(f => ({
+      role: f.role, text: f.text, accent: f.self ? P.t2 : 'var(--nx-accent-text)',
+      wrapStyle: 'padding:13px 14px;border:1px solid ' + (f.self ? 'var(--nx-line)' : 'var(--nx-accent-18)') + ';border-radius:16px;background:' + (f.self ? 'var(--nx-card)' : 'var(--nx-elev)'),
+      bullets: (f.bullets || []).map(b => ({ text: b.text })),
+      steps: (f.steps || []).map(s => ({ label: s.label, mark: s.mark, color: s.mark === '✓' ? P.ok : P.t2 })),
+      cta: f.cta || '',
+      ctaStyle: f.cta ? 'margin-top:12px;padding:8px 12px;border:1px solid var(--nx-accent-30);border-radius:9px;text-align:center;cursor:pointer;font-family:\'IBM Plex Mono\',monospace;font-size:10px;letter-spacing:.12em;color:var(--nx-accent-text);transition:all 160ms' : 'display:none',
+      onFocus: () => { if (f.focus) { this.setState({ sel: f.focus.slice(0, 6) }); this.fitTo(f.focus); } }
+    }));
+
+    const marksCount = { suspect: 0, uncertain: 0, explained: 0 };
+    Object.keys(S.marks).forEach(k => { if (marksCount[S.marks[k]] !== undefined) marksCount[S.marks[k]]++; });
+
+    const tlEvents = edges.filter(e => e.date || e.first).map(e => {
+      const raw = e.date || e.first;
+      return { key: e.id, raw, title: e.type.replace(/_/g, ' '), sub: this.W.nodes[e.a].name + ' → ' + this.W.nodes[e.b].name, conflict: e.id === 'e_ac1_ac2' && S.de.includes('e_pa_ac2') };
+    });
+    const conflict = tlEvents.some(t => t.conflict);
+
+    const mm = Math.floor(S.secs / 60), ss = S.secs % 60;
+    const modal = S.modal || {};
+
+    return {
+      team: this.props.teamName ?? 'TEAM ALPHA',
+      theme: S.theme,
+      setLight: () => this.setState({ theme: 'light' }),
+      setDark: () => this.setState({ theme: 'dark' }),
+      lightBtn: this.themeBtn(S.theme === 'light'),
+      darkBtn: this.themeBtn(S.theme === 'dark'),
+      credits: S.credits, creditColor: S.credits < 25 ? P.rd : P.t1, spendFlash: S.spend || '',
+      clock: String(mm).padStart(2, '0') + ':' + String(ss).padStart(2, '0'),
+      timerColor: S.secs < 60 ? P.rd : S.secs < 300 ? P.am : P.t1,
+      camTf: 'translate(' + this.cam.x.toFixed(2) + ',' + this.cam.y.toFixed(2) + ') scale(' + this.cam.k.toFixed(3) + ')',
+      canvasCursor: this.pan ? 'grabbing' : 'grab',
+      svgRef: (el) => { this.svg = el; },
+      nodes, edges: viewEdges,
+      nodeLabels: nodes.map(n => {
+        const l = n._lab, k = this.cam.k;
+        const sx = this.cam.x + l.x * k, sy = this.cam.y + l.y * k;
+        return {
+          glyph: l.glyph, name: l.name, sub: l.sub,
+          wrapSt: { position: 'absolute', left: sx + 'px', top: sy + 'px', transform: 'translate(-50%,-50%)', width: '150px', textAlign: 'center', opacity: l.op, zIndex: 2, pointerEvents: 'none', transition: 'opacity 180ms' },
+          glyphSt: { fontSize: (13 * Math.min(1.35, k)) + 'px', lineHeight: 1, color: l.sel ? P.am : P.t2 },
+          nameSt: { position: 'absolute', left: 0, right: 0, top: ((l.r * k) + 8) + 'px', fontSize: (12.5 * Math.min(1.3, Math.max(0.8, k))) + 'px', fontWeight: 500, color: P.t1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
+          pinSt: { position: 'absolute', left: 0, right: 0, top: ((l.r * k) + 26) + 'px', fontSize: '10px', letterSpacing: '.14em', fontFamily: '"IBM Plex Mono",monospace', color: 'var(--nx-accent-text)', opacity: l.pin ? 0.85 : 0 }
+        };
+      }),
+      edgeLabels: viewEdges.map(e => {
+        const l = e._lab, k = this.cam.k;
+        const sx = this.cam.x + l.x * k, sy = this.cam.y + l.y * k;
+        return {
+          label: l.label,
+          st: { position: 'absolute', left: sx + 'px', top: sy + 'px', transform: 'translate(-50%,-50%)', padding: '2px 5px', borderRadius: '4px', background: 'var(--nx-glass)', fontSize: '9px', letterSpacing: '.12em', fontFamily: '"IBM Plex Mono",monospace', color: l.color, opacity: l.op, whiteSpace: 'nowrap', transition: 'opacity 180ms', pointerEvents: 'none' }
+        };
+      }),
+      onWheel: this.onWheel, onBgDown: this.onBgDown,
+      modes, tools, quick, feed,
+      search: S.search,
+      onSearch: (e) => this.setState({ search: e.target.value }),
+      onSearchKey: (e) => {
+        if (e.key !== 'Enter') return;
+        const q = S.search.trim().toLowerCase();
+        const hit = vis.find(id => this.W.nodes[id].name.toLowerCase().includes(q));
+        if (hit) { this.setState({ sel: [hit], selEdge: null }); this.fitTo([hit].concat(this.neighborsOf(hit, true))); }
+        else this.toast('NADA ENCONTRADO', 'Nenhuma entidade descoberta corresponde a essa busca.', P.t2, 'OK');
+      },
+      ask: S.ask,
+      onAsk: (e) => this.setState({ ask: e.target.value }),
+      onAskKey: (e) => { if (e.key === 'Enter') this.submitAsk(); },
+      sendAsk: () => this.submitAsk(),
+      hasInsp: !!insp, noInsp: !insp, insp: insp || { rows: [], marks: [], actions: [] },
+      clearSel: () => this.setState({ sel: [], selEdge: null }),
+      cases: ['p_anderson', 'p_marlene', 'p_juliana'].map((id, i) => {
+        const n = this.W.nodes[id], m = S.marks[id];
+        return {
+          name: n.name, tag: 'TARGET 0' + (i + 1), sub: n.rows[1][1] + ' · score ' + (n.rows[2] ? n.rows[2][1] : '—'),
+          conns: this.neighborsOf(id, true).length === 1 ? '1 conexão' : this.neighborsOf(id, true).length + ' conexões',
+          state: m ? this.markLabel(m) : 'não classificado',
+          stateColor: this.markColor(m) || P.t2,
+          accent: this.markColor(m) || 'var(--nx-line-2)',
+          onClick: () => { this.setState({ sel: [id], selEdge: null }); this.fitTo([id].concat(this.neighborsOf(id, true))); }
+        };
+      }),
+      nodeCount: vis.length, edgeCount: edges.length,
+      hasHidden: S.hidden.length > 0, hiddenLabel: 'ENTIDADES OCULTAS (' + S.hidden.length + ')',
+      hiddenList: S.hidden.map(h => ({ name: this.W.nodes[h].name, onClick: () => this.setState(s => ({ hidden: s.hidden.filter(x => x !== h) })) })),
+      legend: ['person', 'device', 'account', 'company'].map(k => ({
+        label: this.TY[k].label.toUpperCase(), i1: this.TY[k].i1, i2: this.TY[k].i2 || ''
+      })),
+      legendSt: {
+        position: 'absolute', left: '14px', bottom: '14px', zIndex: 3, pointerEvents: 'none', display: S.mode === 'timeline' ? 'none' : 'flex',
+        flexDirection: 'column', gap: '5px', padding: '10px 12px', border: '1px solid var(--nx-line)',
+        borderRadius: '10px', background: 'var(--nx-glass)'
+      },
+      moneyEmpty: S.mode === 'money' && !hasMoneyEdge,
+      backToNetwork: () => this.setState({ mode: 'network' }),
+      hasPath: !!S.path,
+      pathTitle: S.path ? S.path.edges.length + '-HOP PATH' : '',
+      pathSteps: S.path ? S.path.nodes.map((n, i) => ({
+        name: this.W.nodes[n].name,
+        rel: i < S.path.edges.length ? '↓ ' + this.W.edges.find(x => x.id === S.path.edges[i]).type.replace(/_/g, ' ') : ''
+      })) : [],
+      clearPath: () => this.setState({ path: null }),
+      multiSel: S.sel.length >= 2, selLabel: S.sel.length + ' ENTIDADES SELECIONADAS',
+      selActions: [
+        { label: 'Conexões em comum', cost: '10 CR', onClick: () => this.findShared() },
+        { label: 'Encontrar caminho', cost: '15 CR', onClick: () => this.findPath() },
+        { label: 'Marcar como cluster', cost: 'FREE', onClick: () => this.setState(s => { const m = { ...s.marks }; s.sel.forEach(i => { m[i] = 'suspect'; }); return { marks: m }; }) }
+      ],
+      isTimeline: S.mode === 'timeline',
+      conflictLabel: conflict ? '⚠ CONFLITO TEMPORAL · transferência antes da abertura da conta destino' : '',
+      conflictColor: conflict ? P.rd : 'transparent',
+      timeline: tlEvents.map(t => ({
+        date: (t.raw || '').toUpperCase(), title: t.title, sub: t.sub,
+        accent: t.conflict ? P.rd : 'var(--nx-line-2)',
+        dateColor: t.conflict ? P.rd : P.t2,
+        onClick: () => this.setState({ selEdge: t.key, sel: [], mode: 'network' })
+      })),
+      board: [
+        { label: 'SUSPEITO', count: marksCount.suspect, color: P.rd },
+        { label: 'INCERTO', count: marksCount.uncertain, color: P.at },
+        { label: 'EXPLICADO', count: marksCount.explained, color: P.gr }
+      ],
+      lockHint: S.sel.length >= 2 ? 'Selecione as entidades do cluster e justifique.' : 'Selecione 2+ entidades no grafo para travar um cluster.',
+      lockStyle: this.btn(S.sel.length >= 2 ? P.am : 'var(--nx-line-2)') + (S.sel.length >= 2 ? '' : ';color:var(--nx-muted);background:transparent'),
+      openLock: () => {
+        if (S.sel.length < 2) { this.toast('CLUSTER VAZIO', 'Selecione ao menos duas entidades com Shift + clique antes de travar.', P.t2, 'OK'); return; }
+        this.setState({
+          modal: {
+            kind: 'lock', width: '460px', accent: 'var(--nx-accent-text)', eyebrow: 'LOCK-IN · ROUND 02',
+            title: 'Qual cluster merece escalonamento?',
+            body: 'Sua equipe está escalando as entidades abaixo. Esta decisão será registrada.',
+            list: S.sel.map(i => ({ name: this.W.nodes[i].name, meta: (this.TY[this.W.nodes[i].type].label || '').toUpperCase() })),
+            hasNote: true, cancel: 'VOLTAR', confirm: 'TRAVAR CLUSTER', confirmStyle: this.btn(P.am),
+            onConfirm: () => { this.setState({ modal: null }); this.toast('CLUSTER TRAVADO', 'Hipótese registrada. Aguardando as outras equipes.', P.ok, 'FECHAR'); }
+          }
+        });
+      },
+      note: S.note, onNote: (e) => this.setState({ note: e.target.value }),
+      hasModal: !!S.modal,
+      modal: {
+        width: modal.width || '420px', accent: modal.accent || 'var(--nx-accent-text)', eyebrow: modal.eyebrow || '', title: modal.title || '',
+        body: modal.body || '', list: modal.list || [], hasNote: !!modal.hasNote, cancel: modal.cancel || 'VOLTAR',
+        confirm: modal.confirm || 'CONFIRMAR', confirmStyle: modal.confirmStyle || this.btn(P.am),
+        onConfirm: modal.onConfirm || (() => this.setState({ modal: null }))
+      },
+      closeModal: () => this.setState({ modal: null }),
+      stop: (e) => e.stopPropagation(),
+      hasToast: !!S.toast,
+      toast: S.toast || { eyebrow: '', text: '', accent: P.am, border: 'transparent', cta: '' },
+      closeToast: () => this.setState({ toast: null })
+    };
+  }
+
+  themeBtn(active) {
+    return 'display:flex;align-items:center;justify-content:center;width:28px;height:24px;border-radius:8px;cursor:pointer;transition:all 170ms cubic-bezier(.4,0,.2,1);'
+      + (active ? 'background:var(--nx-card);color:var(--nx-ink);box-shadow:0 1px 2px var(--nx-shadow-1);' : 'color:var(--nx-muted);');
+  }
+
+  markButtons(id) {
+    const defs = [['suspect', 'Suspeito', this.P.rd], ['uncertain', 'Incerto', this.P.at], ['explained', 'Explicado', this.P.gr]];
+    return defs.map(d => {
+      const active = this.state.marks[id] === d[0];
+      return {
+        label: d[1], color: d[2],
+        style: 'display:flex;align-items:center;gap:6px;padding:8px 10px;border:1px solid ' + (active ? d[2] : 'var(--nx-line-2)') + ';border-radius:9px;background:' + (active ? 'var(--nx-accent-06)' : 'var(--nx-card)') + ';cursor:pointer;font-size:11px;color:var(--nx-ink);transition:all 160ms cubic-bezier(.4,0,.2,1)',
+        onClick: () => this.setState(s => { const m = { ...s.marks }; if (m[id] === d[0]) delete m[id]; else m[id] = d[0]; return { marks: m }; })
+      };
+    });
+  }
+
+  submitAsk() {
+    const q = this.state.ask.trim();
+    if (!q) return;
+    this.setState({ ask: '' });
+    const lower = q.toLowerCase();
+    if (lower.includes('caminho') && this.state.sel.length === 2) { this.findPath(); return; }
+    if (lower.includes('evid')) { this.searchEvidence(); return; }
+    if (!this.spend(10)) return;
+    this.runTrace(q, () => ({
+      text: 'Só posso responder com o que sua equipe já descobriu. No subgrafo atual, o sinal mais específico é o device compartilhado — IP e endereço têm explicações alternativas comuns.',
+      bullets: [{ text: 'Selecione duas entidades e peça o caminho entre elas' }, { text: 'Expandir contas abre o rastro financeiro' }], cta: ''
+    }));
+  }
+}
+</script>
+</body>
+</html>
