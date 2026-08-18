@@ -1,13 +1,11 @@
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { useGraphStore, useTeamGraphPayload } from "@/features/graph/graphStore";
-import { useLiveStore } from "@/features/game/liveStore";
 import { colorForLabels, labelDisplay, propertyDisplay } from "@/features/graph/colors";
 import { propertyText } from "@/lib/utils";
 
 export function EvidenceDrawer({ embedded = false }: { embedded?: boolean }) {
   const payload = useTeamGraphPayload();
   const selectedId = useGraphStore((s) => s.selectedId);
-  const unlocked = useLiveStore((s) => s.unlockedEvidence);
   const selected = payload.nodes.find((n) => n.id === selectedId) ?? null;
 
   const evidence = payload.nodes.filter(
@@ -31,31 +29,6 @@ export function EvidenceDrawer({ embedded = false }: { embedded?: boolean }) {
       )}
       <ScrollArea className="min-h-0 flex-1">
         <div style={{ padding: "14px 12px", display: "flex", flexDirection: "column", gap: 16 }}>
-          {unlocked.length > 0 ? (
-            <div>
-              <p style={{ marginBottom: 8, fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, letterSpacing: "0.16em", color: "var(--nx-accent-text)", textTransform: "uppercase" }}>
-                Pistas liberadas
-              </p>
-              <ul style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                {unlocked.map((item, index) => (
-                  <li
-                    key={`${item.id ?? item.evidence_id ?? index}`}
-                    style={{ borderRadius: 10, border: "1px solid var(--nx-accent-30)", background: "var(--nx-accent-06)", padding: "8px 10px", fontSize: 12 }}
-                  >
-                    <p style={{ fontWeight: 500, color: "var(--nx-ink)" }}>
-                      {item.evidence_type === "message" ? "Mensagem recuperada" : "Evidência liberada"}
-                    </p>
-                    {item.excerpt ? (
-                      <p style={{ marginTop: 4, lineHeight: 1.5, color: "var(--nx-ink)" }}>“{item.excerpt}”</p>
-                    ) : (
-                      <p style={{ marginTop: 4, fontSize: 11, color: "var(--nx-muted)" }}>Material liberado pelo host.</p>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : null}
-
           <NodeGroup title="Material" nodes={evidence} selectedId={selectedId} />
           <NodeGroup title="Entidades" nodes={others} selectedId={selectedId} />
 

@@ -1,17 +1,8 @@
 import type { ToolName } from "./types";
 
-/** In-memory mock credentials — JoinRoute uses these when VITE_MOCK=true. */
-export const MOCK_JOIN_CODE = "NEXUS7";
-export const MOCK_HOST_TOKEN = "mock-host-token";
+/** Identifiers of the single in-memory game served when VITE_MOCK=true. */
 export const MOCK_GAME_ID = "game_mock_01";
 export const MOCK_TEAM_NAME = "Equipe Alfa";
-export const DEFAULT_SCENARIO_SLUG = "operation_nexus";
-
-/** Matches apps/api Settings.host_token default and the repo-root `.env`. */
-export const LOCAL_HOST_TOKEN = "dev-host-token-change-me";
-
-/** Provisioned when the host opens a live game. Names ≠ join codes. */
-export const DEFAULT_TEAM_NAMES = ["Alfa", "Bravo", "Charlie", "Delta"] as const;
 
 /**
  * Credit costs per tool (CONTRACT.md §4). `expand_neighborhood` is
@@ -35,7 +26,3 @@ export const MAX_HOPS = 4;
 export const MAX_TOP_K = 10;
 export const MAX_ENTITY_IDS = 8;
 export const MAX_TOOL_CALLS_PER_INTERACTION = 2;
-
-/** CONTRACT.md §7 — join codes exclude these visually-ambiguous characters. */
-export const JOIN_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-export const JOIN_CODE_LENGTH = 6;

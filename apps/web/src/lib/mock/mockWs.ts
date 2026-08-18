@@ -73,7 +73,7 @@ function nextSeq(gameId: string): number {
 export interface BroadcastTarget {
   /** Restrict delivery to sockets with this role. Omit to reach every role. */
   role?: WSRole;
-  /** Restrict `role: "team"` delivery to the socket whose token matches this team's session token. */
+  /** Only the team socket holding this session token receives the envelope; screens still do. */
   teamToken?: string;
 }
 
@@ -99,7 +99,7 @@ export function mockBroadcast<T extends WSEventType>(
   for (const sock of MockWebSocket.instances) {
     if (sock.gameId !== gameId) continue;
     if (target.role && sock.role !== target.role) continue;
-    if (target.role === "team" && target.teamToken && sock.token !== target.teamToken) continue;
+    if (sock.role === "team" && target.teamToken && sock.token !== target.teamToken) continue;
     sock._deliver(envelope);
   }
 }

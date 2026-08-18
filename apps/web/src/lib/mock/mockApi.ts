@@ -1,40 +1,41 @@
 /**
- * In-memory implementation of every function `src/lib/api.ts` exports.
- * Drives `./scenario.ts` and broadcasts over `./mockWs.ts`.
+ * In-memory implementation of every function `src/lib/api.ts` exports, so
+ * `VITE_MOCK=true` runs the whole frontend with no backend at all.
+ *
+ * It reproduces the rules the UI has to cope with — resume by name, one-way
+ * phases, hint prices, the 402 on an unaffordable purchase, three guess
+ * attempts, the ranking order — because those rules are exactly what the
+ * screens are built around. Errors are thrown as the same `ApiError` the real
+ * client throws, with the same status codes and bodies.
  */
-import {
-  MOCK_GAME_ID,
-  MOCK_HOST_TOKEN,
-  MOCK_JOIN_CODE,
-  MOCK_TEAM_NAME,
-  TOOL_COSTS,
-  expandNeighborhoodCost,
-} from "../constants";
+import { MOCK_GAME_ID, MOCK_TEAM_NAME, TOOL_COSTS, expandNeighborhoodCost } from "../constants";
 import { ApiError } from "../api";
-import type {
-  Accusation,
-  CaseFile,
-  CreateTeamResponse,
-  EvidenceUnlockedPayload,
-  FraudPattern,
-  GameState,
-  GameStatus,
-  GraphPayload,
-  InvestigationIntent,
-  InvestigationResult,
-  JoinTeamResponse,
-  RoundState,
-  RoundStatus,
-  ScoreBreakdown,
-  ScoreEvent,
-  TeamState,
-  ToolName,
+import {
+  MAX_GUESS_ATTEMPTS,
+  type AdvancePhaseResponse,
+  type BuyHintResponse,
+  type CaseFile,
+  type GameState,
+  type GameStatus,
+  type GraphPayload,
+  type GuessResult,
+  type HintCard,
+  type InvestigationIntent,
+  type InvestigationResult,
+  type LeaderboardRow,
+  type RoundState,
+  type StartPlayResponse,
+  type Suspect,
+  type TeamState,
+  type TeamStatus,
+  type ToolName,
 } from "../types";
 import { mockBroadcast } from "./mockWs";
 import {
   BEATS,
   ENTITIES,
   GROUND_TRUTH,
+  HINTS,
   RELATIONSHIPS,
   ROUNDS,
   SCENARIO_SLUG,
@@ -47,117 +48,121 @@ import {
   type ScenarioRelationship,
 } from "./scenario";
 
-export { MOCK_GAME_ID, MOCK_HOST_TOKEN, MOCK_JOIN_CODE, MOCK_TEAM_NAME };
+export { MOCK_GAME_ID, MOCK_TEAM_NAME };
+
+const MIN_TEAM_NAME_LENGTH = 2;
+const MAX_TEAM_NAME_LENGTH = 40;
+
+/** Mirrors domain/game/ranking.py so mock scores read like real ones. */
+const SOLVE_BASE_POINTS = 1000;
+const WRONG_GUESS_PENALTY = 150;
+const HINT_PENALTY = 25;
 
 interface MockTeam {
   team_id: string;
   name: string;
   session_token: string;
-  join_code: string;
   current_round: number;
   credits_balance: number;
   credits_total_awarded: number;
+  status: TeamStatus;
+  attempts_used: number;
+  started_at: string;
+  solved_at: string | null;
   discoveredNodeIds: Set<string>;
   discoveredRelIds: Set<string>;
   usedBeatIndexes: Set<number>;
-  roundsCreditGranted: Set<number>;
-  scoreEvents: ScoreEvent[];
-  totalScore: number;
-  accusation: Accusation | null;
+  purchasedHintIds: Set<string>;
+  guessedPersonIds: Set<string>;
+  wrongGuesses: number;
 }
 
 interface MockGame {
   game_id: string;
   status: GameStatus;
-  current_round: number;
   created_at: string;
   finished_at: string | null;
   rounds: RoundState[];
   teams: Map<string, MockTeam>;
-  joinCodeToTeamId: Map<string, string>;
-  revealedEvidence: Map<string, EvidenceUnlockedPayload>;
 }
 
 let teamCounter = 0;
-let tickTimer: ReturnType<typeof setInterval> | null = null;
-let tickRemaining = 0;
 
-function stopTicks(): void {
-  if (tickTimer !== null) {
-    clearInterval(tickTimer);
-    tickTimer = null;
-  }
+function nameKey(name: string): string {
+  return name.trim().replace(/\s+/g, " ").toLowerCase();
 }
 
-function startTicks(round: number, durationSeconds: number): void {
-  stopTicks();
-  if (import.meta.env.MODE === "test") return;
-  tickRemaining = durationSeconds;
-  tickTimer = setInterval(() => {
-    tickRemaining = Math.max(0, tickRemaining - 1);
-    mockBroadcast(
-      game.game_id,
-      "TICK",
-      { round, seconds_remaining: tickRemaining },
-      {},
-    );
-    if (tickRemaining <= 0) stopTicks();
-  }, 1000);
-}
-
-function makeTeam(name: string, joinCode: string): MockTeam {
+function makeTeam(name: string, startedAt = new Date().toISOString()): MockTeam {
   teamCounter += 1;
   const team_id = `team_mock_${String(teamCounter).padStart(2, "0")}`;
   return {
     team_id,
     name,
     session_token: `mock-session-${team_id}`,
-    join_code: joinCode,
     current_round: 1,
     credits_balance: ROUNDS[0].credits,
     credits_total_awarded: ROUNDS[0].credits,
+    status: "PLAYING",
+    attempts_used: 0,
+    started_at: startedAt,
+    solved_at: null,
     discoveredNodeIds: new Set(),
     discoveredRelIds: new Set(),
     usedBeatIndexes: new Set(),
-    roundsCreditGranted: new Set([1]),
-    scoreEvents: [],
-    totalScore: 0,
-    accusation: null,
+    purchasedHintIds: new Set(),
+    guessedPersonIds: new Set(),
+    wrongGuesses: 0,
   };
 }
 
-function initialRounds(now: string): RoundState[] {
-  return ROUNDS.map((r, index) => ({
+function initialRounds(): RoundState[] {
+  return ROUNDS.map((round) => ({
     game_id: MOCK_GAME_ID,
-    number: r.number,
-    status: (index === 0 ? "ACTIVE" : "PENDING") as RoundStatus,
-    credits_awarded: r.credits,
-    title: r.title,
-    narrative: r.narrative,
-    duration_seconds: r.duration_seconds,
-    started_at: index === 0 ? now : null,
-    ended_at: null,
+    number: round.number,
+    credits_awarded: round.credits,
+    title: round.title,
+    narrative: round.narrative,
+    duration_seconds: round.duration_seconds,
   }));
 }
 
+/**
+ * Rival teams so the projector has a ranking to show and a solo developer can
+ * see where their own team lands.
+ */
+function seedRivals(game: MockGame): void {
+  const start = Date.now() - 40 * 60_000;
+
+  const solved = makeTeam("Os Auditores", new Date(start).toISOString());
+  solved.current_round = ROUNDS.length;
+  solved.status = "SOLVED";
+  solved.attempts_used = 2;
+  solved.wrongGuesses = 1;
+  solved.credits_balance = 95;
+  solved.credits_total_awarded = 360;
+  solved.purchasedHintIds = new Set(["hint_r1_02"]);
+  solved.solved_at = new Date(start + 26 * 60_000).toISOString();
+
+  const playing = makeTeam("Mesa 4", new Date(start + 6 * 60_000).toISOString());
+  playing.current_round = 2;
+  playing.credits_balance = 140;
+  playing.credits_total_awarded = 220;
+
+  game.teams.set(solved.team_id, solved);
+  game.teams.set(playing.team_id, playing);
+}
+
 function freshGame(): MockGame {
-  stopTicks();
   teamCounter = 0;
-  const now = new Date().toISOString();
-  const seedTeam = makeTeam(MOCK_TEAM_NAME, MOCK_JOIN_CODE);
-  const teams = new Map([[seedTeam.team_id, seedTeam]]);
-  const joinCodeToTeamId = new Map([[seedTeam.join_code, seedTeam.team_id]]);
   const created: MockGame = {
     game_id: MOCK_GAME_ID,
     status: "ACTIVE",
-    current_round: 1,
-    created_at: now,
+    created_at: new Date().toISOString(),
     finished_at: null,
-    rounds: initialRounds(now),
-    teams,
-    joinCodeToTeamId,
-    revealedEvidence: new Map(),
+    rounds: initialRounds(),
+    teams: new Map(),
   };
+  seedRivals(created);
   return created;
 }
 
@@ -167,23 +172,31 @@ export function resetMockState(): void {
   game = freshGame();
 }
 
-function unauthorized(detail: string): ApiError<{ detail: string }> {
-  return new ApiError(401, { detail });
+function apiError(status: number, body: Record<string, unknown>): ApiError<Record<string, unknown>> {
+  const detail = typeof body.detail === "string" ? body.detail : undefined;
+  return new ApiError(status, body, detail);
 }
 
-function notFound(detail: string): ApiError<{ detail: string }> {
-  return new ApiError(404, { detail });
+function notFound(detail: string): ApiError<Record<string, unknown>> {
+  return apiError(404, { error: "NOT_FOUND", detail });
 }
 
 function requireTeam(teamId: string, bearerToken: string): MockTeam {
   const team = game.teams.get(teamId);
   if (!team) throw notFound(`Unknown team_id ${teamId}`);
-  if (team.session_token !== bearerToken) throw unauthorized("Invalid session token");
+  if (team.session_token !== bearerToken) {
+    throw apiError(401, { error: "UNAUTHORIZED", detail: "Invalid session token" });
+  }
   return team;
 }
 
-function requireHost(hostToken: string): void {
-  if (hostToken !== MOCK_HOST_TOKEN) throw unauthorized("Invalid host token");
+function requireGame(gameId: string): MockGame {
+  if (gameId !== game.game_id) throw notFound(`Unknown game_id ${gameId}`);
+  return game;
+}
+
+function finalRound(): number {
+  return game.rounds.length || 1;
 }
 
 function toTeamState(team: MockTeam): TeamState {
@@ -191,10 +204,13 @@ function toTeamState(team: MockTeam): TeamState {
     team_id: team.team_id,
     game_id: game.game_id,
     name: team.name,
-    join_code: team.join_code,
     current_round: team.current_round,
     credits_balance: team.credits_balance,
     credits_total_awarded: team.credits_total_awarded,
+    status: team.status,
+    attempts_used: team.attempts_used,
+    started_at: team.started_at,
+    solved_at: team.solved_at,
     discovered_node_ids: [...team.discoveredNodeIds],
     discovered_relationship_ids: [...team.discoveredRelIds],
   };
@@ -205,12 +221,27 @@ function toGameState(): GameState {
     game_id: game.game_id,
     scenario_slug: SCENARIO_SLUG,
     status: game.status,
-    current_round: game.current_round,
     created_at: game.created_at,
     finished_at: game.finished_at,
     rounds: game.rounds,
     teams: [...game.teams.values()].map(toTeamState),
   };
+}
+
+function teamScore(team: MockTeam): number {
+  if (team.status !== "SOLVED") return 0;
+  return Math.max(
+    0,
+    SOLVE_BASE_POINTS -
+      WRONG_GUESS_PENALTY * team.wrongGuesses -
+      HINT_PENALTY * team.purchasedHintIds.size +
+      team.credits_balance,
+  );
+}
+
+function elapsedSeconds(team: MockTeam): number | null {
+  if (team.solved_at === null) return null;
+  return Math.max(0, Math.round((Date.parse(team.solved_at) - Date.parse(team.started_at)) / 1000));
 }
 
 function visibleAt(round: number): { nodes: ScenarioEntity[]; rels: ScenarioRelationship[] } {
@@ -404,8 +435,8 @@ function runDsl(team: MockTeam, command: DslCommand): DslOutcome {
           cost: TOOL_COSTS.inspect_entity,
           nodeIds: [],
           relIds: [],
-          answer: `Nenhuma entidade visível com id ${command.entityId} nesta rodada.`,
-          caveats: ["O id pode estar errado ou ainda bloqueado."],
+          answer: `Nenhuma entidade visível com id ${command.entityId} nesta fase.`,
+          caveats: ["O id pode estar errado ou ainda não ter entrado no caso."],
           justification: "Inspeção pontual de entidade.",
         };
       }
@@ -426,18 +457,14 @@ function runDsl(team: MockTeam, command: DslCommand): DslOutcome {
       const ids = command.ids.filter((id) => visibleIds.has(id));
       const sets = ids.map((id) => new Set(neighbors(id, rels).keys()));
       const sharedNodes =
-        sets.length === 0
-          ? []
-          : [...sets[0]].filter((nid) => sets.every((s) => s.has(nid)));
+        sets.length === 0 ? [] : [...sets[0]].filter((nid) => sets.every((s) => s.has(nid)));
       const nodeIds = new Set<string>([...ids, ...sharedNodes]);
       const relIds = new Set<string>();
       for (const rel of rels) {
         if (ids.includes(rel.start_id) && sharedNodes.includes(rel.end_id)) relIds.add(rel.id);
         if (ids.includes(rel.end_id) && sharedNodes.includes(rel.start_id)) relIds.add(rel.id);
       }
-      const labels = sharedNodes
-        .map((id) => entityById(id)?.label_display ?? id)
-        .join(", ");
+      const labels = sharedNodes.map((id) => entityById(id)?.label_display ?? id).join(", ");
       return {
         intent: "CONNECTION_SEARCH",
         tool: "find_shared_entities",
@@ -465,7 +492,7 @@ function runDsl(team: MockTeam, command: DslCommand): DslOutcome {
         answer: path
           ? `Caminho encontrado (${path.nodeIds.join(" → ")}).`
           : `Nenhum caminho visível entre ${command.fromId} e ${command.toId}.`,
-        caveats: path ? [] : ["Ausência de caminho nesta rodada não prova inocência."],
+        caveats: path ? [] : ["Ausência de caminho nesta fase não prova inocência."],
         justification: "Busca de caminho mais curto.",
       };
     }
@@ -503,7 +530,7 @@ function runDsl(team: MockTeam, command: DslCommand): DslOutcome {
             ? `Entidade ${command.entityId} não visível.`
             : lines.length > 0
               ? `Linha do tempo de ${entity.label_display}:\n${lines.join("\n")}`
-              : `${entity.label_display} não tem eventos datados visíveis nesta rodada.`,
+              : `${entity.label_display} não tem eventos datados visíveis nesta fase.`,
         caveats: [],
         justification: "Linha do tempo da entidade.",
       };
@@ -634,16 +661,18 @@ function applyDiscovery(
   const newRelIds = relIds.filter((id) => relationshipById(id) && !team.discoveredRelIds.has(id));
   recordDiscoveries(team, newNodeIds, newRelIds);
   if (newNodeIds.length > 0 || newRelIds.length > 0) {
-    const discoveryPayload = {
-      team_id: team.team_id,
-      discovered: payloadFrom(newNodeIds, newRelIds),
-      source_action_id: actionId,
-    };
-    mockBroadcast(game.game_id, "GRAPH_DISCOVERY", discoveryPayload, {
-      role: "team",
-      teamToken: team.session_token,
-    });
-    mockBroadcast(game.game_id, "GRAPH_DISCOVERY", discoveryPayload, { role: "screen" });
+    // One envelope for both audiences: two broadcasts would burn two `seq`
+    // numbers and make each socket think it missed a message.
+    mockBroadcast(
+      game.game_id,
+      "GRAPH_DISCOVERY",
+      {
+        team_id: team.team_id,
+        discovered: payloadFrom(newNodeIds, newRelIds),
+        source_action_id: actionId,
+      },
+      { teamToken: team.session_token },
+    );
   }
   return { newNodeIds, newRelIds };
 }
@@ -657,11 +686,7 @@ function emptyResult(
   return {
     action_id: actionId,
     question,
-    plan: {
-      intent: "OUT_OF_SCOPE",
-      tool_calls: [],
-      reasoning_summary: answer,
-    },
+    plan: { intent: "OUT_OF_SCOPE", tool_calls: [], reasoning_summary: answer },
     answer: {
       answer,
       evidence_ids: [],
@@ -675,47 +700,227 @@ function emptyResult(
   };
 }
 
-export async function createGame(_scenarioSlug: string): Promise<GameState> {
-  game = freshGame();
-  return toGameState();
+// ---------------------------------------------------------------------------
+// Public surface — mirrors src/lib/api.ts one for one
+// ---------------------------------------------------------------------------
+
+export async function startPlay(teamName: string): Promise<StartPlayResponse> {
+  const name = (teamName ?? "").replace(/\s+/g, " ").trim();
+  if (name.length < MIN_TEAM_NAME_LENGTH) {
+    throw apiError(422, {
+      error: "INVALID_TEAM_NAME",
+      detail: `team name must have at least ${MIN_TEAM_NAME_LENGTH} characters`,
+    });
+  }
+  if (name.length > MAX_TEAM_NAME_LENGTH) {
+    throw apiError(422, {
+      error: "INVALID_TEAM_NAME",
+      detail: `team name must have at most ${MAX_TEAM_NAME_LENGTH} characters`,
+    });
+  }
+
+  const existing = [...game.teams.values()].find((team) => nameKey(team.name) === nameKey(name));
+  const team = existing ?? makeTeam(name);
+  if (!existing) game.teams.set(team.team_id, team);
+
+  return {
+    team: toTeamState(team),
+    session_token: team.session_token,
+    resumed: existing !== undefined,
+    rounds: game.rounds,
+  };
 }
 
 export async function getGame(gameId: string): Promise<GameState> {
-  if (gameId !== game.game_id) throw notFound(`Unknown game_id ${gameId}`);
+  requireGame(gameId);
   return toGameState();
 }
 
-function uniqueJoinCode(): string {
-  let next = Math.random().toString(36).slice(2, 8).toUpperCase();
-  while (game.joinCodeToTeamId.has(next)) {
-    next = Math.random().toString(36).slice(2, 8).toUpperCase();
-  }
-  return next;
-}
-
-export async function createTeam(gameId: string, name: string): Promise<CreateTeamResponse> {
-  if (gameId !== game.game_id) throw notFound(`Unknown game_id ${gameId}`);
-  const code = uniqueJoinCode();
-  const team = makeTeam(name, code);
-  team.current_round = Math.max(1, game.current_round);
-  game.teams.set(team.team_id, team);
-  game.joinCodeToTeamId.set(code, team.team_id);
-  return { team_id: team.team_id, join_code: code };
-}
-
-export async function joinTeam(joinCode: string): Promise<JoinTeamResponse> {
-  const teamId = game.joinCodeToTeamId.get(joinCode.toUpperCase());
-  const team = teamId ? game.teams.get(teamId) : undefined;
-  if (!team) throw notFound(`No team for join code ${joinCode}`);
-  return {
+export async function getLeaderboard(gameId: string): Promise<LeaderboardRow[]> {
+  requireGame(gameId);
+  const rows: LeaderboardRow[] = [...game.teams.values()].map((team) => ({
     team_id: team.team_id,
-    game_id: game.game_id,
-    session_token: team.session_token,
-  };
+    team_name: team.name,
+    status: team.status,
+    score: teamScore(team),
+    attempts_used: team.attempts_used,
+    elapsed_seconds: elapsedSeconds(team),
+    current_round: team.current_round,
+  }));
+  // Same order as domain/game/ranking.rank: solvers first, then score, and
+  // time only as a tie-break.
+  return rows.sort((a, b) => {
+    const solvedFirst = (a.status === "SOLVED" ? 0 : 1) - (b.status === "SOLVED" ? 0 : 1);
+    if (solvedFirst !== 0) return solvedFirst;
+    if (a.score !== b.score) return b.score - a.score;
+    const ea = a.elapsed_seconds ?? Number.MAX_SAFE_INTEGER;
+    const eb = b.elapsed_seconds ?? Number.MAX_SAFE_INTEGER;
+    if (ea !== eb) return ea - eb;
+    return a.team_name.localeCompare(b.team_name, "pt-BR");
+  });
 }
 
 export async function getTeamState(teamId: string, bearerToken: string): Promise<TeamState> {
   return toTeamState(requireTeam(teamId, bearerToken));
+}
+
+export async function advancePhase(
+  teamId: string,
+  bearerToken: string,
+): Promise<AdvancePhaseResponse> {
+  const team = requireTeam(teamId, bearerToken);
+  if (team.status !== "PLAYING") {
+    throw apiError(409, {
+      error: "RUN_ALREADY_RESOLVED",
+      detail: `team ${teamId} has finished its run (${team.status})`,
+    });
+  }
+  const target = team.current_round + 1;
+  if (target > finalRound()) {
+    throw apiError(409, {
+      error: "NO_FURTHER_PHASE",
+      detail: `already in the final phase (${team.current_round})`,
+    });
+  }
+
+  const briefing = game.rounds[target - 1];
+  team.current_round = target;
+  team.credits_balance += briefing.credits_awarded;
+  team.credits_total_awarded += briefing.credits_awarded;
+
+  mockBroadcast(
+    game.game_id,
+    "PHASE_ADVANCED",
+    { team_id: team.team_id, round: team.current_round, credits_balance: team.credits_balance },
+    { teamToken: team.session_token },
+  );
+
+  return { team: toTeamState(team), briefing };
+}
+
+export async function getHints(teamId: string, bearerToken: string): Promise<HintCard[]> {
+  const team = requireTeam(teamId, bearerToken);
+  return HINTS.filter((hint) => hint.round <= team.current_round).map((hint) => {
+    const purchased = team.purchasedHintIds.has(hint.id);
+    return {
+      id: hint.id,
+      round: hint.round,
+      cost: hint.cost,
+      title: hint.title,
+      purchased,
+      text: purchased ? hint.text : null,
+    };
+  });
+}
+
+export async function buyHint(
+  teamId: string,
+  hintId: string,
+  bearerToken: string,
+): Promise<BuyHintResponse> {
+  const team = requireTeam(teamId, bearerToken);
+  const hint = HINTS.find((item) => item.id === hintId);
+  if (!hint) throw apiError(404, { error: "HINT_NOT_FOUND", detail: `unknown hint: ${hintId}` });
+  if (hint.round > team.current_round) {
+    throw apiError(409, {
+      error: "HINT_LOCKED",
+      detail: `hint ${hintId} belongs to phase ${hint.round}; team is in phase ${team.current_round}`,
+    });
+  }
+
+  if (!team.purchasedHintIds.has(hint.id)) {
+    chargeOrThrow(team, hint.cost);
+    team.purchasedHintIds.add(hint.id);
+  }
+
+  return {
+    hint: {
+      id: hint.id,
+      round: hint.round,
+      cost: hint.cost,
+      title: hint.title,
+      purchased: true,
+      text: hint.text,
+    },
+    credits_balance: team.credits_balance,
+  };
+}
+
+export async function getSuspects(teamId: string, bearerToken: string): Promise<Suspect[]> {
+  const team = requireTeam(teamId, bearerToken);
+  return ENTITIES.filter(
+    (entity) => entity.label === "Person" && entity.visible_from_round <= team.current_round,
+  )
+    .map((entity) => ({
+      id: entity.id,
+      name: entity.label_display,
+      already_guessed: team.guessedPersonIds.has(entity.id),
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
+}
+
+export async function submitGuess(
+  teamId: string,
+  personId: string,
+  bearerToken: string,
+): Promise<GuessResult> {
+  const team = requireTeam(teamId, bearerToken);
+  if (team.status !== "PLAYING") {
+    throw apiError(409, {
+      error: "RUN_ALREADY_RESOLVED",
+      detail: `team ${teamId} has finished its run (${team.status})`,
+    });
+  }
+  if (team.attempts_used >= MAX_GUESS_ATTEMPTS) {
+    throw apiError(409, {
+      error: "NO_ATTEMPTS_REMAINING",
+      detail: `team ${teamId} has no guess attempts left`,
+    });
+  }
+  if (team.current_round < finalRound()) {
+    throw apiError(409, {
+      error: "GUESS_LOCKED",
+      detail: `guessing unlocks in phase ${finalRound()}; team is in phase ${team.current_round}`,
+      required_round: finalRound(),
+    });
+  }
+  const suspect = ENTITIES.find((entity) => entity.label === "Person" && entity.id === personId);
+  if (!suspect) {
+    throw apiError(422, {
+      error: "UNKNOWN_SUSPECT",
+      detail: `not a suspect in this case: ${personId}`,
+    });
+  }
+
+  const correct = personId === GROUND_TRUTH.coordinator;
+  team.attempts_used += 1;
+  team.guessedPersonIds.add(personId);
+  if (correct) {
+    team.status = "SOLVED";
+    team.solved_at = new Date().toISOString();
+  } else {
+    team.wrongGuesses += 1;
+    if (team.attempts_used >= MAX_GUESS_ATTEMPTS) team.status = "FAILED";
+  }
+
+  const score = teamScore(team);
+  mockBroadcast(
+    game.game_id,
+    "LEADERBOARD_CHANGED",
+    { team_id: team.team_id, team_name: team.name, status: team.status, score },
+    {},
+  );
+
+  return {
+    correct,
+    attempts_used: team.attempts_used,
+    attempts_remaining: Math.max(0, MAX_GUESS_ATTEMPTS - team.attempts_used),
+    status: team.status,
+    elapsed_seconds:
+      elapsedSeconds(team) ??
+      Math.max(0, Math.round((Date.now() - Date.parse(team.started_at)) / 1000)),
+    score,
+  };
 }
 
 export async function investigate(
@@ -741,11 +946,7 @@ export async function investigate(
       plan: {
         intent: outcome.intent,
         tool_calls: [
-          {
-            tool: outcome.tool,
-            arguments: outcome.args,
-            justification: outcome.justification,
-          },
+          { tool: outcome.tool, arguments: outcome.args, justification: outcome.justification },
         ],
         reasoning_summary: outcome.answer,
       },
@@ -768,7 +969,7 @@ export async function investigate(
       team,
       question,
       actionId,
-      "Todos os indícios disponíveis nesta rodada já foram revelados. Aguarde a próxima rodada.",
+      "Todos os indícios disponíveis nesta fase já foram revelados. Avancem para a próxima fase.",
     );
   }
 
@@ -816,89 +1017,6 @@ export async function investigate(
   };
 }
 
-function scoreAccusation(team: MockTeam, accusation: Accusation): ScoreEvent[] {
-  const events: ScoreEvent[] = [];
-  const push = (rule: string, delta: number, detail: string) => {
-    events.push({ team_id: team.team_id, round: team.current_round, rule, delta, detail });
-  };
-
-  const accused = new Set(accusation.accused_person_ids);
-  const fraudsters = new Set(GROUND_TRUTH.fraudsters);
-
-  for (const id of accused) {
-    if (fraudsters.has(id)) {
-      push("correct_fraudster", 12, `${id} era de fato um fraudador.`);
-    } else {
-      push("legitimate_accused", -8, `${id} é uma pessoa legítima — acusação incorreta.`);
-    }
-  }
-
-  if (accusation.coordinator_person_id === GROUND_TRUTH.coordinator) {
-    push("correct_coordinator", 10, `${accusation.coordinator_person_id} é de fato o coordenador.`);
-  }
-
-  for (const relId of GROUND_TRUTH.key_relationships) {
-    if (team.discoveredRelIds.has(relId)) {
-      push("key_relationship", 20, `Relação-chave ${relId} foi descoberta pela equipe.`);
-    }
-  }
-
-  for (const id of GROUND_TRUTH.designed_false_positives) {
-    if (!accused.has(id)) {
-      push("false_positive_avoided", 15, `${id} corretamente NÃO foi acusado.`);
-    }
-  }
-
-  if (accusation.pattern === (GROUND_TRUTH.pattern as FraudPattern)) {
-    push("correct_pattern", 10, `Padrão de fraude ${accusation.pattern} identificado corretamente.`);
-  }
-
-  const efficiency = Math.round(
-    (10 * team.credits_balance) / Math.max(1, team.credits_total_awarded),
-  );
-  push(
-    "credit_efficiency",
-    efficiency,
-    `${team.credits_balance}/${team.credits_total_awarded} créditos preservados.`,
-  );
-
-  return events;
-}
-
-export async function submitAccusation(
-  teamId: string,
-  accusation: Accusation,
-  bearerToken: string,
-): Promise<void> {
-  const team = requireTeam(teamId, bearerToken);
-  team.accusation = accusation;
-
-  mockBroadcast(
-    game.game_id,
-    "ACCUSATION_SUBMITTED",
-    { team_id: team.team_id, team_name: team.name },
-    {},
-  );
-
-  const events = scoreAccusation(team, accusation);
-  for (const event of events) {
-    team.scoreEvents.push(event);
-    team.totalScore += event.delta;
-    mockBroadcast(
-      game.game_id,
-      "TEAM_SCORE_UPDATED",
-      {
-        team_id: team.team_id,
-        team_name: team.name,
-        total: team.totalScore,
-        total_score: team.totalScore,
-        event,
-      },
-      {},
-    );
-  }
-}
-
 export async function getTeamGraph(teamId: string, bearerToken: string): Promise<GraphPayload> {
   return teamGraphPayload(requireTeam(teamId, bearerToken));
 }
@@ -918,7 +1036,8 @@ export async function getDocket(teamId: string, bearerToken: string): Promise<Ca
       id: entity.id,
       labels: [entity.label],
       label_display: entity.label_display,
-      occupation: typeof entity.properties.occupation === "string" ? entity.properties.occupation : null,
+      occupation:
+        typeof entity.properties.occupation === "string" ? entity.properties.occupation : null,
       credit_score: typeof score === "number" ? score : null,
       income_declared: typeof income === "number" ? income : null,
       age: typeof age === "number" ? age : null,
@@ -932,181 +1051,6 @@ export async function getDocket(teamId: string, bearerToken: string): Promise<Ca
     return rank(a) - rank(b) || a.label_display.localeCompare(b.label_display);
   });
   return files;
-}
-
-export async function getTeamReveals(
-  teamId: string,
-  bearerToken: string,
-): Promise<EvidenceUnlockedPayload[]> {
-  requireTeam(teamId, bearerToken);
-  return [...game.revealedEvidence.values()];
-}
-
-function grantRoundCredits(team: MockTeam, roundNumber: number): void {
-  if (team.roundsCreditGranted.has(roundNumber)) return;
-  team.roundsCreditGranted.add(roundNumber);
-  const roundDef = ROUNDS[roundNumber - 1];
-  if (!roundDef) return;
-  team.credits_balance += roundDef.credits;
-  team.credits_total_awarded += roundDef.credits;
-  team.current_round = roundNumber;
-}
-
-function roundDefToState(
-  number: number,
-  status: RoundStatus,
-  startedAt: string | null,
-  endedAt: string | null,
-): RoundState {
-  const roundDef = ROUNDS[number - 1];
-  return {
-    game_id: game.game_id,
-    number,
-    status,
-    credits_awarded: roundDef?.credits ?? 0,
-    title: roundDef?.title ?? null,
-    narrative: roundDef?.narrative ?? null,
-    duration_seconds: roundDef?.duration_seconds ?? null,
-    started_at: startedAt,
-    ended_at: endedAt,
-  };
-}
-
-function upsertRound(state: RoundState): void {
-  const idx = game.rounds.findIndex((r) => r.number === state.number);
-  if (idx === -1) game.rounds.push(state);
-  else game.rounds[idx] = state;
-}
-
-export async function hostNextRound(gameId: string, hostToken: string): Promise<RoundState> {
-  requireHost(hostToken);
-  if (gameId !== game.game_id) throw notFound(`Unknown game_id ${gameId}`);
-
-  const endingRound = game.current_round;
-  const now = new Date().toISOString();
-  const ended = roundDefToState(endingRound, "ENDED", game.rounds.find((r) => r.number === endingRound)?.started_at ?? null, now);
-  upsertRound(ended);
-  stopTicks();
-  mockBroadcast(game.game_id, "ROUND_ENDED", { round: endingRound }, {});
-  return ended;
-}
-
-export async function hostStartRound(
-  gameId: string,
-  roundNumber: number,
-  hostToken: string,
-): Promise<RoundState> {
-  requireHost(hostToken);
-  if (gameId !== game.game_id) throw notFound(`Unknown game_id ${gameId}`);
-  const roundDef = ROUNDS[roundNumber - 1];
-  if (!roundDef) throw notFound(`Unknown round ${roundNumber}`);
-
-  const now = new Date().toISOString();
-  game.status = "ACTIVE";
-  game.current_round = roundNumber;
-  for (const team of game.teams.values()) grantRoundCredits(team, roundNumber);
-
-  const started = roundDefToState(roundNumber, "ACTIVE", now, null);
-  upsertRound(started);
-  startTicks(roundNumber, roundDef.duration_seconds);
-
-  mockBroadcast(
-    game.game_id,
-    "ROUND_STARTED",
-    {
-      round: roundDef.number,
-      title: roundDef.title,
-      narrative: roundDef.narrative,
-      credits_awarded: roundDef.credits,
-      duration_seconds: roundDef.duration_seconds,
-      started_at: now,
-      unlocks: roundDef.unlocks,
-    },
-    {},
-  );
-  return started;
-}
-
-export async function hostReveal(
-  gameId: string,
-  evidenceId: string,
-  hostToken: string,
-): Promise<void> {
-  requireHost(hostToken);
-  if (gameId !== game.game_id) throw notFound(`Unknown game_id ${gameId}`);
-  const entity = entityById(evidenceId);
-  if (!entity || (entity.label !== "Evidence" && entity.label !== "Message")) {
-    throw notFound(`No Evidence/Message with id ${evidenceId}`);
-  }
-
-  const revealPayload: EvidenceUnlockedPayload = {
-    evidence_id: entity.id,
-    id: entity.id,
-    evidence_type: String(entity.properties.evidence_type ?? entity.label.toLowerCase()),
-    excerpt: String(entity.properties.content ?? ""),
-    source: String(entity.properties.source ?? entity.properties.channel ?? "scripted_reveal"),
-    captured_at:
-      (entity.properties.captured_at as string | undefined) ??
-      (entity.properties.sent_at as string | undefined) ??
-      null,
-    round: game.current_round,
-    revealed_at: new Date().toISOString(),
-  };
-  game.revealedEvidence.set(entity.id, revealPayload);
-  mockBroadcast(
-    game.game_id,
-    "EVIDENCE_UNLOCKED",
-    revealPayload,
-    {},
-  );
-}
-
-export async function hostReveals(
-  gameId: string,
-  hostToken: string,
-): Promise<EvidenceUnlockedPayload[]> {
-  requireHost(hostToken);
-  if (gameId !== game.game_id) throw notFound(`Unknown game_id ${gameId}`);
-  return [...game.revealedEvidence.values()];
-}
-
-function buildScoreboard(): ScoreBreakdown[] {
-  return [...game.teams.values()]
-    .map((team) => ({
-      team_id: team.team_id,
-      events: team.scoreEvents,
-      total: team.totalScore,
-    }))
-    .sort((a, b) => b.total - a.total);
-}
-
-export async function hostFinish(gameId: string, hostToken: string): Promise<ScoreBreakdown[]> {
-  requireHost(hostToken);
-  if (gameId !== game.game_id) throw notFound(`Unknown game_id ${gameId}`);
-  game.status = "FINISHED";
-  game.finished_at = new Date().toISOString();
-  stopTicks();
-
-  const scoreboard = buildScoreboard();
-  mockBroadcast(
-    game.game_id,
-    "GAME_FINISHED",
-    {
-      scoreboard: scoreboard.map((row) => ({
-        team_id: row.team_id,
-        total: row.total,
-        team_name: game.teams.get(row.team_id)?.name,
-      })),
-    },
-    {},
-  );
-  return scoreboard;
-}
-
-export async function getScoreboard(gameId: string, hostToken: string): Promise<ScoreBreakdown[]> {
-  requireHost(hostToken);
-  if (gameId !== game.game_id) throw notFound(`Unknown game_id ${gameId}`);
-  return buildScoreboard();
 }
 
 export async function health(): Promise<{ status: string }> {

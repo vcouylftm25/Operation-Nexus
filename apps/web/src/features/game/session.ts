@@ -1,56 +1,40 @@
 /**
- * Client-side session store — which role this browser tab is acting as, and
- * whatever credential that role needs (CONTRACT.md §8: team routes carry a
- * bearer session token, host routes carry `X-Host-Token`; `screen` needs
- * neither REST credential, only a game id to open its WS connection with).
+ * The credential this browser plays as: the team it started (or resumed) and
+ * the bearer token every `/teams/{id}/...` call carries.
  *
- * Persisted to sessionStorage so a live-event refresh (projector flicker, a
- * team's laptop reloading mid-round) doesn't drop the connection.
+ * Persisted to localStorage, not sessionStorage: the whole entry story is
+ * "type your team name and you are back where you were". Players close tabs
+ * and reload on phones mid-game, and a session that died with the tab would
+ * break that promise on the very device that still has it.
  */
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 export interface TeamSession {
-  role: "team";
-  gameId: string;
-  teamId: string;
-  teamName: string;
-  sessionToken: string;
+  team_id: string;
+  game_id: string;
+  session_token: string;
+  team_name: string;
 }
-
-export interface HostSession {
-  role: "host";
-  gameId: string;
-  hostToken: string;
-}
-
-export interface ScreenSession {
-  role: "screen";
-  gameId: string;
-}
-
-export type Session = TeamSession | HostSession | ScreenSession | null;
 
 interface SessionStore {
-  session: Session;
-  setTeamSession: (s: Omit<TeamSession, "role">) => void;
-  setHostSession: (s: Omit<HostSession, "role">) => void;
-  setScreenSession: (s: Omit<ScreenSession, "role">) => void;
+  session: TeamSession | null;
+  setSession: (session: TeamSession) => void;
   clear: () => void;
 }
+
+export const SESSION_STORAGE_KEY = "operation-nexus-session";
 
 export const useSessionStore = create<SessionStore>()(
   persist(
     (set) => ({
       session: null,
-      setTeamSession: (s) => set({ session: { role: "team", ...s } }),
-      setHostSession: (s) => set({ session: { role: "host", ...s } }),
-      setScreenSession: (s) => set({ session: { role: "screen", ...s } }),
+      setSession: (session) => set({ session }),
       clear: () => set({ session: null }),
     }),
     {
-      name: "operation-nexus-session",
-      storage: createJSONStorage(() => sessionStorage),
+      name: SESSION_STORAGE_KEY,
+      storage: createJSONStorage(() => localStorage),
     },
   ),
 );

@@ -1,23 +1,22 @@
 /**
  * Typed REST client for the Operation Nexus API.
  *
- * Pure functions only — no React, no global state. Callers supply whatever
- * token/header the route needs:
- *   - Team routes: `Authorization: Bearer <session token>`
- *   - Host routes: `X-Host-Token: <secret>`
+ * Pure functions only — no React, no global state. Team routes authenticate
+ * with `Authorization: Bearer <session token>`; the leaderboard is public.
  */
 import type {
-  Accusation,
+  AdvancePhaseResponse,
+  BuyHintResponse,
   CaseFile,
-  CreateTeamResponse,
-  EvidenceUnlockedPayload,
   GameState,
   GraphPayload,
+  GuessResult,
+  HintCard,
   InsufficientCreditsBody,
   InvestigationResult,
-  JoinTeamResponse,
-  RoundState,
-  ScoreBreakdown,
+  LeaderboardRow,
+  StartPlayResponse,
+  Suspect,
   TeamState,
 } from "./types";
 
@@ -48,7 +47,6 @@ interface RequestOptions {
   method?: "GET" | "POST" | "PATCH" | "DELETE";
   body?: unknown;
   bearerToken?: string;
-  hostToken?: string;
   signal?: AbortSignal;
 }
 
@@ -62,7 +60,6 @@ async function request<T>(
 ): Promise<T> {
   const headers: Record<string, string> = { "Content-Type": "application/json" };
   if (options.bearerToken) headers["Authorization"] = `Bearer ${options.bearerToken}`;
-  if (options.hostToken) headers["X-Host-Token"] = options.hostToken;
 
   const prefix = options.skipPrefix ? "" : API_PREFIX;
   let res: Response;
@@ -95,24 +92,70 @@ async function request<T>(
   return (await res.json()) as T;
 }
 
-export function createGame(scenarioSlug: string): Promise<GameState> {
-  return request<GameState>("/games", { method: "POST", body: { scenario_slug: scenarioSlug } });
+/**
+ * The only way into the game: type a team name. Typing a name that already
+ * exists resumes that team rather than failing, which is how a player who
+ * closed the tab gets back in.
+ */
+export function startPlay(teamName: string): Promise<StartPlayResponse> {
+  return request<StartPlayResponse>("/play/start", {
+    method: "POST",
+    body: { team_name: teamName },
+  });
 }
 
 export function getGame(gameId: string): Promise<GameState> {
   return request<GameState>(`/games/${gameId}`);
 }
 
-export function createTeam(gameId: string, name: string): Promise<CreateTeamResponse> {
-  return request<CreateTeamResponse>(`/games/${gameId}/teams`, { method: "POST", body: { name } });
-}
-
-export function joinTeam(joinCode: string): Promise<JoinTeamResponse> {
-  return request<JoinTeamResponse>("/teams/join", { method: "POST", body: { join_code: joinCode } });
+/** Public — this goes on a projector, so it takes no token. */
+export function getLeaderboard(gameId: string): Promise<LeaderboardRow[]> {
+  return request<LeaderboardRow[]>(`/play/games/${gameId}/leaderboard`);
 }
 
 export function getTeamState(teamId: string, bearerToken: string): Promise<TeamState> {
   return request<TeamState>(`/teams/${teamId}/state`, { bearerToken });
+}
+
+export function advancePhase(
+  teamId: string,
+  bearerToken: string,
+): Promise<AdvancePhaseResponse> {
+  return request<AdvancePhaseResponse>(`/teams/${teamId}/advance`, {
+    method: "POST",
+    bearerToken,
+  });
+}
+
+export function getHints(teamId: string, bearerToken: string): Promise<HintCard[]> {
+  return request<HintCard[]>(`/teams/${teamId}/hints`, { bearerToken });
+}
+
+export function buyHint(
+  teamId: string,
+  hintId: string,
+  bearerToken: string,
+): Promise<BuyHintResponse> {
+  return request<BuyHintResponse>(`/teams/${teamId}/hints/${hintId}`, {
+    method: "POST",
+    bearerToken,
+  });
+}
+
+export function getSuspects(teamId: string, bearerToken: string): Promise<Suspect[]> {
+  return request<Suspect[]>(`/teams/${teamId}/suspects`, { bearerToken });
+}
+
+export function submitGuess(
+  teamId: string,
+  personId: string,
+  bearerToken: string,
+): Promise<GuessResult> {
+  return request<GuessResult>(`/teams/${teamId}/guess`, {
+    method: "POST",
+    body: { person_id: personId },
+    bearerToken,
+  });
 }
 
 export function investigate(
@@ -127,69 +170,12 @@ export function investigate(
   });
 }
 
-export function submitAccusation(
-  teamId: string,
-  accusation: Accusation,
-  bearerToken: string,
-): Promise<void> {
-  return request<void>(`/teams/${teamId}/accusation`, {
-    method: "POST",
-    body: accusation,
-    bearerToken,
-  });
-}
-
 export function getTeamGraph(teamId: string, bearerToken: string): Promise<GraphPayload> {
   return request<GraphPayload>(`/teams/${teamId}/graph`, { bearerToken });
 }
 
 export function getDocket(teamId: string, bearerToken: string): Promise<CaseFile[]> {
   return request<CaseFile[]>(`/teams/${teamId}/docket`, { bearerToken });
-}
-
-export function getTeamReveals(
-  teamId: string,
-  bearerToken: string,
-): Promise<EvidenceUnlockedPayload[]> {
-  return request<EvidenceUnlockedPayload[]>(`/teams/${teamId}/reveals`, { bearerToken });
-}
-
-export function hostNextRound(gameId: string, hostToken: string): Promise<RoundState> {
-  return request<RoundState>(`/host/games/${gameId}/rounds/next`, { method: "POST", hostToken });
-}
-
-export function hostStartRound(
-  gameId: string,
-  roundNumber: number,
-  hostToken: string,
-): Promise<RoundState> {
-  return request<RoundState>(`/host/games/${gameId}/rounds/${roundNumber}/start`, {
-    method: "POST",
-    hostToken,
-  });
-}
-
-export function hostReveal(gameId: string, evidenceId: string, hostToken: string): Promise<void> {
-  return request<void>(`/host/games/${gameId}/reveal`, {
-    method: "POST",
-    body: { evidence_id: evidenceId },
-    hostToken,
-  });
-}
-
-export function hostReveals(
-  gameId: string,
-  hostToken: string,
-): Promise<EvidenceUnlockedPayload[]> {
-  return request<EvidenceUnlockedPayload[]>(`/host/games/${gameId}/reveals`, { hostToken });
-}
-
-export function hostFinish(gameId: string, hostToken: string): Promise<ScoreBreakdown[]> {
-  return request<ScoreBreakdown[]>(`/host/games/${gameId}/finish`, { method: "POST", hostToken });
-}
-
-export function getScoreboard(gameId: string, hostToken: string): Promise<ScoreBreakdown[]> {
-  return request<ScoreBreakdown[]>(`/host/games/${gameId}/scoreboard`, { hostToken });
 }
 
 export function health(): Promise<{ status: string }> {

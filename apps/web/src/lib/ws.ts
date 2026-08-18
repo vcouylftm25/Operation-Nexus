@@ -8,7 +8,7 @@
  *     is exported standalone so the math can be tested without opening a socket)
  *   - `seq` gap detection: warns via console.warn and emits a "gap" event —
  *     the caller (see src/features/game/useGameSocket.ts) is expected to react
- *     to "gap" by refetching authoritative state (team/graph/scoreboard) since
+ *     to "gap" by refetching authoritative state (team/graph/leaderboard) since
  *     this module has no knowledge of TanStack Query.
  *   - a small typed event emitter, discriminated by WSEventType plus a few
  *     connection-lifecycle meta-events ("status", "open", "close", "reconnecting", "gap")

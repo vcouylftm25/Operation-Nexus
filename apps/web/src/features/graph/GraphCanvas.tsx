@@ -1,4 +1,5 @@
 import {
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -6,11 +7,18 @@ import {
   type PointerEvent as ReactPointerEvent,
   type WheelEvent as ReactWheelEvent,
 } from "react";
-import type { GraphNode, GraphRelationship } from "@/lib/types";
-import { propertyText } from "@/lib/utils";
+import type { GraphRelationship } from "@/lib/types";
+import { classificationColor } from "./classification";
 import { labelDisplay, relationshipDisplay } from "./colors";
 import { useGraphStore, useTeamGraphPayload } from "./graphStore";
-import { extractEventTimestamp, isMoneyRelationship, shapeD, visualFor } from "./nodeVisuals";
+import { useGraphViewStore } from "./graphViewStore";
+import {
+  extractEventTimestamp,
+  isMoneyRelationship,
+  shapeD,
+  shouldShowAllEdgeLabels,
+  visualFor,
+} from "./nodeVisuals";
 import { useNxThemeStore } from "./nxTheme";
 
 interface Pos {
@@ -18,7 +26,6 @@ interface Pos {
   y: number;
   vx: number;
   vy: number;
-  pin: boolean;
   fx?: number;
   fy?: number;
 }
@@ -29,16 +36,24 @@ interface Camera {
   k: number;
 }
 
-type Mode = "network" | "money" | "timeline";
-
 interface GraphCanvasProps {
   onCommand: (command: string) => void;
   pending?: boolean;
+  /** Drives the empty state: in phase 1 an empty canvas is the design, not a bug. */
+  phase?: number;
 }
 
-const LINK_DISTANCE = 150;
+const LINK_DISTANCE = 165;
 const MIN_ZOOM = 0.45;
 const MAX_ZOOM = 2.6;
+/**
+ * Below this zoom the second caption line under a node is noise, so it goes
+ * away and only the name is left. Sits under the zoom "FIT" lands on (~0.7)
+ * so the default view keeps the type.
+ */
+const TYPE_CAPTION_MIN_ZOOM = 0.65;
+/** On-screen length an edge needs before its name fits between the two nodes. */
+const MIN_EDGE_PX_FOR_LABEL = 96;
 
 function bfsPath(
   from: string,
@@ -84,18 +99,29 @@ function parseTs(ts: string): number {
   return Number.isNaN(t) ? Number.POSITIVE_INFINITY : t;
 }
 
-export function GraphCanvas({ onCommand, pending }: GraphCanvasProps) {
+export function GraphCanvas({ onCommand, pending, phase = 1 }: GraphCanvasProps) {
   const payload = useTeamGraphPayload();
   const recentIds = useGraphStore((s) => s.recentIds);
   const selectedIds = useGraphStore((s) => s.selectedIds);
   const selectedEdgeId = useGraphStore((s) => s.selectedEdgeId);
+  const classification = useGraphStore((s) => s.classification);
   const toggleSelect = useGraphStore((s) => s.toggleSelect);
   const selectEdge = useGraphStore((s) => s.selectEdge);
   const clearSelection = useGraphStore((s) => s.select);
   const theme = useNxThemeStore((s) => s.theme);
   const toggleTheme = useNxThemeStore((s) => s.toggle);
 
-  const wrapRef = useRef<HTMLDivElement>(null);
+  const mode = useGraphViewStore((s) => s.mode);
+  const setMode = useGraphViewStore((s) => s.setMode);
+  const focus = useGraphViewStore((s) => s.focusId);
+  const clearFocus = useGraphViewStore((s) => s.clearFocus);
+  const pinnedIds = useGraphViewStore((s) => s.pinnedIds);
+  const pinNode = useGraphViewStore((s) => s.pin);
+  const unpinAll = useGraphViewStore((s) => s.unpinAll);
+  const edgeLabelsEnabled = useGraphViewStore((s) => s.edgeLabelsEnabled);
+  const toggleEdgeLabels = useGraphViewStore((s) => s.toggleEdgeLabels);
+
+  const resizeRef = useRef<ResizeObserver | null>(null);
   // Mutable working copies the physics loop and pointer handlers write to.
   // Never read directly during render — `positions`/`cam` state below is the
   // published snapshot the JSX actually renders from.
@@ -107,16 +133,17 @@ export function GraphCanvas({ onCommand, pending }: GraphCanvasProps) {
   );
   const panRef = useRef<{ x: number; y: number; cx: number; cy: number } | null>(null);
   const rafRef = useRef<number>(0);
+  /** Set by any manual pan/zoom/drag: the settle re-fit must not yank the view. */
+  const userMovedRef = useRef(false);
   const pendingPathRef = useRef<[string, string] | null>(null);
 
   const [size, setSize] = useState({ w: 640, h: 420 });
   const [positions, setPositions] = useState<Record<string, Pos>>({});
   const [cam, setCam] = useState<Camera>({ x: 0, y: 0, k: 1 });
   const [panning, setPanning] = useState(false);
-  const [mode, setMode] = useState<Mode>("network");
   const [search, setSearch] = useState("");
   const [hover, setHover] = useState<string | null>(null);
-  const [focus, setFocus] = useState<string | null>(null);
+  const [hoverEdge, setHoverEdge] = useState<string | null>(null);
   const [path, setPath] = useState<{ nodes: string[]; edges: string[] } | null>(null);
 
   function publishPositions() {
@@ -157,19 +184,22 @@ export function GraphCanvas({ onCommand, pending }: GraphCanvasProps) {
     };
   }
 
-  // Resize observer.
-  useEffect(() => {
-    const el = wrapRef.current;
+  // Callback ref, not an effect: the canvas only mounts once the team has
+  // discovered something, and an effect that ran against the empty state left
+  // the layout sizing itself against a placeholder viewport forever.
+  const attachCanvas = useCallback((el: HTMLDivElement | null) => {
+    resizeRef.current?.disconnect();
+    resizeRef.current = null;
     if (!el) return;
-    const observer = new ResizeObserver((entries) => {
-      const entry = entries[0];
-      if (!entry) return;
-      const w = Math.max(320, entry.contentRect.width);
-      const h = Math.max(240, entry.contentRect.height);
+    const measure = () => {
+      const w = Math.max(320, el.clientWidth);
+      const h = Math.max(240, el.clientHeight);
       setSize((prev) => (Math.abs(prev.w - w) < 1 && Math.abs(prev.h - h) < 1 ? prev : { w, h }));
-    });
+    };
+    const observer = new ResizeObserver(measure);
     observer.observe(el);
-    return () => observer.disconnect();
+    resizeRef.current = observer;
+    measure();
   }, []);
 
   // Seed positions for newly-discovered nodes, near whatever is selected.
@@ -188,12 +218,23 @@ export function GraphCanvas({ onCommand, pending }: GraphCanvasProps) {
         y: cy + Math.sin(angle) * spread,
         vx: 0,
         vy: 0,
-        pin: false,
       };
     });
     if (added) {
+      userMovedRef.current = false;
       publishPositions();
-      window.setTimeout(() => fitTo(payload.nodes.map((n) => n.id)), 60);
+      const ids = payload.nodes.map((n) => n.id);
+      // Frame what just arrived, then frame it again once the physics settle —
+      // the first fit runs while the layout is still contracting, which is how
+      // the graph ended up as a tight clump in the middle of a wide canvas.
+      const first = window.setTimeout(() => fitTo(ids), 60);
+      const settled = window.setTimeout(() => {
+        if (!userMovedRef.current) fitTo(ids);
+      }, 1100);
+      return () => {
+        window.clearTimeout(first);
+        window.clearTimeout(settled);
+      };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [payload.nodes]);
@@ -225,18 +266,19 @@ export function GraphCanvas({ onCommand, pending }: GraphCanvasProps) {
     function onKey(e: KeyboardEvent) {
       if (e.key !== "Escape") return;
       clearSelection(null);
-      setFocus(null);
+      clearFocus();
       setPath(null);
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [clearSelection]);
+  }, [clearSelection, clearFocus]);
 
   // Physics + camera animation loop. Reads/writes posRef/camRef freely (this
   // effect callback is the sanctioned place for that) and only touches React
   // state to publish a snapshot for rendering.
   useEffect(() => {
     function step() {
+      const pinned = useGraphViewStore.getState().pinnedIds;
       const ids = payload.nodes.map((n) => n.id).filter((id) => posRef.current[id]);
       const rels = payload.relationships;
       ids.forEach((a) => {
@@ -281,7 +323,7 @@ export function GraphCanvas({ onCommand, pending }: GraphCanvasProps) {
       let moved = 0;
       ids.forEach((id) => {
         const p = posRef.current[id];
-        if (p.pin || dragRef.current?.id === id) {
+        if (pinned[id] || dragRef.current?.id === id) {
           p.vx = 0;
           p.vy = 0;
           return;
@@ -321,6 +363,7 @@ export function GraphCanvas({ onCommand, pending }: GraphCanvasProps) {
 
   function onWheel(ev: ReactWheelEvent<SVGSVGElement>) {
     ev.preventDefault();
+    userMovedRef.current = true;
     const k = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, camRef.current.k * (ev.deltaY > 0 ? 0.9 : 1.11)));
     const rect = ev.currentTarget.getBoundingClientRect();
     const mx = ev.clientX - rect.left;
@@ -334,6 +377,7 @@ export function GraphCanvas({ onCommand, pending }: GraphCanvasProps) {
   function onBgPointerDown(ev: ReactPointerEvent<SVGElement>) {
     const tag = (ev.target as SVGElement).tagName;
     if (tag !== "rect" && tag !== "svg") return;
+    userMovedRef.current = true;
     const startCam = { ...camRef.current };
     panRef.current = { x: ev.clientX, y: ev.clientY, cx: startCam.x, cy: startCam.y };
     setPanning(true);
@@ -367,7 +411,10 @@ export function GraphCanvas({ onCommand, pending }: GraphCanvasProps) {
       if (!d) return;
       const dx = (e.clientX - d.x0) * d.s;
       const dy = (e.clientY - d.y0) * d.s;
-      if (Math.abs(dx) + Math.abs(dy) > 3) d.moved = true;
+      if (Math.abs(dx) + Math.abs(dy) > 3) {
+        d.moved = true;
+        userMovedRef.current = true;
+      }
       const pos = posRef.current[id];
       if (!pos) return;
       pos.x = d.px + dx;
@@ -378,12 +425,8 @@ export function GraphCanvas({ onCommand, pending }: GraphCanvasProps) {
     function up(e: PointerEvent) {
       const d = dragRef.current;
       if (d) {
-        if (d.moved) {
-          const pos = posRef.current[id];
-          if (pos) pos.pin = true;
-        } else {
-          toggleSelect(id, e.shiftKey);
-        }
+        if (d.moved) pinNode(id);
+        else toggleSelect(id, e.shiftKey);
       }
       dragRef.current = null;
       window.removeEventListener("pointermove", move);
@@ -409,21 +452,8 @@ export function GraphCanvas({ onCommand, pending }: GraphCanvasProps) {
   }
 
   function handleUnpinOrExitFocus() {
-    if (focus) {
-      setFocus(null);
-      return;
-    }
-    Object.values(posRef.current).forEach((p) => {
-      p.pin = false;
-    });
-    publishPositions();
-  }
-
-  function handleTogglePin(id: string) {
-    const p = posRef.current[id];
-    if (!p) return;
-    p.pin = !p.pin;
-    publishPositions();
+    if (focus) clearFocus();
+    else unpinAll();
   }
 
   function runSearch() {
@@ -513,17 +543,92 @@ export function GraphCanvas({ onCommand, pending }: GraphCanvasProps) {
     return 1;
   }
 
-  const camTransform = `translate(${cam.x.toFixed(2)},${cam.y.toFixed(2)}) scale(${cam.k.toFixed(3)})`;
+  /**
+   * An edge is "pointed at" when the player is doing something with it, and
+   * those always keep their name on screen no matter how dense the view is.
+   */
+  function isFocusedEdge(rel: GraphRelationship): boolean {
+    return (
+      selectedEdgeId === rel.id ||
+      hoverEdge === rel.id ||
+      (path?.edges.includes(rel.id) ?? false) ||
+      hover === rel.start_id ||
+      hover === rel.end_id ||
+      selectedIds.includes(rel.start_id) ||
+      selectedIds.includes(rel.end_id)
+    );
+  }
 
-  const selectedNode = selectedIds.length === 1 ? (nodesById.get(selectedIds[0]) ?? null) : null;
-  const selectedRel = selectedEdgeId ? payload.relationships.find((r) => r.id === selectedEdgeId) ?? null : null;
+  const edgeMidpoints = useMemo(() => {
+    const out = new Map<string, { x: number; y: number; length: number }>();
+    payload.relationships.forEach((rel) => {
+      const pa = positions[rel.start_id];
+      const pb = positions[rel.end_id];
+      if (!pa || !pb) return;
+      out.set(rel.id, {
+        x: (pa.x + pb.x) / 2,
+        y: (pa.y + pb.y) / 2,
+        length: Math.hypot(pb.x - pa.x, pb.y - pa.y),
+      });
+    });
+    return out;
+  }, [payload.relationships, positions]);
+
+  // Density rule: count the edges whose label would actually land inside the
+  // viewport, then ask whether that many chips fit at the current zoom.
+  const onScreenEdges = useMemo(() => {
+    let count = 0;
+    edgeMidpoints.forEach((mid) => {
+      const sx = cam.x + mid.x * cam.k;
+      const sy = cam.y + mid.y * cam.k;
+      if (sx >= -40 && sx <= size.w + 40 && sy >= -20 && sy <= size.h + 20) count += 1;
+    });
+    return count;
+  }, [edgeMidpoints, cam, size.w, size.h]);
+  const showAllEdgeLabels = shouldShowAllEdgeLabels(onScreenEdges, cam.k);
+
+  const camTransform = `translate(${cam.x.toFixed(2)},${cam.y.toFixed(2)}) scale(${cam.k.toFixed(3)})`;
+  const showTypeCaption = cam.k >= TYPE_CAPTION_MIN_ZOOM;
+  const labelWidth = Math.round(Math.max(96, Math.min(170, 130 * cam.k)));
 
   if (payload.nodes.length === 0) {
     return (
-      <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 32px", textAlign: "center" }}>
-        <p style={{ maxWidth: 380, fontSize: 13, lineHeight: 1.6, color: "var(--nx-muted)" }}>
-          Grafo vazio. Abra um dossiê à esquerda — individualmente, tudo parece normal. As relações é que vão doer.
-        </p>
+      <div
+        style={{
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "24px 32px",
+          textAlign: "center",
+          background: "var(--nx-card)",
+          overflowY: "auto",
+        }}
+      >
+        <div style={{ maxWidth: 460 }}>
+          <p
+            style={{
+              fontFamily: "'IBM Plex Mono', monospace",
+              fontSize: 10,
+              letterSpacing: "0.2em",
+              color: "var(--nx-accent-text)",
+            }}
+          >
+            NADA AQUI AINDA — É ASSIM MESMO
+          </p>
+          <h2 style={{ marginTop: 12, fontSize: 22, fontWeight: 600, color: "var(--nx-ink)" }}>
+            A rede ainda não apareceu.
+          </h2>
+          <p style={{ marginTop: 12, fontSize: 13, lineHeight: 1.7, color: "var(--nx-muted)" }}>
+            O grafo não vem pronto: ele é montado por vocês. Abram uma ficha na lista de casos e
+            usem “inspecionar” — cada consulta traz para cá a pessoa e o que ela usou.
+          </p>
+          <p style={{ marginTop: 10, fontSize: 13, lineHeight: 1.7, color: "var(--nx-muted)" }}>
+            {phase <= 1
+              ? "Na fase 1 vocês só enxergam pessoas e propostas, sem nenhuma ligação entre elas. As conexões — aparelhos, telefones, contas — entram no caso na fase 2."
+              : "Se um item aparecer ligado a duas pessoas diferentes, vocês acharam o primeiro fio da meada."}
+          </p>
+        </div>
       </div>
     );
   }
@@ -535,7 +640,8 @@ export function GraphCanvas({ onCommand, pending }: GraphCanvasProps) {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          gap: 12,
+          flexWrap: "wrap",
+          gap: 8,
           padding: "9px 14px",
           borderBottom: "1px solid var(--nx-line)",
           background: "var(--nx-card)",
@@ -554,13 +660,14 @@ export function GraphCanvas({ onCommand, pending }: GraphCanvasProps) {
               type="button"
               onClick={() => setMode(key)}
               style={{
-                padding: "6px 13px",
+                padding: "6px 11px",
                 borderRadius: 7,
                 cursor: "pointer",
                 border: "none",
                 fontFamily: "'IBM Plex Mono', monospace",
                 fontSize: 10,
-                letterSpacing: "0.14em",
+                letterSpacing: "0.12em",
+                whiteSpace: "nowrap",
                 background: mode === key ? "var(--nx-accent-text)" : "transparent",
                 color: mode === key ? "var(--nx-on-accent)" : "var(--nx-muted)",
               }}
@@ -569,7 +676,7 @@ export function GraphCanvas({ onCommand, pending }: GraphCanvasProps) {
             </button>
           ))}
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 7, padding: "6px 10px", border: "1px solid var(--nx-line-2)", borderRadius: 8, background: "var(--nx-card)" }}>
             <span style={{ fontSize: 11, color: "var(--nx-muted)" }}>⌕</span>
             <input
@@ -577,9 +684,23 @@ export function GraphCanvas({ onCommand, pending }: GraphCanvasProps) {
               onChange={(e) => setSearch(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && runSearch()}
               placeholder="Buscar entidade"
-              style={{ width: 140, border: "none", outline: "none", background: "transparent", color: "var(--nx-ink)", fontSize: 11.5 }}
+              style={{ width: 116, minWidth: 0, border: "none", outline: "none", background: "transparent", color: "var(--nx-ink)", fontSize: 11.5 }}
             />
           </div>
+          <button
+            type="button"
+            onClick={toggleEdgeLabels}
+            aria-pressed={edgeLabelsEnabled}
+            title="Mostrar ou esconder o nome das ligações"
+            data-testid="toggle-edge-labels"
+            style={{
+              ...toolButtonStyle,
+              borderColor: edgeLabelsEnabled ? "var(--nx-accent-35)" : "var(--nx-line-2)",
+              color: edgeLabelsEnabled ? "var(--nx-accent-text)" : "var(--nx-muted)",
+            }}
+          >
+            RÓTULOS
+          </button>
           <button type="button" onClick={handleFit} style={toolButtonStyle}>
             FIT
           </button>
@@ -615,7 +736,7 @@ export function GraphCanvas({ onCommand, pending }: GraphCanvasProps) {
         </div>
       </div>
 
-      <div ref={wrapRef} style={{ position: "relative", flex: 1, minHeight: 0 }}>
+      <div ref={attachCanvas} style={{ position: "relative", flex: 1, minHeight: 0 }}>
         <svg
           onWheel={onWheel}
           onPointerDown={onBgPointerDown}
@@ -648,6 +769,7 @@ export function GraphCanvas({ onCommand, pending }: GraphCanvasProps) {
               const inPath = path?.edges.includes(rel.id) ?? false;
               const isRecent = recentIds.includes(rel.id);
               const money = isMoneyRelationship(rel.type);
+              const marked = classification[rel.id];
               let color = "var(--nx-edge)";
               let width = 1.1;
               if (moneyMode && money) {
@@ -662,12 +784,21 @@ export function GraphCanvas({ onCommand, pending }: GraphCanvasProps) {
                 color = "var(--nx-accent)";
                 width = 2;
               }
+              if (marked) {
+                color = classificationColor(marked);
+                width = Math.max(width, 1.8);
+              }
               const opacity = edgeOpacity(rel);
               const ah = 7;
               const arrow = `M ${x2},${y2} L ${x2 - ux * ah - uy * ah * 0.55},${y2 - uy * ah + ux * ah * 0.55} L ${x2 - ux * ah + uy * ah * 0.55},${y2 - uy * ah - ux * ah * 0.55} Z`;
-              const label = moneyMode && money && typeof rel.properties.amount === "string" ? rel.properties.amount : relationshipDisplay(rel.type);
               return (
-                <g key={rel.id} style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); selectEdge(rel.id); }}>
+                <g
+                  key={rel.id}
+                  style={{ cursor: "pointer" }}
+                  onClick={(e) => { e.stopPropagation(); selectEdge(rel.id); }}
+                  onPointerEnter={() => setHoverEdge(rel.id)}
+                  onPointerLeave={() => setHoverEdge((h) => (h === rel.id ? null : h))}
+                >
                   <path d={`M ${x1.toFixed(1)},${y1.toFixed(1)} L ${x2.toFixed(1)},${y2.toFixed(1)}`} style={{ stroke: "transparent", strokeWidth: 14, fill: "none" }} />
                   <path
                     d={`M ${x1.toFixed(1)},${y1.toFixed(1)} L ${x2.toFixed(1)},${y2.toFixed(1)}`}
@@ -682,7 +813,6 @@ export function GraphCanvas({ onCommand, pending }: GraphCanvasProps) {
                     }}
                   />
                   <path d={arrow} style={{ fill: color, opacity }} />
-                  <title>{label}</title>
                 </g>
               );
             })}
@@ -693,6 +823,8 @@ export function GraphCanvas({ onCommand, pending }: GraphCanvasProps) {
               const selected = selectedIds.includes(node.id);
               const isRecent = recentIds.includes(node.id);
               const opacity = nodeOpacity(node.id);
+              const marked = classification[node.id];
+              const markColor = marked ? classificationColor(marked) : null;
               const isz = visual.r * 0.048;
               return (
                 <g
@@ -706,8 +838,28 @@ export function GraphCanvas({ onCommand, pending }: GraphCanvasProps) {
                   onPointerLeave={() => setHover((h) => (h === node.id ? null : h))}
                 >
                   {isRecent ? <circle cx={0} cy={0} r={14} style={{ fill: "none", stroke: "var(--nx-accent)", strokeWidth: 1, animation: "nxHalo 1.4s ease-out" }} /> : null}
-                  {selected ? <path d={shapeD(visual.shape, visual.r + 6)} style={{ fill: "none", stroke: "var(--nx-accent-35)", strokeWidth: 1 }} /> : null}
-                  <path d={shapeD(visual.shape, visual.r)} style={{ fill: "var(--nx-node-fill)", stroke: selected ? "var(--nx-accent)" : "var(--nx-node-stroke)", strokeWidth: selected ? 1.8 : 1.2 }} />
+                  {selected || markColor ? (
+                    <path
+                      d={shapeD(visual.shape, visual.r + 6)}
+                      style={{
+                        fill: "none",
+                        stroke: selected ? "var(--nx-accent-35)" : (markColor ?? "transparent"),
+                        strokeWidth: 1,
+                        opacity: selected ? 1 : 0.45,
+                      }}
+                    />
+                  ) : null}
+                  {/* The team's mark owns the shape's ring; selection shows as
+                      the accent halo above, so opening a node never hides how
+                      it was classified. */}
+                  <path
+                    d={shapeD(visual.shape, visual.r)}
+                    style={{
+                      fill: "var(--nx-node-fill)",
+                      stroke: markColor ?? (selected ? "var(--nx-accent)" : "var(--nx-node-stroke)"),
+                      strokeWidth: selected || markColor ? 1.8 : 1.2,
+                    }}
+                  />
                   <g transform={`translate(${(-12 * isz).toFixed(2)},${(-12 * isz).toFixed(2)}) scale(${isz.toFixed(3)})`}>
                     <path d={visual.icon[0]} style={{ fill: "none", stroke: selected ? "var(--nx-accent)" : "var(--nx-muted)", strokeWidth: 1.5 / isz, strokeLinecap: "round", strokeLinejoin: "round", pointerEvents: "none" }} />
                     {visual.icon[1] ? (
@@ -721,39 +873,116 @@ export function GraphCanvas({ onCommand, pending }: GraphCanvasProps) {
         </svg>
 
         <div style={{ position: "absolute", inset: 0, pointerEvents: "none", overflow: "hidden" }}>
+          {edgeLabelsEnabled
+            ? payload.relationships.map((rel) => {
+                const mid = edgeMidpoints.get(rel.id);
+                if (!mid) return null;
+                const focused = isFocusedEdge(rel);
+                // A chip on a stub of a line lands on the node captions at
+                // both ends, so short edges only get named on purpose.
+                const roomy = mid.length * cam.k >= MIN_EDGE_PX_FOR_LABEL;
+                if (!focused && (!showAllEdgeLabels || !roomy)) return null;
+                const opacity = edgeOpacity(rel);
+                if (opacity < 0.25) return null;
+                const amount = rel.properties.amount;
+                const label =
+                  moneyMode && isMoneyRelationship(rel.type) && (typeof amount === "string" || typeof amount === "number")
+                    ? String(amount)
+                    : relationshipDisplay(rel.type).toUpperCase();
+                const marked = classification[rel.id];
+                return (
+                  <div
+                    key={rel.id}
+                    style={{
+                      position: "absolute",
+                      left: cam.x + mid.x * cam.k,
+                      top: cam.y + mid.y * cam.k,
+                      transform: "translate(-50%,-50%)",
+                      padding: "2px 5px",
+                      borderRadius: 4,
+                      background: "var(--nx-canvas)",
+                      fontFamily: "'IBM Plex Mono', monospace",
+                      fontSize: 9,
+                      letterSpacing: "0.12em",
+                      whiteSpace: "nowrap",
+                      color: marked ? classificationColor(marked) : "var(--nx-accent-text)",
+                      opacity: opacity * 0.95,
+                      transition: "opacity 180ms",
+                      zIndex: 1,
+                    }}
+                  >
+                    {label}
+                  </div>
+                );
+              })
+            : null}
           {payload.nodes.map((node) => {
             const p = positions[node.id];
             if (!p) return null;
-            const sx = cam.x + p.x * cam.k;
-            const sy = cam.y + p.y * cam.k;
             const visual = visualFor(node.labels);
             const opacity = nodeOpacity(node.id);
             return (
-              <div key={node.id} style={{ position: "absolute", left: sx, top: sy, transform: "translate(-50%,-50%)", width: 150, textAlign: "center", opacity, transition: "opacity 180ms" }}>
+              <div
+                key={node.id}
+                style={{
+                  position: "absolute",
+                  left: cam.x + p.x * cam.k,
+                  top: cam.y + p.y * cam.k + visual.r * cam.k + 7,
+                  transform: "translateX(-50%)",
+                  width: labelWidth,
+                  textAlign: "center",
+                  opacity,
+                  transition: "opacity 180ms",
+                  zIndex: 2,
+                }}
+              >
+                {/* The canvas-coloured plate keeps a name readable when an
+                    edge or a relationship chip runs underneath it. */}
                 <div
                   style={{
-                    position: "absolute",
-                    left: 0,
-                    right: 0,
-                    top: visual.r * cam.k + 8,
-                    fontSize: 12.5 * Math.min(1.3, Math.max(0.8, cam.k)),
-                    fontWeight: 500,
-                    color: "var(--nx-ink)",
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
+                    display: "inline-block",
+                    maxWidth: "100%",
+                    padding: "1px 4px",
+                    borderRadius: 4,
+                    background: "var(--nx-canvas)",
                   }}
                 >
-                  {node.label_display}
-                </div>
-                {p.pin ? (
                   <div
                     style={{
-                      position: "absolute",
-                      left: 0,
-                      right: 0,
-                      top: visual.r * cam.k + 26,
-                      fontSize: 10,
+                      fontSize: 12.5 * Math.min(1.3, Math.max(0.8, cam.k)),
+                      lineHeight: 1.25,
+                      fontWeight: 500,
+                      color: "var(--nx-ink)",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                      overflowWrap: "anywhere",
+                    }}
+                  >
+                    {node.label_display}
+                  </div>
+                  {showTypeCaption ? (
+                    <div
+                      style={{
+                        fontFamily: "'IBM Plex Mono', monospace",
+                        fontSize: 9,
+                        letterSpacing: "0.12em",
+                        color: "var(--nx-muted)",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {labelDisplay(node.labels).toUpperCase()}
+                    </div>
+                  ) : null}
+                </div>
+                {pinnedIds[node.id] ? (
+                  <div
+                    style={{
+                      marginTop: 2,
+                      fontSize: 9.5,
                       letterSpacing: "0.14em",
                       fontFamily: "'IBM Plex Mono', monospace",
                       color: "var(--nx-accent-text)",
@@ -774,7 +1003,7 @@ export function GraphCanvas({ onCommand, pending }: GraphCanvasProps) {
             bottom: 14,
             zIndex: 3,
             pointerEvents: "none",
-            display: mode === "timeline" || selectedNode || selectedRel ? "none" : "flex",
+            display: mode === "timeline" || selectedIds.length >= 2 ? "none" : "flex",
             flexDirection: "column",
             gap: 5,
             padding: "10px 12px",
@@ -805,6 +1034,7 @@ export function GraphCanvas({ onCommand, pending }: GraphCanvasProps) {
               top: "50%",
               transform: "translate(-50%,-50%)",
               width: 290,
+              maxWidth: "calc(100% - 32px)",
               padding: 18,
               border: "1px solid var(--nx-accent-28)",
               borderRadius: 16,
@@ -844,21 +1074,29 @@ export function GraphCanvas({ onCommand, pending }: GraphCanvasProps) {
               position: "absolute",
               right: 14,
               top: 14,
-              width: 260,
+              width: 240,
+              maxWidth: "calc(100% - 28px)",
+              maxHeight: "calc(100% - 96px)",
+              overflowY: "auto",
               padding: 14,
               border: "1px solid var(--nx-accent-35)",
               borderRadius: 16,
               background: "var(--nx-card)",
               animation: "nxRise .32s cubic-bezier(.22,1,.36,1)",
+              zIndex: 4,
             }}
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, letterSpacing: "0.16em", color: "var(--nx-accent-text)" }}>
-                {path.edges.length}-HOP PATH
+                CAMINHO · {path.edges.length} SALTO{path.edges.length === 1 ? "" : "S"}
               </span>
-              <span onClick={() => setPath(null)} style={{ cursor: "pointer", fontSize: 11, color: "var(--nx-muted)" }}>
+              <button
+                type="button"
+                onClick={() => setPath(null)}
+                style={{ border: "none", background: "transparent", cursor: "pointer", fontSize: 11, color: "var(--nx-muted)" }}
+              >
                 ✕
-              </span>
+              </button>
             </div>
             <div style={{ marginTop: 11, display: "flex", flexDirection: "column" }}>
               {path.nodes.map((id, i) => (
@@ -884,12 +1122,16 @@ export function GraphCanvas({ onCommand, pending }: GraphCanvasProps) {
               transform: "translateX(-50%)",
               display: "flex",
               alignItems: "center",
+              flexWrap: "wrap",
+              justifyContent: "center",
               gap: 10,
+              maxWidth: "calc(100% - 28px)",
               padding: "9px 12px",
               border: "1px solid var(--nx-line-2)",
               borderRadius: 16,
               background: "var(--nx-card)",
               animation: "nxRise .24s cubic-bezier(.22,1,.36,1)",
+              zIndex: 4,
             }}
           >
             <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, letterSpacing: "0.14em", color: "var(--nx-accent-text)" }}>
@@ -904,21 +1146,6 @@ export function GraphCanvas({ onCommand, pending }: GraphCanvasProps) {
             </button>
           </div>
         ) : null}
-
-        {selectedNode || selectedRel ? (
-          <Inspector
-            node={selectedNode}
-            rel={selectedRel}
-            nodesById={nodesById}
-            pinned={selectedNode ? !!positions[selectedNode.id]?.pin : false}
-            focused={focus === selectedNode?.id}
-            onFocusToggle={() => selectedNode && setFocus((f) => (f === selectedNode.id ? null : selectedNode.id))}
-            onTogglePin={() => selectedNode && handleTogglePin(selectedNode.id)}
-            onExpand={(id) => onCommand(`/expand ${id} 1`)}
-            onTimeline={(id) => { onCommand(`/timeline ${id}`); setMode("timeline"); }}
-            onClose={() => clearSelection(null)}
-          />
-        ) : null}
       </div>
 
       {mode === "timeline" ? (
@@ -931,10 +1158,19 @@ export function GraphCanvas({ onCommand, pending }: GraphCanvasProps) {
               <p style={{ fontSize: 12, color: "var(--nx-muted)" }}>Nenhum evento com data descoberto ainda.</p>
             ) : (
               timelineEvents.map(({ rel, ts }) => (
-                <div
+                <button
                   key={rel.id}
+                  type="button"
                   onClick={() => { selectEdge(rel.id); setMode("network"); }}
-                  style={{ minWidth: 150, padding: "0 14px 2px", borderLeft: "1px solid var(--nx-line-2)", cursor: "pointer" }}
+                  style={{
+                    minWidth: 150,
+                    padding: "0 14px 2px",
+                    border: "none",
+                    borderLeft: "1px solid var(--nx-line-2)",
+                    background: "transparent",
+                    textAlign: "left",
+                    cursor: "pointer",
+                  }}
                 >
                   <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10.5, letterSpacing: "0.1em", color: "var(--nx-muted)" }}>
                     {formatTimelineDate(ts)}
@@ -943,7 +1179,7 @@ export function GraphCanvas({ onCommand, pending }: GraphCanvasProps) {
                   <div style={{ fontSize: 10.5, color: "var(--nx-muted)", marginTop: 3 }}>
                     {nodesById.get(rel.start_id)?.label_display ?? rel.start_id} → {nodesById.get(rel.end_id)?.label_display ?? rel.end_id}
                   </div>
-                </div>
+                </button>
               ))
             )}
           </div>
@@ -962,6 +1198,7 @@ const toolButtonStyle = {
   fontFamily: "'IBM Plex Mono', monospace",
   fontSize: 10,
   letterSpacing: "0.1em",
+  whiteSpace: "nowrap",
   color: "var(--nx-muted)",
 } as const;
 
@@ -977,93 +1214,3 @@ const quickActionStyle = {
   fontSize: 11.5,
   color: "var(--nx-ink)",
 } as const;
-
-interface InspectorProps {
-  node: GraphNode | null;
-  rel: GraphRelationship | null;
-  nodesById: Map<string, GraphNode>;
-  pinned: boolean;
-  focused: boolean;
-  onFocusToggle: () => void;
-  onTogglePin: () => void;
-  onExpand: (id: string) => void;
-  onTimeline: (id: string) => void;
-  onClose: () => void;
-}
-
-function Inspector({ node, rel, nodesById, pinned, focused, onFocusToggle, onTogglePin, onExpand, onTimeline, onClose }: InspectorProps) {
-  const rows: [string, string][] = [];
-  let title = "";
-  let sub = "";
-
-  if (node) {
-    title = node.label_display;
-    sub = labelDisplay(node.labels);
-    Object.entries(node.properties).forEach(([key, value]) => rows.push([key.replaceAll("_", " "), propertyText(value)]));
-  } else if (rel) {
-    const start = nodesById.get(rel.start_id);
-    const end = nodesById.get(rel.end_id);
-    title = relationshipDisplay(rel.type);
-    sub = `${start?.label_display ?? rel.start_id} → ${end?.label_display ?? rel.end_id}`;
-    Object.entries(rel.properties).forEach(([key, value]) => rows.push([key.replaceAll("_", " "), propertyText(value)]));
-  }
-
-  return (
-    <div
-      style={{
-        position: "absolute",
-        left: 14,
-        bottom: 14,
-        maxWidth: 320,
-        padding: 16,
-        border: "1px solid var(--nx-line-2)",
-        borderRadius: 16,
-        background: "var(--nx-glass)",
-        backdropFilter: "blur(6px)",
-        animation: "nxRise .28s cubic-bezier(.22,1,.36,1)",
-        zIndex: 4,
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 9.5, letterSpacing: "0.18em", color: "var(--nx-muted)" }}>
-          {node ? "ENTIDADE" : "RELAÇÃO"}
-        </span>
-        <span onClick={onClose} style={{ cursor: "pointer", fontSize: 11, color: "var(--nx-muted)" }}>
-          FECHAR ✕
-        </span>
-      </div>
-      <div style={{ fontSize: 16, fontWeight: 500, marginTop: 6, color: "var(--nx-ink)" }}>{title}</div>
-      <div style={{ fontSize: 11.5, color: "var(--nx-muted)", marginTop: 3 }}>{sub}</div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 0, marginTop: 12, maxHeight: 140, overflowY: "auto" }}>
-        {rows.slice(0, 8).map(([k, v]) => (
-          <div key={k} style={{ display: "flex", justifyContent: "space-between", gap: 12, padding: "6px 0", borderBottom: "1px solid var(--nx-accent-06)" }}>
-            <span style={{ fontSize: 10.5, letterSpacing: "0.08em", color: "var(--nx-muted)", textTransform: "uppercase" }}>{k}</span>
-            <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: "var(--nx-ink)", textAlign: "right" }}>{v}</span>
-          </div>
-        ))}
-      </div>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 12 }}>
-        {node ? (
-          <>
-            <button type="button" onClick={() => onExpand(node.id)} style={quickActionStyle}>
-              Expandir conexões
-            </button>
-            <button type="button" onClick={() => onTimeline(node.id)} style={quickActionStyle}>
-              Ver linha do tempo
-            </button>
-            <button type="button" onClick={onFocusToggle} style={quickActionStyle}>
-              {focused ? "Sair do focus" : "Focus: só vizinhança"}
-            </button>
-            <button type="button" onClick={onTogglePin} style={quickActionStyle}>
-              {pinned ? "Soltar posição" : "Fixar posição"}
-            </button>
-          </>
-        ) : rel ? (
-          <button type="button" onClick={() => onExpand(rel.end_id)} style={quickActionStyle}>
-            Expandir {nodesById.get(rel.end_id)?.label_display ?? "destino"}
-          </button>
-        ) : null}
-      </div>
-    </div>
-  );
-}

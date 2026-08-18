@@ -78,23 +78,43 @@ export function relationshipDisplay(type: string): string {
   return RELATIONSHIP_NAMES[type] ?? type.replaceAll("_", " ").toLowerCase();
 }
 
+const PROPERTY_NAMES: Record<string, string> = {
+  content: "Conteúdo",
+  sent_at: "Enviada em",
+  captured_at: "Capturada em",
+  source: "Fonte",
+  channel: "Canal",
+  credit_score: "Score de crédito",
+  income_declared: "Renda declarada",
+  occupation: "Ocupação",
+  opened_at: "Conta aberta em",
+  occurred_at: "Ocorreu em",
+  amount: "Valor",
+  bank: "Banco",
+  address: "Endereço",
+  geo_city: "Cidade",
+  relationship: "Relação",
+  name: "Nome",
+  age: "Idade",
+  cpf_masked: "CPF",
+  number_masked: "Número",
+  branch: "Agência",
+  status: "Situação",
+  product: "Produto",
+  submitted_at: "Enviada em",
+  fingerprint: "Impressão do aparelho",
+  os: "Sistema",
+  model: "Modelo",
+  carrier: "Operadora",
+  activated_at: "Ativada em",
+  first_seen: "Visto pela primeira vez",
+  evidence_type: "Tipo de evidência",
+  timestamp: "Data do registro",
+  confidence: "Confiança",
+  observacoes: "Observações",
+  visible_from_round: "Aparece na fase",
+};
+
 export function propertyDisplay(key: string): string {
-  const names: Record<string, string> = {
-    content: "Conteúdo",
-    sent_at: "Enviada em",
-    captured_at: "Capturada em",
-    source: "Fonte",
-    channel: "Canal",
-    credit_score: "Score de crédito",
-    income_declared: "Renda declarada",
-    occupation: "Ocupação",
-    opened_at: "Conta aberta em",
-    occurred_at: "Ocorreu em",
-    amount: "Valor",
-    bank: "Banco",
-    address: "Endereço",
-    geo_city: "Cidade",
-    relationship: "Relação",
-  };
-  return names[key] ?? key.replaceAll("_", " ");
+  return PROPERTY_NAMES[key] ?? key.replaceAll("_", " ");
 }

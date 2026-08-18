@@ -177,3 +177,32 @@ export function extractEventTimestamp(properties: Record<string, unknown>): stri
   }
   return null;
 }
+
+/**
+ * How many relationship-name chips fit on screen before they start colliding.
+ * A chip is ~90x14px and needs its own strip of canvas: about twenty share a
+ * workspace-sized viewport at 1:1, and zooming in spreads the same edges
+ * further apart, so the budget grows with the camera.
+ *
+ * The floor matters as much as the number. "FIT" on a small case settles
+ * around 0.7, and that view — the default one every team stares at — must
+ * still label everything, so zooming out cannot shrink the budget below what
+ * a fitted case needs.
+ */
+const EDGE_LABELS_AT_UNIT_ZOOM = 20;
+const MIN_ZOOM_FACTOR = 0.8;
+const MAX_EDGE_LABELS = 30;
+
+export function edgeLabelCapacity(zoom: number): number {
+  const factor = Math.max(MIN_ZOOM_FACTOR, zoom);
+  return Math.round(Math.min(MAX_EDGE_LABELS, EDGE_LABELS_AT_UNIT_ZOOM * factor));
+}
+
+/**
+ * Whether *every* on-screen edge may show its name, or only the ones the
+ * player is pointing at (selected / hovered / on the active path). A fitted
+ * small case labels everything; a dense zoomed-out view degrades to hover.
+ */
+export function shouldShowAllEdgeLabels(onScreenEdges: number, zoom: number): boolean {
+  return onScreenEdges <= edgeLabelCapacity(zoom);
+}

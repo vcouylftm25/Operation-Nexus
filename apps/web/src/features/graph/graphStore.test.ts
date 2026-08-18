@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
+import { classificationStorageKey } from "./classification";
 import { useGraphStore } from "./graphStore";
 import type { GraphPayload } from "@/lib/types";
 
@@ -76,5 +77,54 @@ describe("graphStore selection", () => {
 
     useGraphStore.getState().select("person_02");
     expect(useGraphStore.getState().selectedEdgeId).toBeNull();
+  });
+});
+
+describe("graphStore classification", () => {
+  beforeEach(() => {
+    localStorage.clear();
+    useGraphStore.getState().reset();
+    useGraphStore.getState().bindTeam("team_1");
+  });
+
+  it("marks nodes and edges in the same map and clears on a repeated mark", () => {
+    useGraphStore.getState().classify("person_01", "suspect");
+    useGraphStore.getState().classify("rel_001", "uncertain");
+    expect(useGraphStore.getState().classification).toEqual({
+      person_01: "suspect",
+      rel_001: "uncertain",
+    });
+
+    useGraphStore.getState().classify("person_01", "explained");
+    expect(useGraphStore.getState().classification.person_01).toBe("explained");
+
+    useGraphStore.getState().classify("person_01", "explained");
+    expect(useGraphStore.getState().classification.person_01).toBeUndefined();
+
+    useGraphStore.getState().classify("rel_001", null);
+    expect(useGraphStore.getState().classification).toEqual({});
+  });
+
+  it("keeps one board per team across a refresh", () => {
+    useGraphStore.getState().classify("person_01", "suspect");
+    expect(localStorage.getItem(classificationStorageKey("team_1"))).toContain("suspect");
+
+    useGraphStore.getState().reset();
+    expect(useGraphStore.getState().classification).toEqual({});
+
+    useGraphStore.getState().bindTeam("team_2");
+    expect(useGraphStore.getState().classification).toEqual({});
+
+    useGraphStore.getState().bindTeam("team_1");
+    expect(useGraphStore.getState().classification).toEqual({ person_01: "suspect" });
+  });
+
+  it("ignores anything that is not a known mark in stored data", () => {
+    localStorage.setItem(
+      classificationStorageKey("team_3"),
+      JSON.stringify({ person_01: "guilty", person_02: "explained" }),
+    );
+    useGraphStore.getState().bindTeam("team_3");
+    expect(useGraphStore.getState().classification).toEqual({ person_02: "explained" });
   });
 });

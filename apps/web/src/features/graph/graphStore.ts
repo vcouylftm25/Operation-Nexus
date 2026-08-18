@@ -10,12 +10,26 @@
 import { useMemo } from "react";
 import { create } from "zustand";
 import type { GraphNode, GraphPayload, GraphRelationship } from "@/lib/types";
+import {
+  readClassification,
+  writeClassification,
+  type Classification,
+  type ClassificationMap,
+} from "./classification";
 
 interface GraphStoreState {
   nodesById: Record<string, GraphNode>;
   relsById: Record<string, GraphRelationship>;
   /** ids (node or relationship) introduced by the most recent merge() call. */
   recentIds: string[];
+  /**
+   * The team's own marks on nodes *and* edges, keyed by id (one map for both —
+   * ids are unique across the payload). Player hypothesis only: it is never
+   * sent to the API and never checked against the answer. See ./classification.
+   */
+  classification: ClassificationMap;
+  /** Team the marks belong to; also the localStorage partition key. */
+  teamId: string | null;
   /** Single-selection consumers (ToolPalette, GraphDetails) read this. */
   selectedId: string | null;
   /**
@@ -31,6 +45,10 @@ interface GraphStoreState {
   selectEdge: (id: string | null) => void;
   clearRecent: () => void;
   reset: () => void;
+  /** Loads the team's saved marks; call once the session's team is known. */
+  bindTeam: (teamId: string) => void;
+  /** Re-marking with the value already on the id clears it. */
+  classify: (id: string, value: Classification | null) => void;
 }
 
 export const useGraphStore = create<GraphStoreState>((set) => ({
@@ -40,6 +58,8 @@ export const useGraphStore = create<GraphStoreState>((set) => ({
   selectedId: null,
   selectedIds: [],
   selectedEdgeId: null,
+  classification: {},
+  teamId: null,
 
   merge: (payload) => {
     let discovered: string[] = [];
@@ -80,6 +100,9 @@ export const useGraphStore = create<GraphStoreState>((set) => ({
   selectEdge: (id) => set({ selectedEdgeId: id, selectedIds: [], selectedId: null }),
 
   clearRecent: () => set({ recentIds: [] }),
+
+  // Wipes the in-memory board only: what is on disk belongs to the team, and
+  // /play resets the store on every mount before re-binding the team.
   reset: () =>
     set({
       nodesById: {},
@@ -88,8 +111,36 @@ export const useGraphStore = create<GraphStoreState>((set) => ({
       selectedId: null,
       selectedIds: [],
       selectedEdgeId: null,
+      classification: {},
+      teamId: null,
+    }),
+
+  bindTeam: (teamId) => set({ teamId, classification: readClassification(teamId) }),
+
+  classify: (id, value) =>
+    set((state) => {
+      const next = { ...state.classification };
+      if (value === null || next[id] === value) delete next[id];
+      else next[id] = value;
+      if (state.teamId) writeClassification(state.teamId, next);
+      return { classification: next };
     }),
 }));
+
+export interface ClassificationCounts {
+  suspect: number;
+  uncertain: number;
+  explained: number;
+}
+
+export function useClassificationCounts(): ClassificationCounts {
+  const classification = useGraphStore((s) => s.classification);
+  return useMemo(() => {
+    const counts: ClassificationCounts = { suspect: 0, uncertain: 0, explained: 0 };
+    for (const value of Object.values(classification)) counts[value] += 1;
+    return counts;
+  }, [classification]);
+}
 
 /** Stable-ish GraphPayload snapshot for passing straight into GraphCanvas. */
 export function useTeamGraphPayload(): GraphPayload {

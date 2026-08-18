@@ -1,11 +1,11 @@
 /**
- * Hand-written mock scenario ("Operação Bolso Vazio") — ~11 nodes across 4
- * rounds, shaped exactly like CONTRACT.md §14's scenario-as-code files
+ * Hand-written mock scenario ("Operação Bolso Vazio") — ~11 nodes across the
+ * three phases, shaped exactly like CONTRACT.md §14's scenario-as-code files
  * (entities.json / relationships.json / evidence.json / rounds.yaml /
- * ground_truth.yaml) so the mock API can stay a drop-in stand-in for the real
- * one. `ground_truth` is kept out of anything exported to UI code paths other
- * than the mock accusation-scoring function, mirroring the real backend's
- * "never before GAME_FINISHED" rule (CONTRACT.md §0.4).
+ * hints.yaml / ground_truth.yaml) so the mock API can stay a drop-in stand-in
+ * for the real one. `ground_truth` is kept out of anything exported to UI code
+ * paths other than the mock guess check, mirroring the real backend's
+ * quarantine rule (CONTRACT.md §0.4).
  *
  * NOTE on `MENTIONS`: CONTRACT.md §3's relationship list only shows
  * `(:Evidence)-[:MENTIONS]->(:Person)`, but §14's example Message spec has a
@@ -50,6 +50,15 @@ export interface ScenarioGroundTruth {
   key_relationships: string[];
   designed_false_positives: string[];
   decoy_notes: string;
+}
+
+/** One row of `hints.yaml`: sold per phase, revealed only after purchase. */
+export interface ScenarioHint {
+  id: string;
+  round: number;
+  cost: number;
+  title: string;
+  text: string;
 }
 
 /** One "investigation beat" the mock AI investigator reveals per question asked. */
@@ -144,18 +153,19 @@ export const ENTITIES: ScenarioEntity[] = [
     id: "application_01",
     label: "Application",
     visible_from_round: 1,
-    label_display: "Financiamento — Proposta 7742",
+    label_display: "Proposta 7742",
     properties: {
       amount: 85000.0,
       submitted_at: "2026-02-02T09:15:00Z",
-      status: "under_review",
-      product: "financiamento_veicular",
+      status: "em análise",
+      product: "Financiamento veicular",
+      channel: "app_mobile",
     },
   },
   {
     id: "account_01",
     label: "BankAccount",
-    visible_from_round: 1,
+    visible_from_round: 2,
     label_display: "Conta 8831-x",
     properties: {
       bank: "Banco Aurora",
@@ -167,7 +177,7 @@ export const ENTITIES: ScenarioEntity[] = [
   {
     id: "account_02",
     label: "BankAccount",
-    visible_from_round: 1,
+    visible_from_round: 2,
     label_display: "Conta 1206-x",
     properties: {
       bank: "Banco Aurora",
@@ -180,10 +190,11 @@ export const ENTITIES: ScenarioEntity[] = [
     id: "device_01",
     label: "Device",
     visible_from_round: 2,
-    label_display: "Dispositivo fp_9a31",
+    label_display: "Aparelho fp_9a31",
     properties: {
       fingerprint: "fp_9a31c0",
       os: "Android 14",
+      model: "Xiaomi Redmi Note 12",
       first_seen: "2026-01-28T22:04:00Z",
     },
   },
@@ -195,13 +206,14 @@ export const ENTITIES: ScenarioEntity[] = [
     properties: {
       number_masked: "(11) 9****-4471",
       carrier: "Vivo",
+      activated_at: "2025-12-11T00:00:00Z",
     },
   },
   {
     id: "evidence_01",
     label: "Evidence",
-    visible_from_round: 2,
-    label_display: "Extrato bancário — Conta 8831",
+    visible_from_round: 3,
+    label_display: "Extrato — Conta 8831",
     properties: {
       evidence_type: "financial_record",
       content:
@@ -213,12 +225,13 @@ export const ENTITIES: ScenarioEntity[] = [
   {
     id: "message_01",
     label: "Message",
-    visible_from_round: 2,
-    label_display: "WhatsApp — 09/02 20:41",
+    visible_from_round: 3,
+    label_display: "WhatsApp 09/02",
     properties: {
       content: "ele só precisa assinar, o carro fica no nome dele e eu cuido do resto",
       sent_at: "2026-02-09T20:41:00Z",
       channel: "whatsapp",
+      source: "aparelho apreendido",
     },
   },
 ];
@@ -229,7 +242,7 @@ export const RELATIONSHIPS: ScenarioRelationship[] = [
     type: "SUBMITTED",
     start_id: "person_02",
     end_id: "application_01",
-    visible_from_round: 1,
+    visible_from_round: 2,
     source: "core_banking",
     confidence: 1,
     timestamp: "2026-02-02T09:15:00Z",
@@ -239,7 +252,7 @@ export const RELATIONSHIPS: ScenarioRelationship[] = [
     type: "OWNS_ACCOUNT",
     start_id: "person_03",
     end_id: "account_01",
-    visible_from_round: 1,
+    visible_from_round: 2,
     source: "core_banking",
     confidence: 1,
   },
@@ -248,7 +261,7 @@ export const RELATIONSHIPS: ScenarioRelationship[] = [
     type: "OWNS_ACCOUNT",
     start_id: "person_01",
     end_id: "account_02",
-    visible_from_round: 1,
+    visible_from_round: 2,
     source: "core_banking",
     confidence: 1,
   },
@@ -278,6 +291,10 @@ export const RELATIONSHIPS: ScenarioRelationship[] = [
     visible_from_round: 2,
     source: "device_fingerprinting",
     confidence: 0.91,
+    properties: {
+      observacoes:
+        "Três CPFs sem vínculo declarado entre si acessaram o mesmo aparelho na mesma semana.",
+    },
   },
   {
     id: "rel_007",
@@ -302,17 +319,21 @@ export const RELATIONSHIPS: ScenarioRelationship[] = [
     type: "TRANSFERRED_TO",
     start_id: "account_01",
     end_id: "account_02",
-    visible_from_round: 2,
+    visible_from_round: 3,
     source: "bank_statement",
     confidence: 0.99,
     timestamp: "2026-02-10T00:00:00Z",
+    properties: {
+      amount: 29100.0,
+      observacoes: "Três transferências em 36h, todas abaixo do limite de reporte.",
+    },
   },
   {
     id: "rel_010",
     type: "MENTIONS_ACCOUNT",
     start_id: "evidence_01",
     end_id: "account_01",
-    visible_from_round: 2,
+    visible_from_round: 3,
     source: "bank_statement",
     confidence: 1,
   },
@@ -321,7 +342,7 @@ export const RELATIONSHIPS: ScenarioRelationship[] = [
     type: "MENTIONS",
     start_id: "evidence_01",
     end_id: "person_03",
-    visible_from_round: 2,
+    visible_from_round: 3,
     source: "bank_statement",
     confidence: 0.8,
   },
@@ -330,7 +351,7 @@ export const RELATIONSHIPS: ScenarioRelationship[] = [
     type: "SENT_BY",
     start_id: "message_01",
     end_id: "person_01",
-    visible_from_round: 2,
+    visible_from_round: 3,
     source: "seized_device",
     confidence: 1,
   },
@@ -339,7 +360,7 @@ export const RELATIONSHIPS: ScenarioRelationship[] = [
     type: "SENT_TO",
     start_id: "message_01",
     end_id: "person_02",
-    visible_from_round: 2,
+    visible_from_round: 3,
     source: "seized_device",
     confidence: 1,
   },
@@ -348,7 +369,7 @@ export const RELATIONSHIPS: ScenarioRelationship[] = [
     type: "MENTIONS",
     start_id: "message_01",
     end_id: "person_03",
-    visible_from_round: 2,
+    visible_from_round: 3,
     source: "seized_device",
     confidence: 0.7,
   },
@@ -357,39 +378,75 @@ export const RELATIONSHIPS: ScenarioRelationship[] = [
 export const ROUNDS: ScenarioRound[] = [
   {
     number: 1,
-    title: "Quem merece investigação?",
+    title: "Individualmente, tudo parece normal",
     narrative:
-      "Vocês têm recursos para aprofundar apenas três perfis. Escolham usando somente as informações individuais.",
+      "Vocês receberam as fichas de quatro clientes e a proposta de crédito que está sob suspeita. É só isso: nome, idade, profissão, renda declarada e score. Nesta fase não existe nenhuma ligação visível entre as pessoas, e é esse o ponto. Leiam cada ficha inteira e anotem o que é estranho e o que é apenas feio. Nada aqui, sozinho, prova fraude.",
     credits: 100,
-    unlocks: ["Person", "Application", "BankAccount"],
-    duration_seconds: 900,
+    unlocks: ["Person", "Application"],
+    duration_seconds: 600,
   },
   {
     number: 2,
-    title: "Qual cluster merece escalonamento?",
+    title: "Conectando os pontos",
     narrative:
-      "Até agora vocês analisaram indivíduos. Novas fontes revelam dispositivos, telefones e contas compartilhadas.",
+      "A área de tecnologia liberou os dados por trás da proposta: aparelhos, linhas de telefone e contas bancárias. O grafo acende. Agora vocês vão ver que algumas pessoas compartilham coisas — e vão precisar decidir o que cada compartilhamento significa.",
     credits: 120,
-    unlocks: ["Device", "Phone", "Evidence", "Message"],
-    duration_seconds: 1200,
+    unlocks: ["Device", "Phone", "BankAccount"],
+    duration_seconds: 900,
   },
   {
     number: 3,
-    title: "Tem alguém aqui que não é quem diz ser.",
+    title: "Mensagens e dinheiro",
     narrative:
-      "Inconsistências cadastrais e mensagens recuperadas entram no jogo. Separem identidade real de ruído.",
+      "Entram no caso as mensagens apreendidas e os extratos bancários. Aqui vocês descobrem duas coisas ao mesmo tempo: para onde o dinheiro foi e quem estava dando as instruções. É nesta fase que a equipe pode acusar.",
     credits: 140,
-    unlocks: ["Email", "Address", "Message", "Evidence"],
-    duration_seconds: 1200,
+    unlocks: ["Message", "Evidence", "Transaction"],
+    duration_seconds: 900,
+  },
+];
+
+export const HINTS: ScenarioHint[] = [
+  {
+    id: "hint_r1_01",
+    round: 1,
+    cost: 10,
+    title: "Como se lê uma ficha",
+    text: "Cada ficha tem duas camadas: os números (renda, score, idade) e o texto (profissão, observações). Times iniciantes só olham os números. Leiam as quatro fichas inteiras antes de escolher qualquer suspeito.",
   },
   {
-    number: 4,
-    title: "Feche o caminho do dinheiro.",
-    narrative:
-      "Transações, uma empresa e um corretor completam o quadro. Datas e fluxo de dinheiro decidem a acusação.",
-    credits: 160,
-    unlocks: ["Transaction", "Company", "Broker", "Document"],
-    duration_seconds: 1500,
+    id: "hint_r1_02",
+    round: 1,
+    cost: 15,
+    title: "Score ruim não é crime",
+    text: "Score de crédito mede uma coisa só: a chance de a pessoa não pagar. Ele não mede honestidade. Quem faz fraude com crédito precisa de um perfil que passe na análise, ou seja, precisa de score bom. Se vocês estão olhando para a pior ficha da lista, provavelmente estão olhando para o lugar errado.",
+  },
+  {
+    id: "hint_r2_01",
+    round: 2,
+    cost: 15,
+    title: "O que é um nó compartilhado",
+    text: "No grafo, pessoas são círculos e as coisas que elas usam também. Quando duas pessoas apontam para o mesmo aparelho ou a mesma linha de telefone, esse item vira um nó compartilhado: um ponto com duas setas chegando. Qualquer item com mais de uma pessoa ligada a ele merece ser aberto e lido.",
+  },
+  {
+    id: "hint_r2_02",
+    round: 2,
+    cost: 20,
+    title: "Nem todo compartilhamento vale o mesmo",
+    text: "Antes de acusar alguém por compartilhar algo, abram o nó e leiam a descrição. Um aparelho pessoal usado por três CPFs que se declaram desconhecidos entre si é quase impossível por acaso. Duas contas na mesma agência, não. Classifiquem cada compartilhamento como forte ou fraco antes de seguir em frente.",
+  },
+  {
+    id: "hint_r3_01",
+    round: 3,
+    cost: 20,
+    title: "Siga para onde o dinheiro converge",
+    text: "Não tentem acompanhar transação por transação. Procurem a conta que RECEBE. Dinheiro legítimo se espalha em pagamentos variados; dinheiro de esquema se junta em um ponto só antes de seguir viagem.",
+  },
+  {
+    id: "hint_r3_02",
+    round: 3,
+    cost: 25,
+    title: "Quem manda escreve pouco",
+    text: "Parem de contar conexões e comecem a ler mensagens. Separem quem está DANDO instruções de quem está executando. Quem organiza um esquema costuma aparecer pouco no grafo justamente porque não assina nada e não recebe o dinheiro na própria conta — mas alguém precisa mandar, e isso aparece por escrito.",
   },
 ];
 
@@ -405,6 +462,18 @@ export const GROUND_TRUTH: ScenarioGroundTruth = {
 
 export const BEATS: ScenarioBeat[] = [
   {
+    keywords: ["ficha", "perfil", "renda", "score", "quem"],
+    nodeIds: ["person_01", "person_02", "person_03", "person_04"],
+    relationshipIds: [],
+    answer:
+      "As quatro fichas estão na mesa: Marcos Duarte, Fernanda Lima, Roberto Alves e Beatriz Nogueira. Nesta fase ninguém está ligado a ninguém — o que vocês têm são renda declarada, profissão e score. Anotem o que destoa e guardem as perguntas para a próxima fase.",
+    caveats: ["Nenhuma ficha isolada prova fraude."],
+    intent: "ENTITY_LOOKUP",
+    tool: "inspect_entity",
+    cost: 5,
+    minRound: 1,
+  },
+  {
     keywords: ["roberto", "person_03", "conta", "account"],
     nodeIds: ["person_03", "account_01"],
     relationshipIds: ["rel_002"],
@@ -414,7 +483,7 @@ export const BEATS: ScenarioBeat[] = [
     intent: "ENTITY_LOOKUP",
     tool: "inspect_entity",
     cost: 5,
-    minRound: 1,
+    minRound: 2,
   },
   {
     keywords: ["fernanda", "person_02", "proposta", "application", "financiamento"],
@@ -425,7 +494,7 @@ export const BEATS: ScenarioBeat[] = [
     intent: "ENTITY_LOOKUP",
     tool: "inspect_entity",
     cost: 5,
-    minRound: 1,
+    minRound: 2,
   },
   {
     keywords: ["marcos", "person_01", "coordenador"],
@@ -436,7 +505,7 @@ export const BEATS: ScenarioBeat[] = [
     intent: "ENTITY_LOOKUP",
     tool: "inspect_entity",
     cost: 5,
-    minRound: 1,
+    minRound: 2,
   },
   {
     keywords: ["dispositivo", "device", "compartilh", "aparelho"],
@@ -471,7 +540,7 @@ export const BEATS: ScenarioBeat[] = [
     intent: "PATH_SEARCH",
     tool: "find_path",
     cost: 15,
-    minRound: 2,
+    minRound: 3,
   },
   {
     keywords: ["prova", "evidência", "evidence", "extrato", "mensagem", "whatsapp"],
@@ -483,7 +552,7 @@ export const BEATS: ScenarioBeat[] = [
     intent: "SEMANTIC_SEARCH",
     tool: "semantic_evidence_search",
     cost: 20,
-    minRound: 2,
+    minRound: 3,
   },
   {
     keywords: ["beatriz", "person_04", "duvido", "suspeita", "hipótese", "challenge"],
@@ -523,6 +592,7 @@ export function toGraphRelationship(rel: ScenarioRelationship): GraphRelationshi
       ...rel.properties,
       source: rel.source,
       confidence: rel.confidence,
+      visible_from_round: rel.visible_from_round,
       ...(rel.timestamp ? { timestamp: rel.timestamp } : {}),
     },
   };

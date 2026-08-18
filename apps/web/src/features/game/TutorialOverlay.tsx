@@ -6,11 +6,11 @@ interface TutorialOverlayProps {
 }
 
 const STEPS = [
-  ["01 · MISSÃO", "Você não precisa descobrir tudo. Precisa decidir melhor que os outros times.", "Cada rodada libera um novo tipo de contexto. Transforme sinais soltos em uma hipótese defensável antes do tempo acabar.", "Comece pelos perfis. O grafo não aparece no Round 1 de propósito."],
-  ["02 · CRÉDITOS DE INTELIGÊNCIA", "Toda investigação tem custo.", "Inspecionar pessoas, expandir conexões, buscar evidências e desafiar hipóteses consome créditos.", "O melhor time não é o que consulta mais. É o que faz as melhores perguntas."],
-  ["03 · GRAFO", "No Round 2, as relações entram no caso.", "Dispositivos, contas, endereços, IPs e outras entidades aparecem conforme sua equipe investiga.", "Uma conexão é um sinal. Não é um veredito."],
-  ["04 · INVESTIGADOR", "A IA é seu analista júnior — não o gabarito.", "Peça conexões, caminhos, linhas do tempo e evidências. Ela enxerga o mesmo universo liberado para a equipe.", "Use a IA para testar hipóteses, não para terceirizar a acusação."],
-  ["05 · LOCK-IN", "No final, sua equipe precisa se comprometer.", "Escolha quem participou, quem coordenou o esquema, qual padrão explica o caso e quais evidências sustentam a acusação.", "Pontos vêm de prova estrutural — e de evitar falsos positivos."],
+  ["01 · MISSÃO", "Uma quadrilha pediu crédito fingindo ser oito clientes diferentes.", "A equipe atravessa três fases no próprio ritmo: vocês mesmos apertam “avançar” quando acharem que já entenderam a fase.", "Comecem pelas fichas. Na fase 1 o grafo aparece vazio de propósito."],
+  ["02 · CRÉDITOS", "Toda consulta custa crédito.", "Inspecionar pessoas, expandir conexões, buscar evidências e desafiar hipóteses gastam do saldo. Cada fase nova credita mais.", "A melhor equipe não é a que mais consulta. É a que faz as melhores perguntas."],
+  ["03 · O GRAFO", "Na fase 2 as ligações entram no caso.", "Aparelhos, telefones, contas e endereços aparecem conforme vocês investigam — e um mesmo item usado por duas pessoas é o começo de tudo.", "Uma conexão é um indício. Não é um veredito."],
+  ["04 · INVESTIGADOR", "A IA é a analista júnior da equipe — não o gabarito.", "Peça conexões, caminhos, linhas do tempo e trechos de evidência. Ela enxerga só o que já foi liberado para vocês.", "Use a IA para testar a hipótese, não para terceirizar a acusação."],
+  ["05 · A ACUSAÇÃO", "Na fase 3 vocês apontam quem coordenou o esquema.", "São três tentativas, com resposta na hora. Acertar cedo, gastando pouco, vale mais pontos — e o placar da sala mostra como está cada equipe.", "Quem coordena costuma aparecer pouco no grafo. Leiam as mensagens."],
 ] as const;
 
 export function TutorialOverlay({ storageKey }: TutorialOverlayProps) {

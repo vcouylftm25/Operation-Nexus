@@ -45,3 +45,6 @@ infra/**/postgres_data/
 
 # --- Logs ---
 *.log
+
+# Playwright screenshot scratch output
+apps/web/shots/

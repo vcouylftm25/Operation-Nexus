@@ -1,32 +1,34 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { useSessionStore } from "@/features/game/session";
+import { SESSION_STORAGE_KEY, useSessionStore } from "@/features/game/session";
+
+const session = {
+  team_id: "team-1",
+  game_id: "game-1",
+  session_token: "tok",
+  team_name: "Os Detetives",
+};
 
 describe("session store", () => {
   beforeEach(() => {
-    sessionStorage.clear();
+    localStorage.clear();
     useSessionStore.setState({ session: null });
   });
 
-  it("stores a team session", () => {
-    useSessionStore.getState().setTeamSession({
-      gameId: "game-1",
-      teamId: "team-1",
-      teamName: "Alfa",
-      sessionToken: "tok",
-    });
-    const session = useSessionStore.getState().session;
-    expect(session?.role).toBe("team");
-    if (session?.role === "team") {
-      expect(session.teamName).toBe("Alfa");
-      expect(session.sessionToken).toBe("tok");
-    }
+  it("keeps the four credentials a team needs to talk to the API", () => {
+    useSessionStore.getState().setSession(session);
+    expect(useSessionStore.getState().session).toEqual(session);
   });
 
-  it("stores host and screen sessions and can clear", () => {
-    useSessionStore.getState().setHostSession({ gameId: "g", hostToken: "h" });
-    expect(useSessionStore.getState().session?.role).toBe("host");
-    useSessionStore.getState().setScreenSession({ gameId: "g" });
-    expect(useSessionStore.getState().session?.role).toBe("screen");
+  it("survives in localStorage so a closed tab does not lose the run", () => {
+    useSessionStore.getState().setSession(session);
+
+    const raw = localStorage.getItem(SESSION_STORAGE_KEY);
+    expect(raw).not.toBeNull();
+    expect(JSON.parse(raw ?? "{}")).toMatchObject({ state: { session } });
+  });
+
+  it("clears the session", () => {
+    useSessionStore.getState().setSession(session);
     useSessionStore.getState().clear();
     expect(useSessionStore.getState().session).toBeNull();
   });

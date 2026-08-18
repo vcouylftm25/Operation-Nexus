@@ -50,7 +50,7 @@ export function NexusHeader({ subtitle, credits, round, live, right, variant = "
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           {round !== null && round !== undefined ? (
             <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, letterSpacing: "0.16em", color: "var(--nx-muted)" }}>
-              ROUND {String(round).padStart(2, "0")}
+              FASE {String(round).padStart(2, "0")}
             </span>
           ) : null}
           {live ? (
@@ -109,7 +109,7 @@ export function NexusHeader({ subtitle, credits, round, live, right, variant = "
           </div>
         ) : null}
         {round !== null && round !== undefined ? (
-          <Badge tone="amber">Round {round}</Badge>
+          <Badge tone="amber">Fase {round}</Badge>
         ) : null}
         {live ? (
           <Badge tone={liveTone}>

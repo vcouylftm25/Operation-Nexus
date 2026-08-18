@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { extractEventTimestamp, isMoneyRelationship, visualFor } from "./nodeVisuals";
+import {
+  edgeLabelCapacity,
+  extractEventTimestamp,
+  isMoneyRelationship,
+  shouldShowAllEdgeLabels,
+  visualFor,
+} from "./nodeVisuals";
 
 describe("isMoneyRelationship", () => {
   it("flags relationship types that move or control money", () => {
@@ -23,6 +29,24 @@ describe("extractEventTimestamp", () => {
   it("returns null when nothing date-like is present", () => {
     expect(extractEventTimestamp({ content: "hello" })).toBeNull();
     expect(extractEventTimestamp({})).toBeNull();
+  });
+});
+
+describe("edge label density", () => {
+  it("labels every edge of a small case at the zoom FIT settles on", () => {
+    expect(shouldShowAllEdgeLabels(14, 0.7)).toBe(true);
+    expect(shouldShowAllEdgeLabels(9, 1)).toBe(true);
+  });
+
+  it("falls back to hover-only when a dense view is zoomed out", () => {
+    expect(shouldShowAllEdgeLabels(40, 0.5)).toBe(false);
+    expect(shouldShowAllEdgeLabels(26, 1)).toBe(false);
+  });
+
+  it("gives more room as the camera zooms in, within limits", () => {
+    expect(edgeLabelCapacity(2)).toBeGreaterThan(edgeLabelCapacity(1));
+    expect(edgeLabelCapacity(0.45)).toBe(16);
+    expect(edgeLabelCapacity(10)).toBe(30);
   });
 });
 

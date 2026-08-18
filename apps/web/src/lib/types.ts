@@ -5,11 +5,10 @@
  *   domain/game/contracts.py
  *   domain/investigation/contracts.py
  *   domain/graph/payload.py
- *   api/routes/teams.py (JoinTeamResponse)
- *   api/routes/games.py (CreateTeamResponse)
+ *   api/routes/play.py, api/routes/teams.py (request/response wrappers)
  *
  * WS payloads are typed from the envelopes the engine actually broadcasts
- * (application/start_round.py, record_investigation.py, finish_game.py),
+ * (application/advance_phase.py, record_investigation.py, submit_guess.py),
  * with optional fields so the richer mock broadcast still type-checks.
  */
 
@@ -193,58 +192,38 @@ export const FRAUD_PATTERNS: readonly FraudPattern[] = [
   "OTHER",
 ];
 
-export interface Accusation {
-  accused_person_ids: string[];
-  coordinator_person_id: string;
-  pattern: FraudPattern;
-  evidence_ids: string[];
-  key_relationship_ids: string[];
-  confidence: number;
-  rationale: string;
-}
-
-export interface ScoreEvent {
-  team_id: string;
-  round: number;
-  rule: string;
-  delta: number;
-  detail: string;
-}
-
-export interface ScoreBreakdown {
-  team_id: string;
-  events: ScoreEvent[];
-  total: number;
-}
-
-export type JoinCode = string;
-
-export const ROUND_CREDITS: readonly number[] = [100, 120, 140, 160];
-export const TOTAL_ROUNDS = ROUND_CREDITS.length;
-
 export type GameStatus = "PENDING" | "ACTIVE" | "FINISHED";
-export type RoundStatus = "PENDING" | "ACTIVE" | "ENDED";
 
+/** A team walks the phases at its own pace; these are the three outcomes. */
+export type TeamStatus = "PLAYING" | "SOLVED" | "FAILED";
+
+/** A team gets three shots at naming the fraudster. */
+export const MAX_GUESS_ATTEMPTS = 3;
+
+/**
+ * A phase's briefing copy — an immutable catalogue entry, not a state.
+ * Phases no longer start or end, so there is no status/started_at here.
+ */
 export interface RoundState {
   game_id: string;
   number: number;
-  status: RoundStatus;
   credits_awarded: number;
   title: string | null;
   narrative: string | null;
   duration_seconds: number | null;
-  started_at: string | null;
-  ended_at: string | null;
 }
 
 export interface TeamState {
   team_id: string;
   game_id: string;
   name: string;
-  join_code: string;
   current_round: number;
   credits_balance: number;
   credits_total_awarded: number;
+  status: TeamStatus;
+  attempts_used: number;
+  started_at: string | null;
+  solved_at: string | null;
   discovered_node_ids: string[];
   discovered_relationship_ids: string[];
 }
@@ -253,22 +232,72 @@ export interface GameState {
   game_id: string;
   scenario_slug: string;
   status: GameStatus;
-  current_round: number;
   created_at: string;
   finished_at: string | null;
   rounds: RoundState[];
   teams: TeamState[];
 }
 
-export interface CreateTeamResponse {
-  team_id: string;
-  join_code: JoinCode;
+/** POST /play/start — the only way into the game. */
+export interface StartPlayResponse {
+  team: TeamState;
+  session_token: string;
+  /** True when the name matched a team that already existed. */
+  resumed: boolean;
+  rounds: RoundState[];
 }
 
-export interface JoinTeamResponse {
+/** POST /teams/{id}/advance */
+export interface AdvancePhaseResponse {
+  team: TeamState;
+  briefing: RoundState;
+}
+
+/**
+ * A hint's `text` is present only once the team has paid for it; until then
+ * the card carries the title and price so a team can decide.
+ */
+export interface HintCard {
+  id: string;
+  round: number;
+  cost: number;
+  title: string;
+  purchased: boolean;
+  text: string | null;
+}
+
+export interface BuyHintResponse {
+  hint: HintCard;
+  credits_balance: number;
+}
+
+export interface Suspect {
+  id: string;
+  name: string;
+  already_guessed: boolean;
+}
+
+/**
+ * POST /teams/{id}/guess. Deliberately incapable of carrying the answer:
+ * no person id, no name — only whether *this* guess was right.
+ */
+export interface GuessResult {
+  correct: boolean;
+  attempts_used: number;
+  attempts_remaining: number;
+  status: TeamStatus;
+  elapsed_seconds: number;
+  score: number;
+}
+
+export interface LeaderboardRow {
   team_id: string;
-  game_id: string;
-  session_token: string;
+  team_name: string;
+  status: TeamStatus;
+  score: number;
+  attempts_used: number;
+  elapsed_seconds: number | null;
+  current_round: number;
 }
 
 export interface InsufficientCreditsBody {
@@ -281,29 +310,14 @@ export interface InsufficientCreditsBody {
 // WebSocket
 // ---------------------------------------------------------------------------
 
-export type WSRole = "team" | "host" | "screen";
+export type WSRole = "team" | "screen";
 
-export type WSEventType =
-  | "ROUND_STARTED"
-  | "ROUND_ENDED"
-  | "TEAM_SCORE_UPDATED"
-  | "EVIDENCE_UNLOCKED"
-  | "GRAPH_DISCOVERY"
-  | "ACCUSATION_SUBMITTED"
-  | "GAME_FINISHED"
-  | "HOST_ANNOUNCEMENT"
-  | "TICK";
+export type WSEventType = "PHASE_ADVANCED" | "GRAPH_DISCOVERY" | "LEADERBOARD_CHANGED";
 
 export const WS_EVENT_TYPES: readonly WSEventType[] = [
-  "ROUND_STARTED",
-  "ROUND_ENDED",
-  "TEAM_SCORE_UPDATED",
-  "EVIDENCE_UNLOCKED",
+  "PHASE_ADVANCED",
   "GRAPH_DISCOVERY",
-  "ACCUSATION_SUBMITTED",
-  "GAME_FINISHED",
-  "HOST_ANNOUNCEMENT",
-  "TICK",
+  "LEADERBOARD_CHANGED",
 ];
 
 interface WSEnvelope<TType extends WSEventType, TPayload> {
@@ -314,37 +328,10 @@ interface WSEnvelope<TType extends WSEventType, TPayload> {
   payload: TPayload;
 }
 
-export interface RoundStartedPayload {
-  round: number;
-  title: string | null;
-  narrative: string | null;
-  duration_seconds: number | null;
-  credits_awarded: number;
-  started_at?: string;
-  unlocks?: string[];
-}
-
-export interface RoundEndedPayload {
-  round: number;
-}
-
-export interface TeamScoreUpdatedPayload {
+export interface PhaseAdvancedPayload {
   team_id: string;
-  total?: number;
-  team_name?: string;
-  total_score?: number;
-  event?: ScoreEvent;
-}
-
-export interface EvidenceUnlockedPayload {
-  evidence_id?: string;
-  id?: string;
-  evidence_type?: string;
-  excerpt?: string;
-  source?: string;
-  captured_at?: string | null;
-  round?: number;
-  revealed_at?: string;
+  round: number;
+  credits_balance: number;
 }
 
 export interface GraphDiscoveryPayload {
@@ -355,41 +342,21 @@ export interface GraphDiscoveryPayload {
   relationship_ids?: string[];
 }
 
-export interface AccusationSubmittedPayload {
+/**
+ * Standings only. The leaderboard is on a wall every team can see, so this
+ * event must never carry a person id or a suspect name.
+ */
+export interface LeaderboardChangedPayload {
   team_id: string;
-  team_name?: string;
-}
-
-export interface GameFinishedScoreRow {
-  team_id: string;
-  total: number;
-  team_name?: string;
-}
-
-export interface GameFinishedPayload {
-  scoreboard: GameFinishedScoreRow[];
-}
-
-export interface HostAnnouncementPayload {
-  message: string;
-  level: "info" | "warning" | "critical";
-}
-
-export interface TickPayload {
-  round: number;
-  seconds_remaining: number;
+  team_name: string;
+  status: TeamStatus;
+  score: number;
 }
 
 export type WSMessage =
-  | WSEnvelope<"ROUND_STARTED", RoundStartedPayload>
-  | WSEnvelope<"ROUND_ENDED", RoundEndedPayload>
-  | WSEnvelope<"TEAM_SCORE_UPDATED", TeamScoreUpdatedPayload>
-  | WSEnvelope<"EVIDENCE_UNLOCKED", EvidenceUnlockedPayload>
+  | WSEnvelope<"PHASE_ADVANCED", PhaseAdvancedPayload>
   | WSEnvelope<"GRAPH_DISCOVERY", GraphDiscoveryPayload>
-  | WSEnvelope<"ACCUSATION_SUBMITTED", AccusationSubmittedPayload>
-  | WSEnvelope<"GAME_FINISHED", GameFinishedPayload>
-  | WSEnvelope<"HOST_ANNOUNCEMENT", HostAnnouncementPayload>
-  | WSEnvelope<"TICK", TickPayload>;
+  | WSEnvelope<"LEADERBOARD_CHANGED", LeaderboardChangedPayload>;
 
 export function isWSEvent<T extends WSEventType>(
   msg: WSMessage,
