@@ -11,32 +11,31 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from operation_nexus.api.connection_manager import ConnectionManager
-from operation_nexus.api.routes import games, health, host, teams, ws
+from operation_nexus.api.routes import games, health, play, teams, ws
 from operation_nexus.application.errors import (
-    InvalidJoinCode,
-    NoAccusationSubmitted,
-    NoActiveRound,
-    RoundSequenceError,
+    GuessLocked,
+    HintLocked,
+    HintNotFound,
+    InvalidTeamName,
+    NoAttemptsRemaining,
+    NoFurtherPhase,
+    RunAlreadyResolved,
+    UnknownSuspect,
 )
 from operation_nexus.application.graph_reader import Neo4jGraphReader
 from operation_nexus.application.ports import AINotEnabled, NullGraphReader, NullInvestigationRunner
 from operation_nexus.domain.game.credits import InsufficientCredits
-from operation_nexus.domain.game.join_codes import JoinCodeExhausted
-from operation_nexus.domain.game.rounds import IllegalRoundTransition
 from operation_nexus.infrastructure.neo4j.driver import create_driver_manager_from_settings
 from operation_nexus.infrastructure.neo4j.repository import GraphRepository
 from operation_nexus.infrastructure.postgres.engine import create_engine, create_session_factory
-from operation_nexus.infrastructure.postgres.repositories.game_repository import GameNotFound
-from operation_nexus.infrastructure.postgres.repositories.team_repository import (
-    AccusationNotFound,
-    TeamNotFound,
+from operation_nexus.infrastructure.postgres.repositories.game_repository import (
+    GameNotFound,
+    RoundNotFound,
 )
+from operation_nexus.infrastructure.postgres.repositories.team_repository import TeamNotFound
 from operation_nexus.infrastructure.settings import get_settings
 
 logger = structlog.get_logger(__name__)
-
-# CONTRACT.md §12: the vite dev server always runs on this origin locally.
-_VITE_ORIGIN = "http://localhost:5173"
 
 
 def _build_investigation_runner(settings: object, graph_repo: GraphRepository) -> object:
@@ -121,7 +120,7 @@ app = FastAPI(title="Operation Nexus", version="0.1.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[_VITE_ORIGIN, "http://127.0.0.1:5173"],
+    allow_origins=get_settings().cors_origin_list,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -141,42 +140,60 @@ async def insufficient_credits_handler(request: Request, exc: InsufficientCredit
     )
 
 
-@app.exception_handler(IllegalRoundTransition)
-async def illegal_round_transition_handler(
-    request: Request, exc: IllegalRoundTransition
-) -> JSONResponse:
-    return JSONResponse(
-        status_code=409, content={"error": "ILLEGAL_ROUND_TRANSITION", "detail": str(exc)}
-    )
-
-
-@app.exception_handler(RoundSequenceError)
-async def round_sequence_handler(request: Request, exc: RoundSequenceError) -> JSONResponse:
-    return JSONResponse(
-        status_code=409, content={"error": "ROUND_SEQUENCE_ERROR", "detail": str(exc)}
-    )
-
-
-@app.exception_handler(NoActiveRound)
-async def no_active_round_handler(request: Request, exc: NoActiveRound) -> JSONResponse:
-    return JSONResponse(status_code=409, content={"error": "NO_ACTIVE_ROUND", "detail": str(exc)})
-
-
 @app.exception_handler(AINotEnabled)
 async def ai_not_enabled_handler(request: Request, exc: AINotEnabled) -> JSONResponse:
     return JSONResponse(status_code=503, content={"error": "AI_NOT_ENABLED", "detail": str(exc)})
 
 
-@app.exception_handler(JoinCodeExhausted)
-async def join_code_exhausted_handler(request: Request, exc: JoinCodeExhausted) -> JSONResponse:
+@app.exception_handler(InvalidTeamName)
+async def invalid_team_name_handler(request: Request, exc: InvalidTeamName) -> JSONResponse:
+    return JSONResponse(status_code=422, content={"error": "INVALID_TEAM_NAME", "detail": str(exc)})
+
+
+@app.exception_handler(NoFurtherPhase)
+async def no_further_phase_handler(request: Request, exc: NoFurtherPhase) -> JSONResponse:
+    return JSONResponse(status_code=409, content={"error": "NO_FURTHER_PHASE", "detail": str(exc)})
+
+
+@app.exception_handler(RunAlreadyResolved)
+async def run_already_resolved_handler(request: Request, exc: RunAlreadyResolved) -> JSONResponse:
     return JSONResponse(
-        status_code=503, content={"error": "JOIN_CODE_EXHAUSTED", "detail": str(exc)}
+        status_code=409, content={"error": "RUN_ALREADY_RESOLVED", "detail": str(exc)}
     )
 
 
-@app.exception_handler(InvalidJoinCode)
-async def invalid_join_code_handler(request: Request, exc: InvalidJoinCode) -> JSONResponse:
-    return JSONResponse(status_code=404, content={"error": "INVALID_JOIN_CODE", "detail": str(exc)})
+@app.exception_handler(GuessLocked)
+async def guess_locked_handler(request: Request, exc: GuessLocked) -> JSONResponse:
+    return JSONResponse(
+        status_code=409,
+        content={
+            "error": "GUESS_LOCKED",
+            "detail": str(exc),
+            "required_round": exc.required_round,
+        },
+    )
+
+
+@app.exception_handler(NoAttemptsRemaining)
+async def no_attempts_remaining_handler(request: Request, exc: NoAttemptsRemaining) -> JSONResponse:
+    return JSONResponse(
+        status_code=409, content={"error": "NO_ATTEMPTS_REMAINING", "detail": str(exc)}
+    )
+
+
+@app.exception_handler(UnknownSuspect)
+async def unknown_suspect_handler(request: Request, exc: UnknownSuspect) -> JSONResponse:
+    return JSONResponse(status_code=422, content={"error": "UNKNOWN_SUSPECT", "detail": str(exc)})
+
+
+@app.exception_handler(HintNotFound)
+async def hint_not_found_handler(request: Request, exc: HintNotFound) -> JSONResponse:
+    return JSONResponse(status_code=404, content={"error": "HINT_NOT_FOUND", "detail": str(exc)})
+
+
+@app.exception_handler(HintLocked)
+async def hint_locked_handler(request: Request, exc: HintLocked) -> JSONResponse:
+    return JSONResponse(status_code=409, content={"error": "HINT_LOCKED", "detail": str(exc)})
 
 
 @app.exception_handler(GameNotFound)
@@ -184,32 +201,21 @@ async def game_not_found_handler(request: Request, exc: GameNotFound) -> JSONRes
     return JSONResponse(status_code=404, content={"error": "GAME_NOT_FOUND", "detail": str(exc)})
 
 
+@app.exception_handler(RoundNotFound)
+async def round_not_found_handler(request: Request, exc: RoundNotFound) -> JSONResponse:
+    return JSONResponse(status_code=404, content={"error": "ROUND_NOT_FOUND", "detail": str(exc)})
+
+
 @app.exception_handler(TeamNotFound)
 async def team_not_found_handler(request: Request, exc: TeamNotFound) -> JSONResponse:
     return JSONResponse(status_code=404, content={"error": "TEAM_NOT_FOUND", "detail": str(exc)})
-
-
-@app.exception_handler(AccusationNotFound)
-async def accusation_not_found_handler(request: Request, exc: AccusationNotFound) -> JSONResponse:
-    return JSONResponse(
-        status_code=404, content={"error": "ACCUSATION_NOT_FOUND", "detail": str(exc)}
-    )
-
-
-@app.exception_handler(NoAccusationSubmitted)
-async def no_accusation_submitted_handler(
-    request: Request, exc: NoAccusationSubmitted
-) -> JSONResponse:
-    return JSONResponse(
-        status_code=404, content={"error": "NO_ACCUSATION_SUBMITTED", "detail": str(exc)}
-    )
 
 
 # `/health` is mounted both bare (infra/orchestration probes) and under the
 # API prefix, since CONTRACT.md §8 lists it inside the `/api/v1` block.
 app.include_router(health.router)
 app.include_router(health.router, prefix="/api/v1")
+app.include_router(play.router, prefix="/api/v1")
 app.include_router(games.router, prefix="/api/v1")
 app.include_router(teams.router, prefix="/api/v1")
-app.include_router(host.router, prefix="/api/v1")
 app.include_router(ws.router)

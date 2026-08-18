@@ -64,8 +64,11 @@ class Settings(BaseSettings):
     api_host: str = "0.0.0.0"  # noqa: S104
     api_port: int = 8000
 
-    host_token: SecretStr = SecretStr("dev-host-token-change-me")
     session_secret: SecretStr = SecretStr("dev-session-secret-change-me")
+
+    #: The scenario this deployment serves. Players type a team name and are
+    #: dropped straight into it -- there is no scenario picker in the UI.
+    scenario_slug: str = "vero_express"
 
     postgres_dsn: str = "postgresql+psycopg://nexus:nexus@localhost:5432/nexus"
 
@@ -100,7 +103,16 @@ class Settings(BaseSettings):
     vite_api_url: str = "http://localhost:8000"
     vite_ws_url: str = "ws://localhost:8000"
 
+    #: Browser origins allowed to call the API, comma-separated. Defaults to the
+    #: local vite dev server; a deployed frontend lives on a different origin and
+    #: every request fails CORS until its URL is listed here.
+    cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
+
     scenarios_dir: Path = _default_scenarios_dir()
+
+    @property
+    def cors_origin_list(self) -> list[str]:
+        return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]
 
     @field_validator("azure_openai_base_url", mode="before")
     @classmethod

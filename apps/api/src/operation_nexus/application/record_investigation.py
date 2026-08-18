@@ -16,7 +16,6 @@ from operation_nexus.infrastructure.postgres.repositories.action_repository impo
 from operation_nexus.infrastructure.postgres.repositories.discovery_repository import (
     DiscoveryRepository,
 )
-from operation_nexus.infrastructure.postgres.repositories.game_repository import GameRepository
 from operation_nexus.infrastructure.postgres.repositories.team_repository import (
     TeamNotFound,
     TeamRepository,
@@ -27,7 +26,6 @@ class RecordInvestigation:
     def __init__(
         self,
         team_repo: TeamRepository,
-        game_repo: GameRepository,
         action_repo: ActionRepository,
         discovery_repo: DiscoveryRepository,
         runner: InvestigationRunner,
@@ -35,7 +33,6 @@ class RecordInvestigation:
         graph_reader: GraphReader | None = None,
     ) -> None:
         self._team_repo = team_repo
-        self._game_repo = game_repo
         self._action_repo = action_repo
         self._discovery_repo = discovery_repo
         self._runner = runner
@@ -47,8 +44,7 @@ class RecordInvestigation:
         if team is None:
             raise TeamNotFound(team_id)
 
-        game = await self._game_repo.get(team.game_id)
-        current_round = game.current_round if game is not None else 0
+        current_round = team.current_round
         known_nodes, _known_rels = await self._discovery_repo.list_for_team(team_id)
 
         # The planner needs human names, not just ids: teams ask about

@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import secrets
 from collections.abc import AsyncIterator
+from pathlib import Path
 from uuid import UUID
 
 from fastapi import Depends, Header, HTTPException, Request, status
@@ -35,12 +35,17 @@ def get_settings_dep() -> Settings:
     return get_settings()
 
 
-async def require_host(
-    x_host_token: str = Header(..., alias="X-Host-Token"),
-    settings: Settings = Depends(get_settings_dep),
-) -> None:
-    if not secrets.compare_digest(x_host_token, settings.host_token.get_secret_value()):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="invalid host token")
+def get_scenarios_dir(settings: Settings = Depends(get_settings_dep)) -> Path:
+    return settings.scenarios_dir
+
+
+def get_scenario_slug(settings: Settings = Depends(get_settings_dep)) -> str:
+    """The single scenario this deployment runs.
+
+    Players never pick a scenario -- they type a team name and start -- so the
+    slug is deployment configuration, not request input.
+    """
+    return settings.scenario_slug
 
 
 async def require_team(

@@ -6,8 +6,19 @@ import ast
 import re
 from pathlib import Path
 
-_AI_ROOT = Path(__file__).resolve().parents[2] / "src" / "operation_nexus" / "ai"
+_SRC_ROOT = Path(__file__).resolve().parents[2] / "src" / "operation_nexus"
+_AI_ROOT = _SRC_ROOT / "ai"
 _SCORING_MODULE = "operation_nexus.domain.game.scoring"
+
+#: Ground truth is quarantined to `domain/game/scoring.py`. Exactly one module
+#: outside it may consult the answer -- the use case that judges a guess. Any
+#: new importer is a leak until it is deliberately added here.
+_SCORING_IMPORT_ALLOWLIST = frozenset(
+    {
+        "domain/game/scoring.py",
+        "application/submit_guess.py",
+    }
+)
 _DENIAL = re.compile(
     r"never|nunca|not |não |nao |must not|não tem|sem acesso|quarantine|"
     r"not loaded|never loads|does not exist|não existe|forbidden|fora do escopo",
@@ -74,6 +85,57 @@ def test_ai_never_imports_domain_game_scoring() -> None:
                     rel = path.relative_to(_AI_ROOT)
                     leaks.append(f"{rel} imports {module}")
     assert leaks == [], "ai/ must never import scoring:\n" + "\n".join(leaks)
+
+
+def _python_sources(root: Path) -> list[Path]:
+    return sorted(
+        path for path in root.rglob("*.py") if path.is_file() and "__pycache__" not in path.parts
+    )
+
+
+def _imported_modules(path: Path) -> list[str]:
+    tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+    modules: list[str] = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            modules.extend(alias.name for alias in node.names)
+        elif isinstance(node, ast.ImportFrom) and node.module:
+            modules.append(node.module)
+    return modules
+
+
+def test_only_allowlisted_modules_import_scoring() -> None:
+    """The whole codebase, not just `ai/`, is held to the quarantine."""
+    leaks: list[str] = []
+    for path in _python_sources(_SRC_ROOT):
+        rel = path.relative_to(_SRC_ROOT).as_posix()
+        if rel in _SCORING_IMPORT_ALLOWLIST:
+            continue
+        for module in _imported_modules(path):
+            if module == _SCORING_MODULE or module.startswith(_SCORING_MODULE + "."):
+                leaks.append(f"{rel} imports {module}")
+    assert leaks == [], (
+        "only these modules may import scoring: "
+        f"{sorted(_SCORING_IMPORT_ALLOWLIST)}\n" + "\n".join(leaks)
+    )
+
+
+def test_the_scoring_allowlist_is_not_stale() -> None:
+    """Every allowlisted path must exist, so the list can't silently rot."""
+    missing = [rel for rel in _SCORING_IMPORT_ALLOWLIST if not (_SRC_ROOT / rel).is_file()]
+    assert missing == [], f"allowlist references files that no longer exist: {missing}"
+
+
+def test_guess_result_cannot_carry_the_answer() -> None:
+    """The verdict a team receives has no field capable of naming anyone."""
+    from operation_nexus.domain.game.contracts import GuessResult
+
+    suspicious = {
+        name
+        for name in GuessResult.model_fields
+        if "person" in name or "name" in name or "fraud" in name or "coordinator" in name
+    }
+    assert suspicious == set(), f"GuessResult exposes fields that could leak: {suspicious}"
 
 
 def test_ai_never_calls_load_ground_truth() -> None:

@@ -1,15 +1,18 @@
 """Per-team credit ledger: charge, refund, balance and round-to-round rollover.
 
-Pure domain module: no framework imports, no I/O. Round allowances come from
-CONTRACT.md §7: `[100, 120, 140, 160]` credits for rounds 1..4, and unspent
-credits always roll over -- a round grant simply adds on top of whatever
-balance remains.
+Pure domain module: no framework imports, no I/O. Unspent credits always roll
+over -- a round grant simply adds on top of whatever balance remains.
+
+The per-round allowance is **scenario-driven**: it comes from each scenario's
+`rounds.yaml` (`credits:`), is persisted per game in the `rounds` table, and is
+passed explicitly into `award_round`. `DEFAULT_ROUND_CREDITS` is only a fallback
+for a scenario that omits the field -- it is not the source of truth, so
+scenarios are free to define however many rounds they want.
 """
 
 from __future__ import annotations
 
-ROUND_CREDIT_ALLOWANCE: tuple[int, int, int, int] = (100, 120, 140, 160)
-TOTAL_ROUNDS = len(ROUND_CREDIT_ALLOWANCE)
+DEFAULT_ROUND_CREDITS = 120
 
 
 class InsufficientCredits(Exception):
@@ -24,13 +27,6 @@ class InsufficientCredits(Exception):
         self.required = required
         self.available = available
         super().__init__(f"insufficient credits: required={required} available={available}")
-
-
-def credits_for_round(round_number: int) -> int:
-    """Return the credit allowance granted for a 1-indexed round number."""
-    if not 1 <= round_number <= TOTAL_ROUNDS:
-        raise ValueError(f"invalid round number: {round_number}")
-    return ROUND_CREDIT_ALLOWANCE[round_number - 1]
 
 
 class CreditLedger:
@@ -65,10 +61,14 @@ class CreditLedger:
         return amount <= self._balance
 
     def award_round(self, round_number: int, amount: int | None = None) -> int:
-        """Add a round's credit allowance to the balance (rollover of unspent credits)."""
+        """Add a round's credit allowance to the balance (rollover of unspent credits).
+
+        `amount` comes from the game's round catalogue (seeded from the
+        scenario's `rounds.yaml`); omit it only to accept the fallback.
+        """
         if round_number in self._rounds_applied:
             raise ValueError(f"credits for round {round_number} already applied")
-        granted = credits_for_round(round_number) if amount is None else amount
+        granted = DEFAULT_ROUND_CREDITS if amount is None else amount
         if granted < 0:
             raise ValueError("credit award must be non-negative")
         self._balance += granted

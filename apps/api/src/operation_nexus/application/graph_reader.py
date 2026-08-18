@@ -37,3 +37,16 @@ class Neo4jGraphReader:
             primary = node.labels[0] if node.labels else "Node"
             roster[node.id] = f"{label} ({primary})"
         return roster
+
+    async def list_suspects(self, current_round: int) -> dict[str, str]:
+        """`{person_id: name}` for everyone who can be accused.
+
+        Only People: a team names a person, so a device or an account must not
+        be a legal guess even though both are in the entity roster.
+        """
+        payload = await self._repository.list_case_files(current_round)
+        return {
+            node.id: node.label_display or str(node.properties.get("name") or node.id)
+            for node in payload.nodes
+            if "Person" in node.labels
+        }

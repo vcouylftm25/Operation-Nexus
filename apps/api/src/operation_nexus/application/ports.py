@@ -68,6 +68,8 @@ class GraphReader(Protocol):
 
     async def entity_roster(self, current_round: int) -> dict[str, str]: ...
 
+    async def list_suspects(self, current_round: int) -> dict[str, str]: ...
+
 
 class NullGraphReader:
     """Degrades to id-only nodes when Neo4j isn't wired."""
@@ -95,6 +97,10 @@ class NullGraphReader:
         return GraphPayload.empty()
 
     async def entity_roster(self, current_round: int) -> dict[str, str]:
+        del current_round
+        return {}
+
+    async def list_suspects(self, current_round: int) -> dict[str, str]:
         del current_round
         return {}
 

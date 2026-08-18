@@ -24,10 +24,11 @@ NEO4J_USER ?= neo4j
 NEO4J_PASSWORD ?= nexus_dev_password
 API_HOST ?= 0.0.0.0
 API_PORT ?= 8000
+SCENARIO_SLUG ?= vero_express
 
-export POSTGRES_USER POSTGRES_DB NEO4J_USER NEO4J_PASSWORD API_HOST API_PORT
+export POSTGRES_USER POSTGRES_DB NEO4J_USER NEO4J_PASSWORD API_HOST API_PORT SCENARIO_SLUG
 
-.PHONY: help up up-core down nuke logs api web seed test test-int lint fmt \
+.PHONY: help up up-core down nuke logs api web seed validate test test-int lint fmt \
         typecheck migrate revision psql cypher bootstrap
 
 help: ## Show this help
@@ -65,8 +66,11 @@ api: ## Run the API locally with hot reload (uv, not docker)
 web: ## Run the web dev server locally (pnpm, not docker)
 	cd apps/web && pnpm dev --host
 
-seed: ## Seed postgres + neo4j from scenarios/operation_nexus (ARGS="--drop --embeddings")
-	cd apps/api && uv run operation-nexus seed operation_nexus $(ARGS)
+seed: ## Seed neo4j from scenarios/$(SCENARIO_SLUG) (ARGS="--drop --embeddings")
+	cd apps/api && uv run --env-file $(CURDIR)/.env operation-nexus seed $(SCENARIO_SLUG) $(ARGS)
+
+validate: ## Validate the scenario files offline (no database needed)
+	cd apps/api && uv run operation-nexus validate $(SCENARIO_SLUG)
 
 test: ## Run unit tests (excludes integration + ai markers)
 	cd apps/api && uv run pytest -m "not integration and not ai"
@@ -86,7 +90,7 @@ typecheck: ## Type-check the API (pyright) and web (tsc)
 	cd apps/web && pnpm typecheck
 
 migrate: ## Apply database migrations (alembic upgrade head)
-	cd apps/api && uv run alembic upgrade head
+	cd apps/api && uv run --env-file $(CURDIR)/.env alembic upgrade head
 
 revision: ## Create a new migration (usage: make revision m="add teams table")
 	cd apps/api && uv run alembic revision --autogenerate -m "$(m)"

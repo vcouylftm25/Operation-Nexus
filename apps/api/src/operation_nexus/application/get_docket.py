@@ -8,7 +8,6 @@ from pydantic import BaseModel
 
 from operation_nexus.application.ports import GraphReader
 from operation_nexus.domain.graph.payload import GraphNode
-from operation_nexus.infrastructure.postgres.repositories.game_repository import GameRepository
 from operation_nexus.infrastructure.postgres.repositories.team_repository import (
     TeamNotFound,
     TeamRepository,
@@ -52,20 +51,16 @@ class GetDocket:
     def __init__(
         self,
         team_repo: TeamRepository,
-        game_repo: GameRepository,
         graph_reader: GraphReader,
     ) -> None:
         self._team_repo = team_repo
-        self._game_repo = game_repo
         self._graph_reader = graph_reader
 
     async def execute(self, team_id: UUID) -> list[CaseFile]:
         team = await self._team_repo.get(team_id)
         if team is None:
             raise TeamNotFound(team_id)
-        game = await self._game_repo.get(team.game_id)
-        current_round = game.current_round if game is not None else team.current_round
-        payload = await self._graph_reader.list_case_files(current_round)
+        payload = await self._graph_reader.list_case_files(team.current_round)
         files = [case_file_from_node(node) for node in payload.nodes]
         files.sort(key=lambda row: (0 if "Person" in row.labels else 1, row.label_display))
         return files

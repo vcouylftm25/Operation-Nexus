@@ -1,16 +1,13 @@
 """`/ws/games/{game_id}` -- role-scoped realtime channel (CONTRACT.md §9).
 
-`role=host` authenticates with the shared `X-Host-Token` value (passed as
-`?token=`); `role=team` authenticates with a team's bearer session token;
-`role=screen` is the public projector view and needs no token. Actual
-broadcast fan-out and the "never leak to a rival team" guarantee live in
-`ConnectionManager` -- this module only handles the handshake and registry
-lifecycle.
+`role=team` authenticates with a team's bearer session token; `role=screen` is
+the public leaderboard view and needs no token. Actual broadcast fan-out and
+the "never leak to a rival team" guarantee live in `ConnectionManager` -- this
+module only handles the handshake and registry lifecycle.
 """
 
 from __future__ import annotations
 
-import secrets
 from uuid import UUID
 
 import structlog
@@ -19,7 +16,6 @@ from fastapi import APIRouter, WebSocket, WebSocketDisconnect, WebSocketExceptio
 from operation_nexus.api.connection_manager import ConnectionManager
 from operation_nexus.application.session_tokens import hash_session_token
 from operation_nexus.infrastructure.postgres.repositories.team_repository import TeamRepository
-from operation_nexus.infrastructure.settings import get_settings
 
 logger = structlog.get_logger(__name__)
 
@@ -32,16 +28,6 @@ async def _authenticate(
     """Return the authenticated team_id for `role=team`, or None otherwise.
     Raises `WebSocketException` (closing the socket) on failure.
     """
-    if role == "host":
-        settings = get_settings()
-        if token is None or not secrets.compare_digest(
-            token, settings.host_token.get_secret_value()
-        ):
-            raise WebSocketException(
-                code=status.WS_1008_POLICY_VIOLATION, reason="invalid host token"
-            )
-        return None
-
     if role == "team":
         if token is None:
             raise WebSocketException(
