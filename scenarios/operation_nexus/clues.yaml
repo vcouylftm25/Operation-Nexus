@@ -1,0 +1,16 @@
+clues:
+  - id: clue_r2_infrastructure
+    round: 2
+    title: "Novo relatório de infraestrutura"
+    trigger: { type: host }
+    evidence_id: evidence_01
+  - id: clue_r3_message
+    round: 3
+    title: "Pista semântica"
+    trigger: { type: timer, remaining_seconds: 300 }
+    evidence_id: message_01
+  - id: clue_r4_money
+    round: 4
+    title: "Informação bancária"
+    trigger: { type: discovery, relation_id: rel_009 }
+    evidence_id: evidence_01

@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from uuid import UUID
 
-from operation_nexus.application.ports import EventBroadcaster, InvestigationRunner
+from operation_nexus.application.ports import EventBroadcaster, GraphReader, InvestigationRunner
 from operation_nexus.domain.investigation.contracts import InvestigationResult
 from operation_nexus.infrastructure.postgres.repositories.action_repository import ActionRepository
 from operation_nexus.infrastructure.postgres.repositories.discovery_repository import (
@@ -32,6 +32,7 @@ class RecordInvestigation:
         discovery_repo: DiscoveryRepository,
         runner: InvestigationRunner,
         broadcaster: EventBroadcaster,
+        graph_reader: GraphReader | None = None,
     ) -> None:
         self._team_repo = team_repo
         self._game_repo = game_repo
@@ -39,6 +40,7 @@ class RecordInvestigation:
         self._discovery_repo = discovery_repo
         self._runner = runner
         self._broadcaster = broadcaster
+        self._graph_reader = graph_reader
 
     async def execute(self, team_id: UUID, question: str) -> InvestigationResult:
         team = await self._team_repo.get(team_id)
@@ -48,7 +50,24 @@ class RecordInvestigation:
         game = await self._game_repo.get(team.game_id)
         current_round = game.current_round if game is not None else 0
         known_nodes, _known_rels = await self._discovery_repo.list_for_team(team_id)
-        known_entities = {node_id: node_id for node_id in known_nodes}
+
+        # The planner needs human names, not just ids: teams ask about
+        # "Roberto Alves", never about "person_03". Start from the round's
+        # visible docket, then add anything this team has already discovered.
+        # Falling back to `{id: id}` would leave the planner unable to resolve
+        # any name and it would refuse every question.
+        known_entities: dict[str, str] = {}
+        if self._graph_reader is not None:
+            known_entities.update(await self._graph_reader.entity_roster(current_round))
+            if known_nodes:
+                discovered = await self._graph_reader.fetch_subgraph(
+                    list(known_nodes), [], current_round
+                )
+                for node in discovered.nodes:
+                    primary = node.labels[0] if node.labels else "Node"
+                    known_entities[node.id] = f"{node.label_display or node.id} ({primary})"
+        for node_id in known_nodes:
+            known_entities.setdefault(node_id, node_id)
 
         outcome = await self._runner.run(
             team_id,

@@ -47,6 +47,7 @@ interface LiveState {
   applyGameFinished: () => void;
   applyAnnouncement: (payload: HostAnnouncementPayload) => void;
   applyEvidence: (payload: EvidenceUnlockedPayload) => void;
+  hydrateEvidence: (payloads: EvidenceUnlockedPayload[]) => void;
   applyScore: (teamId: string, total: number, event?: ScoreEvent) => void;
   pushFlash: (flash: Omit<DiscoveryFlash, "id">) => void;
   dismissFlash: (id: string) => void;
@@ -96,7 +97,24 @@ export const useLiveStore = create<LiveState>((set) => ({
   applyGameFinished: () => set({ gameStatus: "FINISHED", tickRemaining: 0 }),
   applyAnnouncement: (announcement) => set({ announcement }),
   applyEvidence: (payload) =>
-    set((state) => ({ unlockedEvidence: [...state.unlockedEvidence, payload] })),
+    set((state) => ({
+      unlockedEvidence: [
+        ...state.unlockedEvidence.filter(
+          (item) => (item.evidence_id ?? item.id) !== (payload.evidence_id ?? payload.id),
+        ),
+        payload,
+      ],
+    })),
+  hydrateEvidence: (payloads) =>
+    set((state) => {
+      const byId = new Map(
+        [...state.unlockedEvidence, ...payloads].map((item) => [
+          item.evidence_id ?? item.id ?? crypto.randomUUID(),
+          item,
+        ]),
+      );
+      return { unlockedEvidence: [...byId.values()] };
+    }),
   applyScore: (teamId, total, event) =>
     set((state) => {
       const prev = state.scoresByTeam[teamId] ?? { team_id: teamId, total: 0, events: [] };

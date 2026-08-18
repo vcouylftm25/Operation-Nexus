@@ -1,0 +1,31 @@
+briefings:
+  - round: 1
+    eyebrow: "BRIEFING · TRIAGEM"
+    title: "Quem merece investigação?"
+    briefing: >
+      A Vero Crédito detectou irregularidades em um lote recente de solicitações.
+      Vocês têm recursos para aprofundar apenas três perfis.
+    objective: "Escolham os alvos usando somente as informações individuais disponíveis."
+    decision: "Selecione 3 perfis para investigação aprofundada"
+    decision_hint: "A escolha será bloqueada quando confirmada."
+  - round: 2
+    eyebrow: "NOVO INTEL · CONNECT THE DOTS"
+    title: "Qual cluster merece escalonamento?"
+    briefing: "Até agora vocês analisaram indivíduos. Novas fontes revelam conexões compartilhadas."
+    objective: "Encontrem uma conexão relevante e decidam se ela é suspeita ou explicável."
+    decision: "Escolha o cluster que deve subir para a próxima camada"
+    decision_hint: "Uma relação pode parecer incriminadora e ainda ter uma explicação simples."
+  - round: 3
+    eyebrow: "NOVO INTEL · ENTITY RESOLUTION"
+    title: "Tem alguém aqui que não é quem diz ser."
+    briefing: "Inconsistências cadastrais apareceram. Mensagens recuperadas podem separar identidade real de ruído."
+    objective: "Formem uma hipótese de identidade e encontrem a evidência que a sustenta."
+    decision: "Trave a hipótese que merece uma busca semântica"
+    decision_hint: "A busca é aberta: formulem a pergunta com suas próprias palavras."
+  - round: 4
+    eyebrow: "NOVO INTEL · FOLLOW THE MONEY"
+    title: "Feche o caminho do dinheiro."
+    briefing: "Transações, uma empresa e um corretor completam o quadro."
+    objective: "Construam uma acusação que sobreviva ao dinheiro, às datas e aos falsos positivos."
+    decision: "Confirme a teoria final antes de enviar a acusação"
+    decision_hint: "Quem aparece mais no grafo não é necessariamente quem coordena."

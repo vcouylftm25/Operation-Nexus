@@ -10,6 +10,8 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import Protocol, runtime_checkable
 
+from pydantic import SecretStr
+
 from operation_nexus.domain.graph.schema import EMBEDDING_DIMENSIONS
 
 
@@ -38,7 +40,7 @@ class AzureEmbeddingProvider:
         self._dimensions = dimensions
         self._client = OpenAIEmbeddings(
             base_url=base_url,
-            api_key=api_key,
+            api_key=SecretStr(api_key),
             model=deployment,
             dimensions=dimensions,
             check_embedding_ctx_length=False,
@@ -67,4 +69,5 @@ def get_embedding_provider() -> EmbeddingProvider:
         base_url=settings.azure_openai_base_url,
         api_key=api_key,
         deployment=settings.azure_embedding_deployment,
+        dimensions=settings.azure_embedding_dimensions,
     )

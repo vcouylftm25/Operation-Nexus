@@ -17,10 +17,10 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import StrEnum
-from typing import TYPE_CHECKING, Annotated, Any
+from typing import TYPE_CHECKING, Annotated, Any, Literal
 from uuid import UUID
 
-from pydantic import BaseModel, Field, StringConstraints, model_validator
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
 
 # --------------------------------------------------------------------------
 # GraphPayload/GraphNode/GraphRelationship are owned by the graph agent
@@ -155,6 +155,7 @@ class InspectEntityArgs(BaseModel):
 class FindSharedEntitiesArgs(BaseModel):
     """`find_shared_entities` — shared Device/Phone/Email/IP/Address/Account."""
 
+    # One id is valid and common: "who shares a device with X?".
     entity_ids: Annotated[list[EntityId], Field(min_length=1, max_length=MAX_ENTITY_IDS)]
     via: list[SharedEntityKind] | None = None
 
@@ -285,3 +286,98 @@ class InvestigationResult(BaseModel):
     subgraph: GraphPayload
     credits_charged: int
     credits_remaining: int
+
+
+# --------------------------------------------------------------------------
+# LLM-facing planner schema.
+#
+# `InvestigationToolCall.arguments` is an open `dict[str, Any]` — that is the
+# right shape for the API boundary (CONTRACT.md §5) but it CANNOT be expressed
+# in OpenAI structured outputs: strict mode requires every object to declare
+# `additionalProperties: false`, and an open dict by definition does not.
+# Asking the model for `InvestigationPlan` directly fails with HTTP 400.
+#
+# So the model is asked for `PlannerOutput` instead — a discriminated union
+# where each variant carries its own closed argument model — and the result is
+# converted to `InvestigationPlan`. The public contract is unchanged; only the
+# shape we hand the model differs.
+# --------------------------------------------------------------------------
+
+
+class _PlannedCall(BaseModel):
+    """Base for the planner union: closed schema, no stray keys."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    justification: str
+
+
+class PlannedInspectEntity(_PlannedCall):
+    tool: Literal[ToolName.INSPECT_ENTITY]
+    arguments: InspectEntityArgs
+
+
+class PlannedFindSharedEntities(_PlannedCall):
+    tool: Literal[ToolName.FIND_SHARED_ENTITIES]
+    arguments: FindSharedEntitiesArgs
+
+
+class PlannedFindPath(_PlannedCall):
+    tool: Literal[ToolName.FIND_PATH]
+    arguments: FindPathArgs
+
+
+class PlannedExpandNeighborhood(_PlannedCall):
+    tool: Literal[ToolName.EXPAND_NEIGHBORHOOD]
+    arguments: ExpandNeighborhoodArgs
+
+
+class PlannedTimeline(_PlannedCall):
+    tool: Literal[ToolName.TIMELINE]
+    arguments: TimelineArgs
+
+
+class PlannedSemanticEvidenceSearch(_PlannedCall):
+    tool: Literal[ToolName.SEMANTIC_EVIDENCE_SEARCH]
+    arguments: SemanticEvidenceSearchArgs
+
+
+class PlannedChallengeHypothesis(_PlannedCall):
+    tool: Literal[ToolName.CHALLENGE_HYPOTHESIS]
+    arguments: ChallengeHypothesisArgs
+
+
+PlannedToolCall = (
+    PlannedInspectEntity
+    | PlannedFindSharedEntities
+    | PlannedFindPath
+    | PlannedExpandNeighborhood
+    | PlannedTimeline
+    | PlannedSemanticEvidenceSearch
+    | PlannedChallengeHypothesis
+)
+
+
+class PlannerOutput(BaseModel):
+    """What the planner model is actually asked to return."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    intent: InvestigationIntent
+    tool_calls: Annotated[list[PlannedToolCall], Field(max_length=MAX_TOOL_CALLS_PER_PLAN)]
+    reasoning_summary: str
+
+    def to_plan(self) -> InvestigationPlan:
+        """Convert to the public contract, re-running per-tool validation."""
+        return InvestigationPlan(
+            intent=self.intent,
+            tool_calls=[
+                InvestigationToolCall(
+                    tool=call.tool,
+                    arguments=call.arguments.model_dump(mode="json"),
+                    justification=call.justification,
+                )
+                for call in self.tool_calls
+            ],
+            reasoning_summary=self.reasoning_summary,
+        )

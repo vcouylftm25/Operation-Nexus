@@ -58,8 +58,8 @@ saldo → HTTP 402 `INSUFFICIENT_CREDITS` (não cobra, não descobre). Máximo
 | `semantic_evidence_search` | 20 | Round 3+: mensagens/evidências por significado (ou `CONTAINS` se AI off) |
 | `challenge_hypothesis` | 25 | **Contra-evidência** — nunca confirmação |
 
-Paleta DSL (AI desligada) — o painel do investigador escreve estes comandos,
-não outra sintaxe:
+As ações investigativas da UI são semânticas e escondem a DSL do jogador. A
+DSL permanece como fallback técnico para testes e para o mock:
 
 ```
 /inspect person_01
@@ -71,14 +71,16 @@ não outra sintaxe:
 /challenge hipótese em português | person_01,person_02
 ```
 
-Hint na UI: *“Com AI desligada, use os comandos da paleta. Com AI ligada,
-pergunte em português.”*
+Hint na UI: *“Selecione um nó e escolha uma ação, ou formule uma pergunta em
+português.”*
 
 ---
 
 ## As 4 rounds
 
 Metadado canônico: `scenarios/operation_nexus/rounds.yaml`.
+O conteúdo é separado em `player_briefings.yaml` (jogador),
+`host_script.yaml` (facilitador) e `clues.yaml` (gatilhos de pista). O
 `unlocks` é o que o host/UI anunciam; o servidor filtra por
 `visible_from_round` em cada nó/relação.
 
@@ -203,7 +205,14 @@ que o placar foi desenhado para humilhar educadamente.
 War room cinematográfica, copy em português. Sessão: join code de 6 chars →
 `session_token` em `sessionStorage`. Sem token → redirect `/`.
 
-Layout:
+Na primeira entrada, um tutorial curto explica créditos, grafo, investigador e
+lock-in. Cada round começa com um briefing persistente no topo da war room.
+No round 1 o time observa os dossiês e escolhe onde gastar inteligência; não há
+checkpoint que bloqueie a investigação. O grafo permanece oculto de propósito e
+o round 2 é o primeiro momento em que as conexões aparecem como recompensa
+visual.
+
+Layout da war room:
 
 ```
 ┌──────────────────────────────────────────────────────────┐
@@ -220,9 +229,10 @@ Layout:
 - Grafo: só o que **este** time descobriu (`GET /teams/{id}/graph` + merge de
   cada `InvestigationResult.subgraph` + `GRAPH_DISCOVERY`). Ids recém-
   chegados pulsam (`graphStore.recentIds`).
-- Investigador: caixa livre **e** paleta DSL. Transcript da pergunta, plano
+- Investigador: caixa livre **e** ações de investigação. Transcript da pergunta, plano
   (`tool_calls` + `reasoning_summary`), resposta, caveats, custo.
-- Hypothesis board: notas locais (não vão ao servidor) + o form da acusação.
+- Investigation board: notas locais (não vão ao servidor) + acusação construída
+  por seleção visual de pessoas, coordenador, mecanismo, evidências e relações.
 - 402: feedback vermelho com `required` vs `available`.
 - Browser **nunca** abre bolt/HTTP do Neo4j.
 
@@ -241,17 +251,25 @@ Controles reais da API:
 | Botão | Rota | Efeito |
 |---|---|---|
 | Iniciar round *n* | `POST .../rounds/{n}/start` | `PENDING→ACTIVE`, grant de créditos, `ROUND_STARTED` (title, narrative, duration, credits) |
-| Encerrar round | `POST .../rounds/next` | `ACTIVE→ENDED`, `ROUND_ENDED`. **Não** abre a seguinte |
+| Encerrar/avançar round | `POST .../rounds/next` + `POST .../rounds/{n}/start` | encerra o ativo e abre o seguinte; o console dispara isso manualmente ou quando o countdown chega a zero |
 | Liberar pista | `POST .../reveal` `{evidence_id}` | `EVIDENCE_UNLOCKED` para o jogo inteiro (clue scriptada, não gabarito) |
+| Histórico de pistas | `GET .../reveals` (host ou equipe autenticada) | reidrata pistas já liberadas após refresh/reconexão |
 | Finalizar | `POST .../finish` | carrega `ground_truth.yaml`, pontua, `GAME_FINISHED` |
 | Placar | `GET .../scoreboard` | `ScoreBreakdown[]` |
 
 Countdown: client-side a partir de `duration_seconds` + `started_at` do
 `ROUND_STARTED` (evento `TICK` está no contrato, ainda não é emitido pelo
-engine). Não há pause no backend (`GameStatus` não tem `paused`).
+engine). O console do host usa esse mesmo relógio para avançar
+automaticamente enquanto estiver aberto. Não há pause no backend
+(`GameStatus` não tem `paused`).
 
 O host vê o placar agregado e o fato de que um time acusou — não o conteúdo
 da acusação antes do finish.
+
+Pistas liberadas são persistidas em `evidence_reveals` no Postgres com chave
+única `(game_id, evidence_id)`. O payload enviado pelo host é congelado no
+momento do reveal; a camada de jogo nunca consulta o gabarito para montar essa
+lista.
 
 ---
 

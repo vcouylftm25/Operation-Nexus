@@ -6,6 +6,9 @@ from operation_nexus.infrastructure.postgres.repositories.action_repository impo
 from operation_nexus.infrastructure.postgres.repositories.discovery_repository import (
     DiscoveryRepository,
 )
+from operation_nexus.infrastructure.postgres.repositories.evidence_reveal_repository import (
+    EvidenceRevealRepository,
+)
 from operation_nexus.infrastructure.postgres.repositories.game_repository import (
     GameNotFound,
     GameRepository,
@@ -22,6 +25,7 @@ __all__ = [
     "AccusationNotFound",
     "ActionRepository",
     "DiscoveryRepository",
+    "EvidenceRevealRepository",
     "GameNotFound",
     "GameRepository",
     "RoundNotFound",

@@ -106,8 +106,30 @@ class _PathLike(Protocol):
     relationships: Iterable[_RelationshipLike]
 
 
+def _jsonable(value: Any) -> Any:
+    """Coerce driver-native values into something Pydantic can serialize.
+
+    The Neo4j driver returns its own temporal and spatial types
+    (`neo4j.time.DateTime`, `Date`, `Time`, `Duration`, `spatial.Point`).
+    They reach us inside node/relationship properties and would blow up at
+    response-serialization time — after the query already succeeded, which
+    makes it look like a graph failure rather than a marshalling one. Anything
+    exposing `to_native()` is converted; ISO strings are emitted for temporals.
+    """
+    to_native = getattr(value, "to_native", None)
+    if callable(to_native):
+        native: Any = to_native()
+        isoformat = getattr(native, "isoformat", None)
+        return isoformat() if callable(isoformat) else native
+    if isinstance(value, (list, tuple)):
+        return [_jsonable(item) for item in value]
+    if isinstance(value, Mapping):
+        return {key: _jsonable(item) for key, item in value.items()}
+    return value
+
+
 def _strip_embedding(properties: Mapping[str, Any]) -> dict[str, Any]:
-    return {key: value for key, value in properties.items() if key != EMBEDDING_PROPERTY}
+    return {key: _jsonable(value) for key, value in properties.items() if key != EMBEDDING_PROPERTY}
 
 
 def _collect(

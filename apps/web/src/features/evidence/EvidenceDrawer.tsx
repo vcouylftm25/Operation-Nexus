@@ -1,7 +1,7 @@
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { useGraphStore, useTeamGraphPayload } from "@/features/graph/graphStore";
 import { useLiveStore } from "@/features/game/liveStore";
-import { colorForLabels, primaryLabel } from "@/features/graph/colors";
+import { colorForLabels, labelDisplay, propertyDisplay } from "@/features/graph/colors";
 import { cn, propertyText } from "@/lib/utils";
 
 export function EvidenceDrawer({ embedded = false }: { embedded?: boolean }) {
@@ -46,8 +46,8 @@ export function EvidenceDrawer({ embedded = false }: { embedded?: boolean }) {
                     key={`${item.id ?? item.evidence_id ?? index}`}
                     className="rounded-sm border border-nexus-amber/30 bg-nexus-amber/5 px-2 py-2 text-xs"
                   >
-                    <p className="font-mono text-nexus-amber">{item.id ?? item.evidence_id}</p>
-                    {item.excerpt ? <p className="mt-1 text-nexus-text/90">{item.excerpt}</p> : null}
+                    <p className="font-medium text-nexus-text">{item.evidence_type === "message" ? "Mensagem recuperada" : "Evidência liberada"}</p>
+                    {item.excerpt ? <p className="mt-1 leading-relaxed text-nexus-text/90">“{item.excerpt}”</p> : <p className="mt-1 text-xs text-nexus-muted">Material liberado pelo host.</p>}
                   </li>
                 ))}
               </ul>
@@ -60,14 +60,13 @@ export function EvidenceDrawer({ embedded = false }: { embedded?: boolean }) {
           {selected ? (
             <div className="rounded-sm border border-nexus-border bg-nexus-bg/50 p-3">
               <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-nexus-muted">
-                {primaryLabel(selected.labels)}
+                {labelDisplay(selected.labels)}
               </p>
               <p className="mt-1 text-sm font-medium">{selected.label_display}</p>
-              <p className="font-mono text-[11px] text-nexus-amber">{selected.id}</p>
               <dl className="mt-3 space-y-1.5">
                 {Object.entries(selected.properties).map(([key, value]) => (
                   <div key={key}>
-                    <dt className="font-mono text-[10px] uppercase tracking-wider text-nexus-muted">{key}</dt>
+                    <dt className="font-mono text-[10px] uppercase tracking-wider text-nexus-muted">{propertyDisplay(key)}</dt>
                     <dd className="text-xs leading-relaxed text-nexus-text/90">{propertyText(value)}</dd>
                   </div>
                 ))}
@@ -113,7 +112,6 @@ function NodeGroup({
                 style={{ background: colorForLabels(node.labels) }}
               />
               <span className="min-w-0 flex-1 truncate">{node.label_display}</span>
-              <span className="font-mono text-[10px] text-nexus-muted">{node.id}</span>
             </button>
           </li>
         ))}

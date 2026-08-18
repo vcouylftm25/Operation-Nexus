@@ -122,9 +122,33 @@ def test_find_shared_entities_rejects_unknown_relationship_type() -> None:
         qb.build_find_shared_entities(["a_01", "b_01"], 1, via=["NOT_A_REAL_TYPE"])
 
 
-def test_find_shared_entities_requires_at_least_two_entities() -> None:
+def test_find_shared_entities_requires_at_least_one_entity() -> None:
     with pytest.raises(ValueError):
-        qb.build_find_shared_entities(["only_one_01"], 1)
+        qb.build_find_shared_entities([], 1)
+
+
+def test_find_shared_entities_accepts_a_single_anchor() -> None:
+    """ "Who shares a device with X?" names one person, not two.
+
+    Requiring two anchors made the defining round-2 question return nothing
+    while still charging the team, so one id must build a valid query.
+    """
+    cypher, params = qb.build_find_shared_entities(["person_05"], 2)
+    assert params["entity_ids"] == ["person_05"]
+    # The anchor must reach at least one OTHER person for a share to exist.
+    assert "other:Person" in cypher
+    assert "other.id <> anchor.id" in cypher
+    # Never interpolated, always parameterized.
+    assert "person_05" not in cypher
+
+
+def test_find_shared_entities_single_anchor_still_filters_by_round() -> None:
+    cypher, params = qb.build_find_shared_entities(["person_05"], 2)
+    assert params["current_round"] == 2
+    # Every alias bound in the pattern is round-gated — including the second
+    # hop out to the other person, which is the easy one to forget.
+    for alias in ("anchor", "r", "shared", "r2", "other"):
+        assert f"{alias}.visible_from_round <= $current_round" in cypher
 
 
 def test_find_path_parameterizes_ids() -> None:

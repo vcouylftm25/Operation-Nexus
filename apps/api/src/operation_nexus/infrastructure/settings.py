@@ -89,6 +89,10 @@ class Settings(BaseSettings):
             "AZURE_EMBEDDING_DEPLOYMENT", "AZURE_OPENAI_EMBEDDING_DEPLOYMENT"
         ),
     )
+    #: Width of `azure_embedding_deployment`'s output. text-embedding-3-large
+    #: emits 3072, text-embedding-3-small 1536. Must match the Neo4j vector
+    #: index or Neo4j rejects the writes.
+    azure_embedding_dimensions: int = 3072
 
     ai_enabled: bool = False
     langsmith_tracing: bool = False

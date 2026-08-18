@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/Input";
 import { IS_MOCK, api } from "@/lib/client";
 import {
   DEFAULT_SCENARIO_SLUG,
+  LOCAL_HOST_TOKEN,
   MOCK_GAME_ID,
   MOCK_HOST_TOKEN,
   MOCK_JOIN_CODE,
@@ -21,9 +22,13 @@ export function JoinRoute() {
   const setScreenSession = useSessionStore((s) => s.setScreenSession);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [teamMode, setTeamMode] = useState<"join" | "create">("join");
+  const [roomId, setRoomId] = useState("");
+  const [teamName, setTeamName] = useState("");
+  const [createdJoinCode, setCreatedJoinCode] = useState("");
 
   const [joinCode, setJoinCode] = useState(IS_MOCK ? MOCK_JOIN_CODE : "");
-  const [hostToken, setHostToken] = useState(IS_MOCK ? MOCK_HOST_TOKEN : "");
+  const [hostToken, setHostToken] = useState(IS_MOCK ? MOCK_HOST_TOKEN : LOCAL_HOST_TOKEN);
   const [scenarioSlug, setScenarioSlug] = useState(DEFAULT_SCENARIO_SLUG);
   const [screenGameId, setScreenGameId] = useState(IS_MOCK ? MOCK_GAME_ID : "");
 
@@ -43,7 +48,25 @@ export function JoinRoute() {
       });
       navigate("/play");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Não foi possível entrar na equipe.");
+      setError(joinFailureMessage(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function createTeam() {
+    const room = roomId.trim();
+    const name = teamName.trim();
+    if (!room || !name) return;
+    setBusy(true);
+    setError(null);
+    setCreatedJoinCode("");
+    try {
+      const created = await api.createTeam(room, name);
+      setCreatedJoinCode(created.join_code);
+      setTeamName("");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Não foi possível criar a equipe.");
     } finally {
       setBusy(false);
     }
@@ -109,24 +132,25 @@ export function JoinRoute() {
           <CardHeader>
             <CardTitle>Equipe</CardTitle>
           </CardHeader>
-          <form
-            className="space-y-3"
-            onSubmit={(e: FormEvent) => {
-              e.preventDefault();
-              void asTeam(joinCode);
-            }}
-          >
-            <Input
-              value={joinCode}
-              onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
-              placeholder="Código de 6 caracteres"
-              className="font-mono tracking-[0.2em]"
-              maxLength={8}
-            />
-            <Button type="submit" className="w-full" disabled={busy || joinCode.trim().length < 4}>
-              Entrar na sala
-            </Button>
-          </form>
+          <div className="mb-4 grid grid-cols-2 gap-1 rounded-lg border border-nexus-border bg-nexus-bg/40 p-1">
+            <Button type="button" size="sm" variant={teamMode === "join" ? "outline" : "ghost"} onClick={() => setTeamMode("join")}>Entrar</Button>
+            <Button type="button" size="sm" variant={teamMode === "create" ? "outline" : "ghost"} onClick={() => setTeamMode("create")}>Criar equipe</Button>
+          </div>
+          {teamMode === "join" ? (
+            <form className="space-y-3" onSubmit={(e: FormEvent) => { e.preventDefault(); void asTeam(joinCode); }}>
+              <Input value={joinCode} onChange={(e) => setJoinCode(e.target.value.toUpperCase())} placeholder="Código da equipe · K7M2PX" className="font-mono tracking-[0.2em]" maxLength={6} autoComplete="off" />
+              <p className="text-xs leading-relaxed text-nexus-muted">Use o código de 6 letras compartilhado pelo líder da equipe.</p>
+              <Button type="submit" className="w-full" disabled={busy || joinCode.trim().length !== 6}>Entrar na sala</Button>
+            </form>
+          ) : (
+            <div className="space-y-3">
+              <Input value={roomId} onChange={(e) => setRoomId(e.target.value)} placeholder="Código da sala · game id" className="font-mono" autoComplete="off" />
+              <Input value={teamName} onChange={(e) => setTeamName(e.target.value)} placeholder="Nome da sua equipe" maxLength={40} />
+              <p className="text-xs leading-relaxed text-nexus-muted">O host mostra o código da sala. Vocês escolhem o nome e recebem um código privado para compartilhar entre o grupo.</p>
+              <Button type="button" className="w-full" disabled={busy || !roomId.trim() || !teamName.trim()} onClick={() => void createTeam()}>Criar minha equipe</Button>
+              {createdJoinCode ? <div className="rounded-xl border border-nexus-amber/30 bg-nexus-amber/[0.08] p-3 text-center"><p className="text-xs text-nexus-muted">Código da equipe</p><p className="mt-1 font-mono text-2xl tracking-[0.28em] text-nexus-amber">{createdJoinCode}</p><p className="mt-1 text-[11px] text-nexus-muted">Compartilhe com seus colegas e entre com este código.</p><Button type="button" size="sm" className="mt-3" onClick={() => void asTeam(createdJoinCode)}>Entrar com este código</Button></div> : null}
+            </div>
+          )}
         </Card>
 
         <Card>
@@ -152,6 +176,9 @@ export function JoinRoute() {
               placeholder="scenario slug"
               className="font-mono"
             />
+            <p className="text-xs leading-relaxed text-nexus-muted">
+              Primeiro passo: abra o console e compartilhe o código da sala. As equipes criam seus próprios nomes.
+            </p>
             <Button type="submit" variant="outline" className="w-full" disabled={busy || !hostToken.trim()}>
               Abrir console
             </Button>
@@ -190,4 +217,12 @@ export function JoinRoute() {
       {error ? <p className="mt-6 text-sm text-nexus-danger">{error}</p> : null}
     </div>
   );
+}
+
+function joinFailureMessage(err: unknown): string {
+  const message = err instanceof Error ? err.message : "";
+  if (/join code/i.test(message) || /No team for join code/i.test(message)) {
+    return "Código inválido. Peça ao líder da sua equipe o código privado de 6 letras (ex: K7M2PX).";
+  }
+  return message || "Não foi possível entrar na equipe.";
 }

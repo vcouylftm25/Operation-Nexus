@@ -1,0 +1,21 @@
+rounds:
+  - round: 1
+    teaching_goal: "Features individuais não fecham um caso."
+    likely_move: "A sala vai perseguir o score mais baixo."
+    rescue_question: "O que vocês ainda não conseguem saber olhando só para esta ficha?"
+    reveal_line: "Até agora vocês analisaram indivíduos. Agora conectem os pontos."
+  - round: 2
+    teaching_goal: "Uma relação sem contexto não é prova."
+    likely_move: "O time vai escalar o primeiro device compartilhado."
+    rescue_question: "Existe uma explicação legítima para essa infraestrutura?"
+    reveal_line: "A conexão apareceu. O contexto decide o que ela significa."
+  - round: 3
+    teaching_goal: "Identidade e linguagem exigem evidência."
+    likely_move: "A sala vai tratar a primeira mensagem como confissão."
+    rescue_question: "O que a mensagem diz literalmente — e o que vocês estão inferindo?"
+    reveal_line: "Uma mensagem é uma pista. O conjunto é a evidência."
+  - round: 4
+    teaching_goal: "Fluxo e tempo fecham a acusação."
+    likely_move: "O time vai seguir o caminho mais conectado."
+    rescue_question: "Quem coordena, e qual data torna essa teoria possível?"
+    reveal_line: "Agora não basta apontar pessoas. Provem o mecanismo."

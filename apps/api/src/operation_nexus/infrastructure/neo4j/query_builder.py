@@ -154,21 +154,41 @@ def build_find_shared_entities(
     connected to 2+ of the given entities, optionally restricted to
     relationship types in `via`."""
     clamped_ids = _clamp_entity_ids(entity_ids)
-    if len(clamped_ids) < 2:
-        raise ValueError("find_shared_entities requires at least 2 entity_ids")
+    if not clamped_ids:
+        raise ValueError("find_shared_entities requires at least 1 entity_id")
     via_labels, via_types = _split_via(via) if via else (None, None)
 
-    cypher = (
-        "UNWIND $entity_ids AS anchor_id "
-        "MATCH (anchor {id: anchor_id})-[r]-(shared) "
-        f"WHERE {visibility_clause(['anchor', 'r', 'shared'])} "
-        "AND any(lbl IN labels(shared) WHERE lbl IN $shared_labels) "
-        "AND ($via_labels IS NULL OR any(lbl IN labels(shared) WHERE lbl IN $via_labels)) "
-        "AND ($via_types IS NULL OR type(r) IN $via_types) "
-        "WITH shared, collect(DISTINCT anchor) AS anchors, collect(DISTINCT r) AS rels "
-        "WHERE size(anchors) >= 2 "
-        "RETURN shared, anchors, rels"
-    )
+    if len(clamped_ids) == 1:
+        # "Who shares a device with Roberto Alves?" — the single most natural
+        # round-2 question names ONE person, not two. Anchor on that person and
+        # return the shared nodes that reach at least one OTHER person, plus
+        # those people. Requiring two anchors here made the question return
+        # nothing while still charging the team.
+        cypher = (
+            "MATCH (anchor {id: $entity_ids[0]})-[r]-(shared) "
+            f"WHERE {visibility_clause(['anchor', 'r', 'shared'])} "
+            "AND any(lbl IN labels(shared) WHERE lbl IN $shared_labels) "
+            "AND ($via_labels IS NULL OR any(lbl IN labels(shared) WHERE lbl IN $via_labels)) "
+            "AND ($via_types IS NULL OR type(r) IN $via_types) "
+            "MATCH (shared)-[r2]-(other:Person) "
+            f"WHERE {visibility_clause(['r2', 'other'])} "
+            "AND other.id <> anchor.id "
+            "WITH shared, collect(DISTINCT other) AS others, "
+            "collect(DISTINCT r) + collect(DISTINCT r2) AS rels, anchor "
+            "RETURN shared, others + [anchor] AS anchors, rels"
+        )
+    else:
+        cypher = (
+            "UNWIND $entity_ids AS anchor_id "
+            "MATCH (anchor {id: anchor_id})-[r]-(shared) "
+            f"WHERE {visibility_clause(['anchor', 'r', 'shared'])} "
+            "AND any(lbl IN labels(shared) WHERE lbl IN $shared_labels) "
+            "AND ($via_labels IS NULL OR any(lbl IN labels(shared) WHERE lbl IN $via_labels)) "
+            "AND ($via_types IS NULL OR type(r) IN $via_types) "
+            "WITH shared, collect(DISTINCT anchor) AS anchors, collect(DISTINCT r) AS rels "
+            "WHERE size(anchors) >= 2 "
+            "RETURN shared, anchors, rels"
+        )
     params = {
         "entity_ids": clamped_ids,
         "current_round": current_round,

@@ -119,6 +119,25 @@ class DiscoveryModel(Base):
     discovered_at: Mapped[datetime] = mapped_column(server_default=func.now(), nullable=False)
 
 
+class EvidenceRevealModel(Base):
+    """A durable, game-wide record of a host-released evidence item."""
+
+    __tablename__ = "evidence_reveals"
+    __table_args__ = (
+        UniqueConstraint("game_id", "evidence_id", name="uq_evidence_reveals_game_evidence"),
+        Index("ix_evidence_reveals_game_id", "game_id"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    game_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("games.id", ondelete="CASCADE"), nullable=False
+    )
+    evidence_id: Mapped[str] = mapped_column(nullable=False)
+    round_number: Mapped[int] = mapped_column(nullable=False)
+    payload: Mapped[dict[str, object]] = mapped_column(JSONB, nullable=False)
+    revealed_at: Mapped[datetime] = mapped_column(server_default=func.now(), nullable=False)
+
+
 class ScoreEventModel(Base):
     __tablename__ = "score_events"
 

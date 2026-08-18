@@ -318,7 +318,9 @@ POST /teams/{team_id}/accusation          → 202
 GET  /teams/{team_id}/graph
 POST /host/games/{game_id}/rounds/next    → ENCERRA a round ativa
 POST /host/games/{game_id}/rounds/{n}/start
-POST /host/games/{game_id}/reveal         → {evidence_id} → EVIDENCE_UNLOCKED
+POST /host/games/{game_id}/reveal         → {evidence_id} → EVIDENCE_UNLOCKED + evidence_reveals
+GET  /host/games/{game_id}/reveals        → histórico de pistas do host
+GET  /teams/{team_id}/reveals             → histórico autenticado da equipe
 POST /host/games/{game_id}/finish         → scores + GAME_FINISHED
 GET  /host/games/{game_id}/scoreboard
 GET  /health  /health/deep

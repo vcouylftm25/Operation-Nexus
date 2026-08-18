@@ -15,6 +15,7 @@ import type {
   Accusation,
   CaseFile,
   CreateTeamResponse,
+  EvidenceUnlockedPayload,
   FraudPattern,
   GameState,
   GameStatus,
@@ -74,6 +75,7 @@ interface MockGame {
   rounds: RoundState[];
   teams: Map<string, MockTeam>;
   joinCodeToTeamId: Map<string, string>;
+  revealedEvidence: Map<string, EvidenceUnlockedPayload>;
 }
 
 let teamCounter = 0;
@@ -154,6 +156,7 @@ function freshGame(): MockGame {
     rounds: initialRounds(now),
     teams,
     joinCodeToTeamId,
+    revealedEvidence: new Map(),
   };
   return created;
 }
@@ -931,6 +934,14 @@ export async function getDocket(teamId: string, bearerToken: string): Promise<Ca
   return files;
 }
 
+export async function getTeamReveals(
+  teamId: string,
+  bearerToken: string,
+): Promise<EvidenceUnlockedPayload[]> {
+  requireTeam(teamId, bearerToken);
+  return [...game.revealedEvidence.values()];
+}
+
 function grantRoundCredits(team: MockTeam, roundNumber: number): void {
   if (team.roundsCreditGranted.has(roundNumber)) return;
   team.roundsCreditGranted.add(roundNumber);
@@ -1028,23 +1039,35 @@ export async function hostReveal(
     throw notFound(`No Evidence/Message with id ${evidenceId}`);
   }
 
+  const revealPayload: EvidenceUnlockedPayload = {
+    evidence_id: entity.id,
+    id: entity.id,
+    evidence_type: String(entity.properties.evidence_type ?? entity.label.toLowerCase()),
+    excerpt: String(entity.properties.content ?? ""),
+    source: String(entity.properties.source ?? entity.properties.channel ?? "scripted_reveal"),
+    captured_at:
+      (entity.properties.captured_at as string | undefined) ??
+      (entity.properties.sent_at as string | undefined) ??
+      null,
+    round: game.current_round,
+    revealed_at: new Date().toISOString(),
+  };
+  game.revealedEvidence.set(entity.id, revealPayload);
   mockBroadcast(
     game.game_id,
     "EVIDENCE_UNLOCKED",
-    {
-      evidence_id: entity.id,
-      id: entity.id,
-      evidence_type: String(entity.properties.evidence_type ?? entity.label.toLowerCase()),
-      excerpt: String(entity.properties.content ?? ""),
-      source: String(entity.properties.source ?? entity.properties.channel ?? "scripted_reveal"),
-      captured_at:
-        (entity.properties.captured_at as string | undefined) ??
-        (entity.properties.sent_at as string | undefined) ??
-        null,
-      round: game.current_round,
-    },
+    revealPayload,
     {},
   );
+}
+
+export async function hostReveals(
+  gameId: string,
+  hostToken: string,
+): Promise<EvidenceUnlockedPayload[]> {
+  requireHost(hostToken);
+  if (gameId !== game.game_id) throw notFound(`Unknown game_id ${gameId}`);
+  return [...game.revealedEvidence.values()];
 }
 
 function buildScoreboard(): ScoreBreakdown[] {

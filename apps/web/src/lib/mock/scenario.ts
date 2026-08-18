@@ -1,5 +1,5 @@
 /**
- * Hand-written mock scenario ("Operação Bolso Vazio") — ~11 nodes across 2
+ * Hand-written mock scenario ("Operação Bolso Vazio") — ~11 nodes across 4
  * rounds, shaped exactly like CONTRACT.md §14's scenario-as-code files
  * (entities.json / relationships.json / evidence.json / rounds.yaml /
  * ground_truth.yaml) so the mock API can stay a drop-in stand-in for the real
@@ -357,21 +357,39 @@ export const RELATIONSHIPS: ScenarioRelationship[] = [
 export const ROUNDS: ScenarioRound[] = [
   {
     number: 1,
-    title: "Individualmente, tudo parece normal",
+    title: "Quem merece investigação?",
     narrative:
-      "Uma proposta de financiamento chegou para análise. Nada nela é abertamente suspeito — ainda.",
+      "Vocês têm recursos para aprofundar apenas três perfis. Escolham usando somente as informações individuais.",
     credits: 100,
     unlocks: ["Person", "Application", "BankAccount"],
-    duration_seconds: 240,
+    duration_seconds: 900,
   },
   {
     number: 2,
-    title: "As conexões aparecem",
+    title: "Qual cluster merece escalonamento?",
     narrative:
-      "Novas fontes de dados foram liberadas: dispositivos, telefonia e o material apreendido. Comece a cruzar.",
+      "Até agora vocês analisaram indivíduos. Novas fontes revelam dispositivos, telefones e contas compartilhadas.",
     credits: 120,
     unlocks: ["Device", "Phone", "Evidence", "Message"],
-    duration_seconds: 240,
+    duration_seconds: 1200,
+  },
+  {
+    number: 3,
+    title: "Tem alguém aqui que não é quem diz ser.",
+    narrative:
+      "Inconsistências cadastrais e mensagens recuperadas entram no jogo. Separem identidade real de ruído.",
+    credits: 140,
+    unlocks: ["Email", "Address", "Message", "Evidence"],
+    duration_seconds: 1200,
+  },
+  {
+    number: 4,
+    title: "Feche o caminho do dinheiro.",
+    narrative:
+      "Transações, uma empresa e um corretor completam o quadro. Datas e fluxo de dinheiro decidem a acusação.",
+    credits: 160,
+    unlocks: ["Transaction", "Company", "Broker", "Document"],
+    duration_seconds: 1500,
   },
 ];
 

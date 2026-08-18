@@ -12,14 +12,23 @@ from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from operation_nexus.api.connection_manager import ConnectionManager
-from operation_nexus.api.deps import get_connection_manager, get_session, require_host
+from operation_nexus.api.deps import (
+    get_connection_manager,
+    get_graph_reader,
+    get_session,
+    require_host,
+)
 from operation_nexus.application.advance_round import AdvanceRound
 from operation_nexus.application.errors import NoActiveRound, RoundSequenceError
 from operation_nexus.application.finish_game import FinishGame
 from operation_nexus.application.get_scoreboard import GetScoreboard
+from operation_nexus.application.ports import GraphReader
 from operation_nexus.application.start_round import StartRound
 from operation_nexus.domain.game.contracts import RoundState, ScoreBreakdown
 from operation_nexus.domain.game.rounds import IllegalRoundTransition
+from operation_nexus.infrastructure.postgres.repositories.evidence_reveal_repository import (
+    EvidenceRevealRepository,
+)
 from operation_nexus.infrastructure.postgres.repositories.game_repository import (
     GameNotFound,
     GameRepository,
@@ -78,12 +87,58 @@ async def start_round(
 async def reveal(
     game_id: UUID,
     body: RevealRequest,
+    session: AsyncSession = Depends(get_session),
     connection_manager: ConnectionManager = Depends(get_connection_manager),
+    graph_reader: GraphReader = Depends(get_graph_reader),
 ) -> RevealResponse:
+    game = await GameRepository(session).get(game_id)
+    if game is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"game not found: {game_id}",
+        )
+
+    graph_payload = await graph_reader.fetch_subgraph(
+        [body.evidence_id], [], game.current_round
+    )
+    node = next((item for item in graph_payload.nodes if item.id == body.evidence_id), None)
+    if node is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"evidence not visible: {body.evidence_id}",
+        )
+
+    reveal_payload: dict[str, object] = {
+        "evidence_id": node.id,
+        "id": node.id,
+        "evidence_type": node.labels[0] if node.labels else "evidence",
+        "excerpt": str(node.properties.get("content") or ""),
+        "source": str(
+            node.properties.get("source")
+            or node.properties.get("channel")
+            or "revelação do host"
+        ),
+        "captured_at": node.properties.get("captured_at") or node.properties.get("sent_at"),
+        "round": game.current_round,
+    }
+    await EvidenceRevealRepository(session).record(
+        game_id, body.evidence_id, game.current_round, reveal_payload
+    )
     await connection_manager.broadcast_to_game(
-        game_id, "EVIDENCE_UNLOCKED", {"evidence_id": body.evidence_id}
+        game_id,
+        "EVIDENCE_UNLOCKED",
+        reveal_payload,
     )
     return RevealResponse()
+
+
+@router.get("/{game_id}/reveals")
+async def list_reveals(
+    game_id: UUID, session: AsyncSession = Depends(get_session)
+) -> list[dict[str, object]]:
+    if await GameRepository(session).get(game_id) is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="game not found")
+    return await EvidenceRevealRepository(session).list_for_game(game_id)
 
 
 @router.post("/{game_id}/finish")

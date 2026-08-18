@@ -5,13 +5,15 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { NexusHeader } from "@/components/layout/NexusHeader";
 import { HostControls } from "@/features/host/HostControls";
+import { HostRoster } from "@/features/host/HostRoster";
 import { Scoreboard } from "@/features/scoreboard/Scoreboard";
 import { useGameSocket } from "@/features/game/useGameSocket";
 import { useLiveStore } from "@/features/game/liveStore";
 import { useRoundCountdown } from "@/features/game/useRoundCountdown";
 import { useSessionStore, type HostSession } from "@/features/game/session";
 import { api, IS_MOCK } from "@/lib/client";
-import { MOCK_HOST_TOKEN } from "@/lib/constants";
+import { LOCAL_HOST_TOKEN, MOCK_HOST_TOKEN } from "@/lib/constants";
+import { currentBrief, HOST_SCRIPT } from "@/lib/mock/gameDesign";
 
 export function HostRoute() {
   const session = useSessionStore((s) => s.session);
@@ -24,7 +26,7 @@ export function HostRoute() {
 function HostGate() {
   const setHostSession = useSessionStore((s) => s.setHostSession);
   const [gameId, setGameId] = useState("");
-  const [token, setToken] = useState(IS_MOCK ? MOCK_HOST_TOKEN : "");
+  const [token, setToken] = useState(IS_MOCK ? MOCK_HOST_TOKEN : LOCAL_HOST_TOKEN);
 
   function onSubmit(event: FormEvent) {
     event.preventDefault();
@@ -66,7 +68,7 @@ function HostConsole({ session }: { session: HostSession }) {
   const round = useLiveStore((s) => s.currentRound);
   const title = useLiveStore((s) => s.roundTitle);
   const narrative = useLiveStore((s) => s.roundNarrative);
-  const { label } = useRoundCountdown();
+  const { seconds, label } = useRoundCountdown();
   const scoresByTeam = useLiveStore((s) => s.scoresByTeam);
 
   const gameQuery = useQuery({
@@ -82,6 +84,8 @@ function HostConsole({ session }: { session: HostSession }) {
   const currentRound = round || gameQuery.data?.current_round || 0;
   const liveRows = Object.values(scoresByTeam);
   const rows = boardQuery.data && boardQuery.data.length > 0 ? boardQuery.data : liveRows;
+  const script = HOST_SCRIPT.find((item) => item.round === currentRound) ?? HOST_SCRIPT[0];
+  const brief = currentBrief(currentRound);
 
   return (
     <div className="flex h-full min-h-0 flex-col">
@@ -99,17 +103,42 @@ function HostConsole({ session }: { session: HostSession }) {
               gameId={session.gameId}
               hostToken={session.hostToken}
               currentRound={currentRound}
+              countdownSeconds={seconds}
             />
           </div>
-          <p className="mt-4 font-mono text-[11px] text-nexus-muted">game {session.gameId}</p>
+          <p className="mt-4 font-mono text-[11px] text-nexus-muted">código da sala · {session.gameId}</p>
         </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Placar</CardTitle>
-          </CardHeader>
-          <Scoreboard rows={rows} teams={gameQuery.data?.teams} />
-        </Card>
+        <div className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Roteiro do host · round {currentRound}</CardTitle>
+            </CardHeader>
+            <p className="text-lg font-medium text-nexus-text">{brief.title}</p>
+            <div className="mt-4 space-y-3 text-sm">
+              <ScriptLine label="Objetivo pedagógico" value={script.teachingGoal} />
+              <ScriptLine label="Provável movimento" value={script.likelyMove} />
+              <ScriptLine label="Pergunta de resgate" value={script.rescueQuestion} />
+              <ScriptLine label="Frase de reveal" value={script.revealLine} />
+            </div>
+          </Card>
+          <HostRoster gameId={session.gameId} teams={gameQuery.data?.teams ?? []} />
+          <Card>
+            <CardHeader>
+              <CardTitle>Placar</CardTitle>
+            </CardHeader>
+            <Scoreboard rows={rows} teams={gameQuery.data?.teams} />
+          </Card>
+        </div>
       </div>
+    </div>
+  );
+}
+
+function ScriptLine({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="border-l-2 border-nexus-amber/40 pl-3">
+      <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-nexus-amber">{label}</p>
+      <p className="mt-1 leading-relaxed text-nexus-muted">{value}</p>
     </div>
   );
 }

@@ -7,6 +7,12 @@ export const MOCK_GAME_ID = "game_mock_01";
 export const MOCK_TEAM_NAME = "Equipe Alfa";
 export const DEFAULT_SCENARIO_SLUG = "operation_nexus";
 
+/** Matches apps/api Settings.host_token default and the repo-root `.env`. */
+export const LOCAL_HOST_TOKEN = "dev-host-token-change-me";
+
+/** Provisioned when the host opens a live game. Names ≠ join codes. */
+export const DEFAULT_TEAM_NAMES = ["Alfa", "Bravo", "Charlie", "Delta"] as const;
+
 /**
  * Credit costs per tool (CONTRACT.md §4). `expand_neighborhood` is
  * hop-dependent; use `expandNeighborhoodCost(hops)` for that one.

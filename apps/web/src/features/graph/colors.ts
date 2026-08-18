@@ -16,6 +16,48 @@ const LABEL_COLORS: Record<string, string> = {
   Transaction: "#2dd4bf",
 };
 
+const LABEL_NAMES: Record<string, string> = {
+  Person: "Pessoa",
+  Application: "Solicitação",
+  Device: "Dispositivo",
+  Phone: "Telefone",
+  Email: "E-mail",
+  IPAddress: "Endereço IP",
+  Address: "Endereço",
+  BankAccount: "Conta bancária",
+  Company: "Empresa",
+  Employer: "Empregador",
+  Broker: "Correspondente",
+  Document: "Documento",
+  Evidence: "Evidência",
+  Message: "Mensagem",
+  Transaction: "Transação",
+};
+
+const RELATIONSHIP_NAMES: Record<string, string> = {
+  SUBMITTED: "enviou",
+  USED_DEVICE: "usou dispositivo",
+  USED_PHONE: "usou telefone",
+  USED_EMAIL: "usou e-mail",
+  RESIDES_AT: "mora em",
+  OWNS_ACCOUNT: "é titular de",
+  WORKS_AT: "trabalha em",
+  EMPLOYED_BY: "empregado por",
+  RELATED_TO: "relacionado a",
+  SAME_AS: "mesma identidade",
+  ORIGINATED_BY: "originada por",
+  SUPPORTED_BY: "apoiada por",
+  CONNECTED_FROM: "conectado de",
+  TRANSFERRED_TO: "transferiu para",
+  FROM_ACCOUNT: "saiu de",
+  TO_ACCOUNT: "chegou em",
+  CONTROLLED_BY: "controlada por",
+  MENTIONS: "menciona",
+  MENTIONS_ACCOUNT: "menciona conta",
+  SENT_BY: "enviada por",
+  SENT_TO: "enviada para",
+};
+
 export function colorForLabels(labels: string[]): string {
   for (const label of labels) {
     const color = LABEL_COLORS[label];
@@ -26,4 +68,33 @@ export function colorForLabels(labels: string[]): string {
 
 export function primaryLabel(labels: string[]): string {
   return labels[0] ?? "Node";
+}
+
+export function labelDisplay(labels: string[]): string {
+  return LABEL_NAMES[primaryLabel(labels)] ?? primaryLabel(labels);
+}
+
+export function relationshipDisplay(type: string): string {
+  return RELATIONSHIP_NAMES[type] ?? type.replaceAll("_", " ").toLowerCase();
+}
+
+export function propertyDisplay(key: string): string {
+  const names: Record<string, string> = {
+    content: "Conteúdo",
+    sent_at: "Enviada em",
+    captured_at: "Capturada em",
+    source: "Fonte",
+    channel: "Canal",
+    credit_score: "Score de crédito",
+    income_declared: "Renda declarada",
+    occupation: "Ocupação",
+    opened_at: "Conta aberta em",
+    occurred_at: "Ocorreu em",
+    amount: "Valor",
+    bank: "Banco",
+    address: "Endereço",
+    geo_city: "Cidade",
+    relationship: "Relação",
+  };
+  return names[key] ?? key.replaceAll("_", " ");
 }

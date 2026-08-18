@@ -69,6 +69,7 @@ def seed(
 async def _seed_async(scenario_slug: str, *, embeddings: bool, drop: bool) -> None:
     from operation_nexus.infrastructure.neo4j.driver import create_driver_manager_from_settings
     from operation_nexus.infrastructure.neo4j.seeder import seed_scenario
+    from operation_nexus.infrastructure.settings import get_settings
 
     try:
         scenario_dir = resolve_scenario_dir(scenario_slug)
@@ -90,6 +91,7 @@ async def _seed_async(scenario_slug: str, *, embeddings: bool, drop: bool) -> No
             drop=drop,
             embeddings=embeddings,
             embedding_provider=embedding_provider,
+            embedding_dimensions=get_settings().azure_embedding_dimensions,
         )
     except ScenarioValidationError as exc:
         typer.secho(str(exc), fg=typer.colors.RED)

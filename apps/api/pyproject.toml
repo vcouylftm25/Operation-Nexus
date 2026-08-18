@@ -9,7 +9,7 @@ dependencies = [
     "uvicorn[standard]>=0.38",
     "pydantic>=2.12",
     "pydantic-settings>=2.8",
-    "sqlalchemy>=2.0",
+    "sqlalchemy[asyncio]>=2.0",
     "alembic>=1.14",
     "psycopg[binary]>=3.2",
     "neo4j>=6.0",
@@ -55,6 +55,9 @@ packages = ["src/operation_nexus"]
 line-length = 100
 target-version = "py313"
 src = ["src", "tests"]
+# Alembic writes these; they are generated artifacts, not authored code.
+# Same rationale as excluding EF Core migrations from quality analysis.
+extend-exclude = ["migrations/versions"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "UP", "B", "SIM", "RUF", "ASYNC", "S", "C4", "PT"]

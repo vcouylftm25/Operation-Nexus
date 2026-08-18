@@ -43,8 +43,8 @@ export function CaseDocket({ files, teamId, sessionToken }: CaseDocketProps) {
     <ScrollArea className="min-h-0 flex-1">
       <div className="space-y-4 px-3 py-3">
         <p className="text-[11px] leading-relaxed text-nexus-muted">
-          Fichas na mesa — grátis de olhar. Abrir no grafo custa 5 cr. O pior score não é
-          necessariamente o culpado.
+          Fichas na mesa — compare sinais individuais, escolha seus alvos e só depois siga as
+          conexões. Abrir uma ficha no grafo custa 5 cr.
         </p>
         {inspect.isError ? (
           <p className="text-xs text-nexus-danger">
@@ -106,10 +106,10 @@ function FileGroup({
                 disabled={busy}
                 onClick={() => onInspect(file.id)}
                 className={cn(
-                  "w-full rounded-sm border px-3 py-2 text-left transition-colors",
+                  "w-full rounded-[10px] border px-3 py-2.5 text-left transition-colors",
                   selected
-                    ? "border-nexus-amber/50 bg-nexus-amber/10"
-                    : "border-nexus-border hover:border-nexus-amber/30 hover:bg-white/4",
+                    ? "border-nexus-amber/50 bg-nexus-raised"
+                    : "border-nexus-border bg-nexus-card hover:border-nexus-amber/30 hover:bg-nexus-raised",
                 )}
               >
                 <div className="flex items-start justify-between gap-2">
@@ -131,8 +131,10 @@ function FileGroup({
                     .join(" · ")}
                 </p>
                 <div className="mt-2 flex items-center justify-between">
-                  <span className="font-mono text-[10px] text-nexus-muted">{file.id}</span>
-                  {open ? <Badge tone="signal">no grafo</Badge> : <Badge tone="amber">5 cr</Badge>}
+                  <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-nexus-muted">
+                    {open ? "descoberto" : "abrir ficha"}
+                  </span>
+                  {open ? <Badge tone="signal">descoberto</Badge> : <Badge tone="amber">5 cr · investigar</Badge>}
                 </div>
               </button>
             </li>

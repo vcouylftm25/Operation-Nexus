@@ -32,6 +32,9 @@ from operation_nexus.infrastructure.postgres.repositories.action_repository impo
 from operation_nexus.infrastructure.postgres.repositories.discovery_repository import (
     DiscoveryRepository,
 )
+from operation_nexus.infrastructure.postgres.repositories.evidence_reveal_repository import (
+    EvidenceRevealRepository,
+)
 from operation_nexus.infrastructure.postgres.repositories.game_repository import GameRepository
 from operation_nexus.infrastructure.postgres.repositories.team_repository import (
     TeamNotFound,
@@ -97,6 +100,7 @@ async def investigate(
     authenticated_team_id: UUID = Depends(require_team),
     connection_manager: ConnectionManager = Depends(get_connection_manager),
     runner: InvestigationRunner = Depends(get_investigation_runner),
+    graph_reader: GraphReader = Depends(get_graph_reader),
 ) -> InvestigationResult:
     require_matching_team(team_id, authenticated_team_id)
     use_case = RecordInvestigation(
@@ -106,6 +110,7 @@ async def investigate(
         DiscoveryRepository(session),
         runner,
         connection_manager,
+        graph_reader=graph_reader,
     )
     try:
         return await use_case.execute(team_id, body.question)
@@ -162,3 +167,16 @@ async def get_docket(
         return await use_case.execute(team_id)
     except TeamNotFound as exc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+
+
+@router.get("/{team_id}/reveals")
+async def get_reveals(
+    team_id: UUID,
+    session: AsyncSession = Depends(get_session),
+    authenticated_team_id: UUID = Depends(require_team),
+) -> list[dict[str, object]]:
+    require_matching_team(team_id, authenticated_team_id)
+    team = await TeamRepository(session).get(team_id)
+    if team is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="team not found")
+    return await EvidenceRevealRepository(session).list_for_game(team.game_id)

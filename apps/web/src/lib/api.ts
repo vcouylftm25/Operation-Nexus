@@ -10,6 +10,7 @@ import type {
   Accusation,
   CaseFile,
   CreateTeamResponse,
+  EvidenceUnlockedPayload,
   GameState,
   GraphPayload,
   InsufficientCreditsBody,
@@ -146,6 +147,13 @@ export function getDocket(teamId: string, bearerToken: string): Promise<CaseFile
   return request<CaseFile[]>(`/teams/${teamId}/docket`, { bearerToken });
 }
 
+export function getTeamReveals(
+  teamId: string,
+  bearerToken: string,
+): Promise<EvidenceUnlockedPayload[]> {
+  return request<EvidenceUnlockedPayload[]>(`/teams/${teamId}/reveals`, { bearerToken });
+}
+
 export function hostNextRound(gameId: string, hostToken: string): Promise<RoundState> {
   return request<RoundState>(`/host/games/${gameId}/rounds/next`, { method: "POST", hostToken });
 }
@@ -167,6 +175,13 @@ export function hostReveal(gameId: string, evidenceId: string, hostToken: string
     body: { evidence_id: evidenceId },
     hostToken,
   });
+}
+
+export function hostReveals(
+  gameId: string,
+  hostToken: string,
+): Promise<EvidenceUnlockedPayload[]> {
+  return request<EvidenceUnlockedPayload[]>(`/host/games/${gameId}/reveals`, { hostToken });
 }
 
 export function hostFinish(gameId: string, hostToken: string): Promise<ScoreBreakdown[]> {

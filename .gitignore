@@ -21,6 +21,8 @@ apps/web/.vite/
 # --- Env files (keep the example, ignore anything real) ---
 .env
 .env.*.local
+.env.bak*
+.env.local
 !.env.example
 
 # --- macOS ---

@@ -23,9 +23,9 @@ import asyncio
 from typing import TYPE_CHECKING, Any, Protocol, TypedDict, runtime_checkable
 from uuid import uuid4
 
+import structlog
 from langchain_core.messages import HumanMessage, SystemMessage
 from langgraph.graph import END, START, StateGraph
-from pydantic import ValidationError
 
 from operation_nexus.ai.prompts.loader import load_prompt
 from operation_nexus.ai.tools.registry import (
@@ -35,6 +35,7 @@ from operation_nexus.ai.tools.registry import (
     render_tool_catalog_markdown,
 )
 from operation_nexus.domain.game.credits import InsufficientCredits
+from operation_nexus.domain.graph.schema import EMBEDDING_PROPERTY
 from operation_nexus.domain.investigation.contracts import (
     MAX_TOOL_CALLS_PER_PLAN,
     EvidenceRef,
@@ -46,6 +47,7 @@ from operation_nexus.domain.investigation.contracts import (
     InvestigationPlan,
     InvestigationResult,
     InvestigationToolCall,
+    PlannerOutput,
     SemanticEvidenceSearchArgs,
     ToolName,
 )
@@ -110,6 +112,8 @@ def build_thread_id(*, team_id: str, game_id: str | None = None) -> str:
     return str(team_id)
 
 
+logger = structlog.get_logger(__name__)
+
 _MAX_NORMALIZED_QUESTION_LENGTH = 2000
 
 
@@ -129,6 +133,49 @@ def _render_evidence_catalog(evidence_refs: list[EvidenceRef]) -> str:
             f"- `{ev.id}` ({ev.evidence_type}, fonte: {ev.source}, "
             f'capturado: {captured}): "{ev.excerpt}"'
         )
+    return "\n".join(lines)
+
+
+def _render_subgraph(payload: GraphPayload) -> str:
+    """Render retrieved nodes/relationships for the synthesizer.
+
+    Five of the seven tools (inspect_entity, find_shared_entities, find_path,
+    expand_neighborhood, timeline) return graph structure and no Evidence
+    nodes at all. Without this the synthesizer sees an empty context and
+    answers "no evidence found" even though the query succeeded — which reads
+    to a team as the investigator being broken.
+    """
+    if not payload.nodes and not payload.relationships:
+        return "(nenhum nó ou relação retornado nesta interação)"
+
+    labels_by_id = {node.id: node.label_display or node.id for node in payload.nodes}
+    lines: list[str] = []
+    if payload.nodes:
+        lines.append("Nós:")
+        for node in payload.nodes:
+            primary = node.labels[0] if node.labels else "Node"
+            props = ", ".join(
+                f"{key}={value!r}"
+                for key, value in sorted(node.properties.items())
+                if key not in ("id", "label_display", "visible_from_round", EMBEDDING_PROPERTY)
+            )
+            lines.append(
+                f"- `{node.id}` [{primary}] {node.label_display or node.id}"
+                + (f" — {props}" if props else "")
+            )
+    if payload.relationships:
+        lines.append("Relações:")
+        for rel in payload.relationships:
+            start = labels_by_id.get(rel.start_id, rel.start_id)
+            end = labels_by_id.get(rel.end_id, rel.end_id)
+            extra = ", ".join(
+                f"{key}={value!r}"
+                for key, value in sorted(rel.properties.items())
+                if key not in ("id", "visible_from_round", EMBEDDING_PROPERTY)
+            )
+            lines.append(
+                f"- `{rel.id}` ({start}) -[{rel.type}]-> ({end})" + (f" — {extra}" if extra else "")
+            )
     return "\n".join(lines)
 
 
@@ -182,17 +229,29 @@ def build_investigation_graph(
             SystemMessage(content=system_text),
             HumanMessage(content=state["normalized_question"]),
         ]
-        structured_model = chat_model.with_structured_output(InvestigationPlan)
+        # The model is asked for PlannerOutput, not InvestigationPlan: the
+        # latter's open `arguments` dict cannot satisfy strict structured
+        # outputs. See the note above PlannerOutput in contracts.py.
+        structured_model = chat_model.with_structured_output(PlannerOutput)
         try:
             raw_plan = await structured_model.ainvoke(messages)
-            plan = (
+            planner_output = (
                 raw_plan
-                if isinstance(raw_plan, InvestigationPlan)
-                else InvestigationPlan.model_validate(raw_plan)
+                if isinstance(raw_plan, PlannerOutput)
+                else PlannerOutput.model_validate(raw_plan)
             )
-        except (ValidationError, ValueError, TypeError):
-            # A malformed structured-output response must never crash the
-            # graph or fall back to free-text parsing — refuse instead.
+            plan = planner_output.to_plan()
+        except Exception:
+            # Two failure modes land here and BOTH must degrade to a refusal
+            # rather than a 500:
+            #   * malformed structured output (never fall back to free-text);
+            #   * the provider rejecting the prompt outright — Azure's content
+            #     filter returns HTTP 400 with jailbreak.detected on inputs
+            #     like "ignore all previous instructions", which is precisely
+            #     the input a player will type as a joke mid-game.
+            # A crashed investigator reads to the room as a broken product,
+            # so we log and refuse instead of propagating.
+            logger.warning("plan_investigation_failed", exc_info=True)
             plan = InvestigationPlan(
                 intent=InvestigationIntent.OUT_OF_SCOPE,
                 tool_calls=[],
@@ -291,8 +350,12 @@ def build_investigation_graph(
             return {"answer": _out_of_scope_answer()}
 
         evidence_json = [{"id": ev.id, "excerpt": ev.excerpt} for ev in evidence_refs]
+        subgraph: GraphPayload = state.get("subgraph") or GraphPayload.empty()
         system_text = load_prompt(
-            "synthesizer", evidence_catalog=_render_evidence_catalog(evidence_refs)
+            "synthesizer",
+            evidence_catalog=_render_evidence_catalog(evidence_refs),
+            subgraph_catalog=_render_subgraph(subgraph),
+            current_round=str(state["current_round"]),
         )
         messages = [
             SystemMessage(content=system_text),
@@ -312,7 +375,12 @@ def build_investigation_graph(
                 if isinstance(raw_answer, InvestigationAnswer)
                 else InvestigationAnswer.model_validate(raw_answer)
             )
-        except (ValidationError, ValueError, TypeError):
+        except Exception:
+            # Same reasoning as plan_investigation: a provider-side rejection
+            # (content filter) or a malformed structured response must not
+            # surface as a 500 mid-game. The tools already ran and the team was
+            # already charged, so still return the discovered ids.
+            logger.warning("synthesize_answer_failed", exc_info=True)
             answer = InvestigationAnswer(
                 answer=(
                     "Não foi possível compor uma resposta estruturada a partir das "

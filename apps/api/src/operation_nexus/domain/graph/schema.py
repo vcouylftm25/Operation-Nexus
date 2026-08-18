@@ -168,8 +168,16 @@ def index_statements() -> list[str]:
     return statements
 
 
-def vector_index_statements() -> list[str]:
-    """Vector indexes for `Evidence.embedding` and `Message.embedding` (CONTRACT.md §3)."""
+def vector_index_statements(dimensions: int = EMBEDDING_DIMENSIONS) -> list[str]:
+    """Vector indexes for `Evidence.embedding` and `Message.embedding` (CONTRACT.md §3).
+
+    `dimensions` must match the embedding deployment actually in use — Neo4j
+    rejects writes whose vector length disagrees with the index. The contract
+    default is text-embedding-3-large (3072); a deployment of
+    text-embedding-3-small emits 1536, so this is configuration, not a constant.
+    """
+    if dimensions < 1:
+        raise ValueError(f"embedding dimensions must be positive, got {dimensions}")
     statements = []
     for label in (NodeLabel.EVIDENCE, NodeLabel.MESSAGE):
         index_name = f"{label.value.lower()}_embedding"
@@ -177,7 +185,7 @@ def vector_index_statements() -> list[str]:
             f"CREATE VECTOR INDEX {index_name} IF NOT EXISTS "
             f"FOR (n:{label.value}) ON (n.{EMBEDDING_PROPERTY}) "
             "OPTIONS {indexConfig: {`vector.dimensions`: "
-            f"{EMBEDDING_DIMENSIONS}"
+            f"{dimensions}"
             ", `vector.similarity_function`: 'cosine'}}"
         )
     return statements

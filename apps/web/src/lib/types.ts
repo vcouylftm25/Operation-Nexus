@@ -344,6 +344,7 @@ export interface EvidenceUnlockedPayload {
   source?: string;
   captured_at?: string | null;
   round?: number;
+  revealed_at?: string;
 }
 
 export interface GraphDiscoveryPayload {

@@ -6,7 +6,7 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export function Card({ className, ...props }: CardProps) {
-  return <div className={cn("nexus-panel rounded-md p-4", className)} {...props} />;
+  return <div className={cn("nexus-card p-4", className)} {...props} />;
 }
 
 export function CardHeader({ className, ...props }: HTMLAttributes<HTMLDivElement>) {

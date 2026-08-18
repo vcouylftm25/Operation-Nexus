@@ -66,6 +66,8 @@ class GraphReader(Protocol):
 
     async def list_case_files(self, current_round: int) -> GraphPayload: ...
 
+    async def entity_roster(self, current_round: int) -> dict[str, str]: ...
+
 
 class NullGraphReader:
     """Degrades to id-only nodes when Neo4j isn't wired."""
@@ -91,6 +93,10 @@ class NullGraphReader:
     async def list_case_files(self, current_round: int) -> GraphPayload:
         del current_round
         return GraphPayload.empty()
+
+    async def entity_roster(self, current_round: int) -> dict[str, str]:
+        del current_round
+        return {}
 
 
 # Kept so existing imports of GraphSubgraph/GraphNodeRef don't explode.

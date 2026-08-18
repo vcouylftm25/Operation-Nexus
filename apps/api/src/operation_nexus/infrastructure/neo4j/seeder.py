@@ -159,6 +159,7 @@ async def seed_scenario(
     drop: bool = False,
     embeddings: bool = False,
     embedding_provider: EmbeddingProvider | None = None,
+    embedding_dimensions: int | None = None,
 ) -> SeedReport:
     """validate -> constraints -> indexes -> nodes -> relationships ->
     evidence -> vector indexes. Fails loudly (`ScenarioValidationError`) on
@@ -188,7 +189,12 @@ async def seed_scenario(
         embedding_provider=embedding_provider,
     )
 
-    for statement in vector_index_statements():
+    vector_statements = (
+        vector_index_statements(embedding_dimensions)
+        if embedding_dimensions is not None
+        else vector_index_statements()
+    )
+    for statement in vector_statements:
         await _execute_write(driver_manager, statement, {})
 
     return SeedReport(

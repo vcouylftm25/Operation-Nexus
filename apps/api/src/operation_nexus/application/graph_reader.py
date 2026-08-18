@@ -20,3 +20,20 @@ class Neo4jGraphReader:
 
     async def list_case_files(self, current_round: int) -> GraphPayload:
         return await self._repository.list_case_files(current_round)
+
+    async def entity_roster(self, current_round: int) -> dict[str, str]:
+        """`{entity_id: display label}` for everything on the table this round.
+
+        Players speak in names ("Roberto Alves"), never in ids ("person_03").
+        Without this map the planner cannot turn a question into a tool call
+        and falls back to refusing — which reads to a team as the game being
+        broken. Round-gated like everything else: a name the team cannot yet
+        see is not in here.
+        """
+        payload = await self._repository.list_case_files(current_round)
+        roster: dict[str, str] = {}
+        for node in payload.nodes:
+            label = node.label_display or str(node.properties.get("name") or node.id)
+            primary = node.labels[0] if node.labels else "Node"
+            roster[node.id] = f"{label} ({primary})"
+        return roster
