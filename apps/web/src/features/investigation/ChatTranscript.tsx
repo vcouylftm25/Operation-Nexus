@@ -1,10 +1,11 @@
-import { Badge } from "@/components/ui/Badge";
+import { useEffect, useState } from "react";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import type { InvestigationResult } from "@/lib/types";
 
 export interface ChatEntry {
   id: string;
   question: string;
+  displayQuestion?: string;
   result?: InvestigationResult;
   error?: string;
 }
@@ -13,57 +14,180 @@ interface ChatTranscriptProps {
   entries: ChatEntry[];
 }
 
+const THINKING_STEPS = ["Interpretando pergunta", "Consultando relações", "Recuperando evidências"];
+
+/** Cosmetic-only: advances while the real request is in flight, settles the
+ * moment the parent re-renders this entry with a result or error. Doesn't
+ * fabricate any content, just narrates the wait. */
+function ThinkingSteps() {
+  const [step, setStep] = useState(0);
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setStep(1), 420);
+    const t2 = setTimeout(() => setStep(2), 900);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, []);
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 5, marginTop: 9 }}>
+      {THINKING_STEPS.map((label, i) => (
+        <div
+          key={label}
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            fontFamily: "'IBM Plex Mono', monospace",
+            fontSize: 10.5,
+            color: "var(--nx-muted)",
+          }}
+        >
+          <span>{label}</span>
+          <span style={{ color: i < step ? "var(--nx-accent)" : "var(--nx-muted)" }}>
+            {i < step ? "✓" : i === step ? "···" : ""}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function ChatTranscript({ entries }: ChatTranscriptProps) {
   if (entries.length === 0) {
     return (
-      <p className="px-1 py-6 text-center text-xs leading-relaxed text-nexus-muted">
-        Nenhuma consulta ainda. Abra um dossiê ou use a paleta. Eu não tenho o gabarito.
+      <p style={{ padding: "24px 4px", textAlign: "center", fontSize: 12, lineHeight: 1.6, color: "var(--nx-muted)" }}>
+        Nenhuma consulta ainda. Abra um dossiê ou use os chips abaixo.
       </p>
     );
   }
 
   return (
     <ScrollArea className="h-full">
-      <ol className="flex flex-col gap-3 pr-2">
-        {entries.map((entry) => (
-          <li key={entry.id} className="space-y-2">
-            <div className="rounded-sm border border-nexus-border bg-nexus-bg/50 px-3 py-2">
-              <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-nexus-muted">Você</p>
-              <p className="mt-1 text-sm text-nexus-text">{entry.question}</p>
-            </div>
-            {entry.error ? (
-              <div className="rounded-sm border border-nexus-danger/40 bg-nexus-danger/10 px-3 py-2 text-sm text-nexus-danger">
-                {entry.error}
-              </div>
-            ) : null}
-            {entry.result ? (
-              <div className="rounded-sm border border-nexus-signal/25 bg-nexus-signal/5 px-3 py-2">
-                <div className="mb-1 flex items-center gap-2">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-nexus-signal">
-                    Investigador
-                  </p>
-                  <Badge tone="amber">{entry.result.credits_charged} cr</Badge>
-                </div>
-                <p className="whitespace-pre-wrap text-sm leading-relaxed text-nexus-text">
-                  {entry.result.answer.answer}
+      <ol style={{ display: "flex", flexDirection: "column", gap: 12, paddingRight: 8 }}>
+        {entries.map((entry) => {
+          const pending = !entry.result && !entry.error;
+          return (
+            <li key={entry.id} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              <div
+                style={{
+                  padding: "10px 12px",
+                  border: "1px solid var(--nx-line)",
+                  borderRadius: 12,
+                  background: "var(--nx-card)",
+                }}
+              >
+                <p
+                  style={{
+                    fontFamily: "'IBM Plex Mono', monospace",
+                    fontSize: 9.5,
+                    letterSpacing: "0.16em",
+                    color: "var(--nx-muted)",
+                  }}
+                >
+                  VOCÊ
                 </p>
-                {entry.result.answer.caveats.length > 0 ? (
-                  <ul className="mt-2 space-y-1 text-xs text-nexus-muted">
-                    {entry.result.answer.caveats.map((caveat) => (
-                      <li key={caveat}>⚠ {caveat}</li>
-                    ))}
-                  </ul>
-                ) : null}
-                {entry.result.answer.discovered_node_ids.length > 0 ? (
-                  <p className="mt-2 font-mono text-[10px] text-nexus-signal">
-                    +{entry.result.answer.discovered_node_ids.length} nós · +
-                    {entry.result.answer.discovered_relationship_ids.length} relações
-                  </p>
-                ) : null}
+                <p style={{ marginTop: 5, fontSize: 12.5, color: "var(--nx-ink)" }}>
+                  {entry.displayQuestion ?? entry.question}
+                </p>
               </div>
-            ) : null}
-          </li>
-        ))}
+
+              {entry.error ? (
+                <div
+                  style={{
+                    padding: "10px 12px",
+                    border: "1px solid rgb(198 40 40 / 0.4)",
+                    borderRadius: 12,
+                    background: "var(--nx-card)",
+                    fontSize: 12.5,
+                    color: "var(--nx-danger)",
+                  }}
+                >
+                  {entry.error}
+                </div>
+              ) : null}
+
+              {pending || entry.result ? (
+                <div
+                  style={{
+                    padding: "13px 14px",
+                    border: "1px solid var(--nx-accent-18)",
+                    borderRadius: 16,
+                    background: "var(--nx-elev)",
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span
+                      style={{
+                        fontFamily: "'IBM Plex Mono', monospace",
+                        fontSize: 9.5,
+                        letterSpacing: "0.16em",
+                        color: "var(--nx-accent-text)",
+                      }}
+                    >
+                      NEXUS AI
+                    </span>
+                    {entry.result ? (
+                      <span
+                        style={{
+                          fontFamily: "'IBM Plex Mono', monospace",
+                          fontSize: 10,
+                          padding: "1px 6px",
+                          borderRadius: 999,
+                          border: "1px solid var(--nx-accent-30)",
+                          color: "var(--nx-accent-text)",
+                        }}
+                      >
+                        {entry.result.credits_charged} cr
+                      </span>
+                    ) : null}
+                  </div>
+
+                  {pending ? (
+                    <ThinkingSteps />
+                  ) : entry.result ? (
+                    <>
+                      <p
+                        style={{
+                          marginTop: 9,
+                          fontSize: 12.5,
+                          lineHeight: 1.6,
+                          color: "var(--nx-ink)",
+                          whiteSpace: "pre-wrap",
+                        }}
+                      >
+                        {entry.result.answer.answer}
+                      </p>
+                      {entry.result.answer.caveats.length > 0 ? (
+                        <ul style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 4 }}>
+                          {entry.result.answer.caveats.map((caveat) => (
+                            <li key={caveat} style={{ fontSize: 11, color: "var(--nx-muted)" }}>
+                              ⚠ {caveat}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : null}
+                      {entry.result.answer.discovered_node_ids.length > 0 ? (
+                        <p
+                          style={{
+                            marginTop: 8,
+                            fontFamily: "'IBM Plex Mono', monospace",
+                            fontSize: 10,
+                            color: "var(--nx-accent-text)",
+                          }}
+                        >
+                          +{entry.result.answer.discovered_node_ids.length} nós · +
+                          {entry.result.answer.discovered_relationship_ids.length} relações
+                        </p>
+                      ) : null}
+                    </>
+                  ) : null}
+                </div>
+              ) : null}
+            </li>
+          );
+        })}
       </ol>
     </ScrollArea>
   );

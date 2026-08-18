@@ -1,18 +1,69 @@
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap");
 @import "tailwindcss";
 
+/* Urbane — Nexus Graph Workspace v2's typeface (Lifetime Brasa design
+   system, "New - Lifetime Tech" project). Scoped to `.nx-scope`; the rest of
+   the app keeps IBM Plex Sans. */
+@font-face {
+  font-family: "Urbane";
+  src: url("/fonts/Urbane-Thin.ttf") format("truetype");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Urbane";
+  src: url("/fonts/Urbane-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Urbane";
+  src: url("/fonts/Urbane-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Urbane";
+  src: url("/fonts/Urbane-DemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Urbane";
+  src: url("/fonts/Urbane-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
   --font-sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
-  --color-nexus-bg: #07080c;
-  --color-nexus-bg-alt: #0c1018;
-  --color-nexus-panel: rgb(18 24 38 / 0.8);
-  --color-nexus-border: #1e2a3d;
+  /* Palette mirrors the "Nexus Graph Workspace" mock in Claude Design
+     (project: Interactive Investigation Graph). Do not drift these by hand —
+     the mock is the reference. */
+  --color-nexus-bg: #070a0f;        /* app ground */
+  --color-nexus-bg-alt: #0b0f16;    /* chrome: header, rails, panel ground */
+  --color-nexus-panel: #0b0f16;     /* opaque — the mock does not tint panels */
+  --color-nexus-card: #0d121b;      /* resting card on a panel */
+  --color-nexus-raised: #111722;    /* selected / hovered card */
+  --color-nexus-border: rgb(255 255 255 / 0.07);
+  --color-nexus-border-strong: rgb(255 255 255 / 0.09);
   --color-nexus-amber: #f5b942;
+  --color-nexus-amber-hover: #ffd27a;
   --color-nexus-signal: #3ee0a0;
-  --color-nexus-danger: #ff5d5d;
-  --color-nexus-muted: #8b9bb4;
-  --color-nexus-text: #e8eef8;
+  --color-nexus-danger: #ff6767;
+  --color-nexus-muted: #8f9bad;
+  --color-nexus-text: #f5f7fa;
+
+  /* The mock is built on a 10px corner and a tight label scale. */
+  --radius-nexus: 10px;
+  --text-nexus-label: 9.5px;
+  --tracking-nexus-label: 0.18em;
 }
 
 @layer base {
@@ -30,8 +81,8 @@
     background-image:
       radial-gradient(ellipse at 12% -8%, rgb(245 185 66 / 0.09), transparent 42%),
       radial-gradient(ellipse at 88% 108%, rgb(62 224 160 / 0.06), transparent 46%),
-      linear-gradient(rgb(30 42 61 / 0.28) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(30 42 61 / 0.28) 1px, transparent 1px);
+      linear-gradient(rgb(255 255 255 / 0.022) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 0.022) 1px, transparent 1px);
     background-size: auto, auto, 56px 56px, 56px 56px;
     background-attachment: fixed;
   }
@@ -53,7 +104,28 @@
   .nexus-panel {
     background: var(--color-nexus-panel);
     border: 1px solid var(--color-nexus-border);
-    backdrop-filter: blur(14px);
+  }
+
+  /* Card chrome, straight off the mock: 10px corner, hairline white border,
+     one step lighter than the panel it sits on. */
+  .nexus-card {
+    background: var(--color-nexus-card);
+    border: 1px solid var(--color-nexus-border);
+    border-radius: var(--radius-nexus);
+  }
+
+  .nexus-card-raised {
+    background: var(--color-nexus-raised);
+    border: 1px solid var(--color-nexus-border-strong);
+    border-radius: var(--radius-nexus);
+  }
+
+  /* Every uppercase section label in the workspace. */
+  .nexus-label {
+    font-size: var(--text-nexus-label);
+    letter-spacing: var(--tracking-nexus-label);
+    text-transform: uppercase;
+    color: var(--color-nexus-muted);
   }
 
   .nexus-scan {
@@ -119,4 +191,142 @@
 
 .nexus-toast {
   animation: nexus-toast-in 280ms ease-out;
+}
+
+/* ---------------------------------------------------------------------------
+ * Nexus Graph Workspace v2 — scoped tokens for the graph canvas + investigator
+ * panel only. Mirrors Claude Design project abea0f73-760d-4010-9e1f-d602d3e2a48c,
+ * file "Nexus Graph Workspace v2 -Lifetime-.dc.html". Deliberately namespaced
+ * under `.nx-scope` (rather than folded into --color-nexus-*) so the rest of
+ * the app keeps its current amber, dark-only palette.
+ * --------------------------------------------------------------------------- */
+.nx-scope {
+  --nx-bg: #f4f2ec;
+  --nx-surface: #faf8f4;
+  --nx-card: #ffffff;
+  --nx-elev: #f4f2ec;
+  --nx-canvas: #ffffff;
+  --nx-node-fill: #ffffff;
+  --nx-ink: #141210;
+  --nx-muted: #5c6672;
+  --nx-accent: #f5540a;
+  --nx-accent-text: #d23b0f;
+  --nx-on-accent: #ffffff;
+  --nx-danger: #c62828;
+  --nx-attention: #c6892a;
+  --nx-explained: #2f9e5e;
+  --nx-line: rgb(20 18 16 / 0.09);
+  --nx-line-2: rgb(20 18 16 / 0.13);
+  --nx-line-3: rgb(20 18 16 / 0.2);
+  --nx-edge: rgb(20 18 16 / 0.22);
+  --nx-node-stroke: rgb(20 18 16 / 0.18);
+  --nx-grid: rgb(20 18 16 / 0.07);
+  --nx-accent-06: rgb(245 84 10 / 0.06);
+  --nx-accent-08: rgb(245 84 10 / 0.1);
+  --nx-accent-18: rgb(245 84 10 / 0.16);
+  --nx-accent-28: rgb(245 84 10 / 0.26);
+  --nx-accent-30: rgb(245 84 10 / 0.3);
+  --nx-accent-35: rgb(245 84 10 / 0.36);
+  --nx-accent-45: rgb(245 84 10 / 0.45);
+  --nx-shadow-1: rgb(20 18 16 / 0.05);
+  --nx-shadow-2: rgb(20 18 16 / 0.09);
+  --nx-shadow-3: rgb(20 18 16 / 0.14);
+  --nx-backdrop: rgb(20 18 16 / 0.3);
+  --nx-glass: rgb(255 255 255 / 0.92);
+
+  color: var(--nx-ink);
+  background: var(--nx-bg);
+  font-family: "Urbane", "IBM Plex Sans", system-ui, sans-serif;
+  transition: background 220ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nx-scope :where(input, textarea, button) {
+  font-family: inherit;
+}
+
+.nx-scope[data-nx-theme="dark"] {
+  --nx-bg: #070a0f;
+  --nx-surface: #0b0f16;
+  --nx-card: #0d121b;
+  --nx-elev: #111722;
+  --nx-canvas: #070a0f;
+  --nx-node-fill: #111722;
+  --nx-ink: #f5f7fa;
+  --nx-muted: #96a2b0;
+  --nx-accent: #2fd08a;
+  --nx-accent-text: #4fe0a4;
+  --nx-on-accent: #06140e;
+  --nx-danger: #ff7a6b;
+  --nx-attention: #e3b04b;
+  --nx-explained: #9fb3c7;
+  --nx-line: rgb(255 255 255 / 0.09);
+  --nx-line-2: rgb(255 255 255 / 0.13);
+  --nx-line-3: rgb(255 255 255 / 0.22);
+  --nx-edge: rgb(255 255 255 / 0.2);
+  --nx-node-stroke: rgb(255 255 255 / 0.22);
+  --nx-grid: rgb(255 255 255 / 0.05);
+  --nx-accent-06: rgb(47 208 138 / 0.08);
+  --nx-accent-08: rgb(47 208 138 / 0.12);
+  --nx-accent-18: rgb(47 208 138 / 0.18);
+  --nx-accent-28: rgb(47 208 138 / 0.28);
+  --nx-accent-30: rgb(47 208 138 / 0.32);
+  --nx-accent-35: rgb(47 208 138 / 0.38);
+  --nx-accent-45: rgb(47 208 138 / 0.5);
+  --nx-shadow-1: rgb(0 0 0 / 0.35);
+  --nx-shadow-2: rgb(0 0 0 / 0.45);
+  --nx-shadow-3: rgb(0 0 0 / 0.55);
+  --nx-backdrop: rgb(3 5 8 / 0.7);
+  --nx-glass: rgb(11 15 22 / 0.92);
+}
+
+@keyframes nxPulse {
+  0% {
+    transform: scale(0.62);
+    opacity: 0;
+  }
+  45% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes nxHalo {
+  0% {
+    opacity: 0.55;
+    r: 14;
+  }
+  100% {
+    opacity: 0;
+    r: 46;
+  }
+}
+
+@keyframes nxDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes nxRise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes nxBreathe {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.9;
+  }
 }

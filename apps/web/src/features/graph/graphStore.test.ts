@@ -41,3 +41,40 @@ describe("graphStore.merge", () => {
     expect(Object.keys(useGraphStore.getState().nodesById)).toHaveLength(3);
   });
 });
+
+describe("graphStore selection", () => {
+  beforeEach(() => {
+    useGraphStore.getState().reset();
+  });
+
+  it("toggleSelect without shift replaces the selection", () => {
+    useGraphStore.getState().toggleSelect("person_01");
+    expect(useGraphStore.getState().selectedIds).toEqual(["person_01"]);
+    expect(useGraphStore.getState().selectedId).toBe("person_01");
+
+    useGraphStore.getState().toggleSelect("person_02");
+    expect(useGraphStore.getState().selectedIds).toEqual(["person_02"]);
+
+    useGraphStore.getState().toggleSelect("person_02");
+    expect(useGraphStore.getState().selectedIds).toEqual([]);
+  });
+
+  it("toggleSelect with shift accumulates and removes", () => {
+    useGraphStore.getState().toggleSelect("person_01");
+    useGraphStore.getState().toggleSelect("person_02", true);
+    expect(useGraphStore.getState().selectedIds).toEqual(["person_01", "person_02"]);
+
+    useGraphStore.getState().toggleSelect("person_01", true);
+    expect(useGraphStore.getState().selectedIds).toEqual(["person_02"]);
+  });
+
+  it("selectEdge clears node selection and select() clears edge selection", () => {
+    useGraphStore.getState().toggleSelect("person_01");
+    useGraphStore.getState().selectEdge("rel_001");
+    expect(useGraphStore.getState().selectedIds).toEqual([]);
+    expect(useGraphStore.getState().selectedEdgeId).toBe("rel_001");
+
+    useGraphStore.getState().select("person_02");
+    expect(useGraphStore.getState().selectedEdgeId).toBeNull();
+  });
+});

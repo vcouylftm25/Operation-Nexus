@@ -1,103 +1,132 @@
 import { useState, type FormEvent } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Button } from "@/components/ui/Button";
-import { Textarea } from "@/components/ui/Textarea";
-import { api, isInsufficientCredits } from "@/lib/client";
-import type { TeamState } from "@/lib/types";
 import { useGraphStore } from "@/features/graph/graphStore";
-import { ChatTranscript, type ChatEntry } from "./ChatTranscript";
+import { ChatTranscript } from "./ChatTranscript";
 import { estimateCommandCost } from "./commands";
 import { ToolPalette } from "./ToolPalette";
+import type { InvestigatorSession } from "./useInvestigatorSession";
 
 interface InvestigatorPanelProps {
-  teamId: string;
-  sessionToken: string;
+  session: InvestigatorSession;
   credits?: number;
 }
 
-const EXPENSIVE_COST = 15;
-
-export function InvestigatorPanel({ teamId, sessionToken, credits }: InvestigatorPanelProps) {
-  const queryClient = useQueryClient();
+export function InvestigatorPanel({ session, credits }: InvestigatorPanelProps) {
+  const selectedIds = useGraphStore((s) => s.selectedIds);
   const [question, setQuestion] = useState("");
-  const [entries, setEntries] = useState<ChatEntry[]>([]);
-
-  const mutation = useMutation({
-    mutationFn: ({ question: q }: { id: string; question: string }) =>
-      api.investigate(teamId, q, sessionToken),
-    onSuccess: (result, vars) => {
-      useGraphStore.getState().merge(result.subgraph);
-      queryClient.setQueryData<TeamState>(["team", teamId], (old) =>
-        old ? { ...old, credits_balance: result.credits_remaining } : old,
-      );
-      setEntries((prev) => prev.map((entry) => (entry.id === vars.id ? { ...entry, result } : entry)));
-    },
-    onError: (err, vars) => {
-      const message = isInsufficientCredits(err)
-        ? `Créditos insuficientes — precisa ${err.body.required}, disponível ${err.body.available}.`
-        : err instanceof Error
-          ? err.message
-          : "Falha na investigação.";
-      setEntries((prev) => prev.map((entry) => (entry.id === vars.id ? { ...entry, error: message } : entry)));
-    },
-  });
-
-  function submit(raw: string) {
-    const q = raw.trim();
-    if (!q || mutation.isPending) return;
-    const cost = estimateCommandCost(q);
-    if (cost >= EXPENSIVE_COST) {
-      const ok = window.confirm(`Isso custa ${cost} cr. Confirma a investigação?`);
-      if (!ok) return;
-    }
-    const id = crypto.randomUUID();
-    setEntries((prev) => [...prev, { id, question: q }]);
-    setQuestion("");
-    mutation.mutate({ id, question: q });
-  }
 
   function onSubmit(event: FormEvent) {
     event.preventDefault();
-    submit(question);
+    if (!question.trim()) return;
+    session.submit(question);
+    setQuestion("");
   }
 
   return (
-    <section className="nexus-panel flex h-full min-h-0 flex-col rounded-none border-y-0 border-r-0">
-      <header className="border-b border-nexus-border px-4 py-3">
-        <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-nexus-muted">Investigador</p>
-        <p className="mt-1 text-[11px] leading-relaxed text-nexus-muted">
-          Eu vejo o mesmo grafo que vocês. Sem gabarito. Cada ferramenta gasta o orçamento da equipe
-          {credits !== undefined ? ` · ${credits} cr restantes` : ""}.
+    <section
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        minHeight: 0,
+        background: "var(--nx-surface)",
+        borderLeft: "1px solid var(--nx-line)",
+      }}
+    >
+      <header style={{ padding: "15px 16px", borderBottom: "1px solid var(--nx-line)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span
+            style={{
+              width: 6,
+              height: 6,
+              borderRadius: "50%",
+              background: "var(--nx-accent)",
+              animation: "nxBreathe 2.6s ease-in-out infinite",
+            }}
+          />
+          <span style={{ fontSize: 13, fontWeight: 600, letterSpacing: "0.06em", color: "var(--nx-ink)" }}>
+            NEXUS AI
+          </span>
+        </div>
+        <p style={{ fontSize: 11, color: "var(--nx-muted)", marginTop: 4, lineHeight: 1.5 }}>
+          Investigador com acesso só ao que sua equipe já descobriu — sem gabarito.
+          {credits !== undefined ? ` ${credits} cr restantes.` : ""}
         </p>
       </header>
-      <div className="min-h-0 flex-1 px-4 py-3">
-        <ChatTranscript entries={entries} />
+
+      <div style={{ flex: 1, minHeight: 0, padding: "12px 16px", overflow: "hidden" }}>
+        <ChatTranscript entries={session.entries} />
       </div>
-      <form onSubmit={onSubmit} className="border-t border-nexus-border p-3 space-y-2">
-        <ToolPalette disabled={mutation.isPending} onPick={setQuestion} />
-        <Textarea
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-          placeholder="Pergunte em português, ou use a paleta…"
-          rows={3}
-          onKeyDown={(event) => {
-            if (event.key === "Enter" && !event.shiftKey) {
-              event.preventDefault();
-              submit(question);
-            }
+
+      <form
+        onSubmit={onSubmit}
+        style={{
+          borderTop: "1px solid var(--nx-line)",
+          padding: "12px 16px 14px",
+          display: "flex",
+          flexDirection: "column",
+          gap: 10,
+        }}
+      >
+        <ToolPalette disabled={session.pending} selectedIds={selectedIds} onPick={session.submit} />
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            padding: "10px 12px",
+            border: "1px solid var(--nx-line-2)",
+            borderRadius: 10,
+            background: "var(--nx-card)",
           }}
-        />
-        <div className="flex items-center justify-between gap-2">
-          <p className="font-mono text-[10px] text-nexus-muted">
-            {question.trim() ? `${estimateCommandCost(question)} cr` : "Shift+Enter para quebra de linha"}
-          </p>
-          <Button
+        >
+          <input
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            // A free-form question never required a selected node — only the
+            // quick actions above do. Keep this true regardless of theme.
+            placeholder={
+              selectedIds.length > 0
+                ? "Pergunte em português (com IA) ou escolha uma ação acima…"
+                : "Pergunte em português com IA — ex.: “quem compartilha dispositivo com Roberto Alves?”"
+            }
+            style={{
+              flex: 1,
+              border: "none",
+              outline: "none",
+              background: "transparent",
+              color: "var(--nx-ink)",
+              fontSize: 12,
+            }}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault();
+                if (question.trim()) {
+                  session.submit(question);
+                  setQuestion("");
+                }
+              }
+            }}
+          />
+          <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, color: "var(--nx-muted)" }}>
+            {question.trim() ? `${estimateCommandCost(question)} cr` : ""}
+          </span>
+          <button
             type="submit"
-            disabled={mutation.isPending || question.trim().length === 0}
+            disabled={session.pending || question.trim().length === 0}
             data-testid="investigate-submit"
+            style={{
+              cursor: session.pending || !question.trim() ? "default" : "pointer",
+              opacity: session.pending || !question.trim() ? 0.45 : 1,
+              border: "none",
+              background: "transparent",
+              fontFamily: "'IBM Plex Mono', monospace",
+              fontSize: 10,
+              letterSpacing: "0.1em",
+              color: "var(--nx-accent-text)",
+            }}
           >
-            {mutation.isPending ? "Consultando o grafo…" : "Investigar"}
-          </Button>
+            {session.pending ? "CONSULTANDO…" : "INVESTIGAR"}
+          </button>
         </div>
       </form>
     </section>

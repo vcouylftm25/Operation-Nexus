@@ -16,9 +16,19 @@ interface GraphStoreState {
   relsById: Record<string, GraphRelationship>;
   /** ids (node or relationship) introduced by the most recent merge() call. */
   recentIds: string[];
+  /** Single-selection consumers (ToolPalette, GraphDetails) read this. */
   selectedId: string | null;
+  /**
+   * Node ids selected on the canvas. Shift+click appends/removes; a plain
+   * click replaces the whole selection with `[id]`. `selectedId` above is
+   * kept as `selectedIds[0] ?? null` for existing single-selection readers.
+   */
+  selectedIds: string[];
+  selectedEdgeId: string | null;
   merge: (payload: GraphPayload) => string[];
   select: (id: string | null) => void;
+  toggleSelect: (id: string, shift?: boolean) => void;
+  selectEdge: (id: string | null) => void;
   clearRecent: () => void;
   reset: () => void;
 }
@@ -28,6 +38,8 @@ export const useGraphStore = create<GraphStoreState>((set) => ({
   relsById: {},
   recentIds: [],
   selectedId: null,
+  selectedIds: [],
+  selectedEdgeId: null,
 
   merge: (payload) => {
     let discovered: string[] = [];
@@ -51,9 +63,32 @@ export const useGraphStore = create<GraphStoreState>((set) => ({
     return discovered;
   },
 
-  select: (id) => set({ selectedId: id }),
+  select: (id) => set({ selectedId: id, selectedIds: id ? [id] : [], selectedEdgeId: null }),
+
+  toggleSelect: (id, shift) =>
+    set((state) => {
+      const selectedIds = shift
+        ? state.selectedIds.includes(id)
+          ? state.selectedIds.filter((x) => x !== id)
+          : state.selectedIds.concat([id])
+        : state.selectedIds.length === 1 && state.selectedIds[0] === id
+          ? []
+          : [id];
+      return { selectedIds, selectedId: selectedIds[0] ?? null, selectedEdgeId: null };
+    }),
+
+  selectEdge: (id) => set({ selectedEdgeId: id, selectedIds: [], selectedId: null }),
+
   clearRecent: () => set({ recentIds: [] }),
-  reset: () => set({ nodesById: {}, relsById: {}, recentIds: [], selectedId: null }),
+  reset: () =>
+    set({
+      nodesById: {},
+      relsById: {},
+      recentIds: [],
+      selectedId: null,
+      selectedIds: [],
+      selectedEdgeId: null,
+    }),
 }));
 
 /** Stable-ish GraphPayload snapshot for passing straight into GraphCanvas. */
