@@ -1,0 +1,42 @@
+rounds:
+  - number: 1
+    title: "Individualmente, tudo parece normal"
+    narrative: >
+      Vocês receberam as fichas de cinco clientes da Vero Express e as propostas de
+      crédito que cada um apresentou. É só isso: nome, idade, profissão, renda
+      declarada, score e o que foi pedido. Nesta fase não existe nenhuma ligação
+      visível entre as pessoas — e é esse o ponto. Leiam cada ficha inteira, incluindo
+      as observações do analista, e reparem no que é estranho e no que é apenas feio.
+      Nada aqui, sozinho, prova fraude: nem um score ruim, nem um pedido grande, nem
+      três propostas seguidas. Anotem suspeitas e, principalmente, anotem perguntas
+      para testar quando as conexões aparecerem.
+    credits: 100
+    unlocks: ["Person", "Application"]
+    duration_seconds: 600
+  - number: 2
+    title: "Conectando os pontos"
+    narrative: >
+      A área de tecnologia liberou os dados técnicos por trás de cada proposta:
+      aparelhos, linhas de telefone, e-mails, endereços de internet, endereços
+      residenciais e contas bancárias. O grafo acende. Agora vocês vão ver que
+      algumas pessoas compartilham coisas — e vão precisar decidir o que cada
+      compartilhamento significa. Um notebook usado por dois CPFs diferentes não é a
+      mesma coisa que um Wi-Fi público usado por dois clientes. Abram cada nó
+      compartilhado e leiam a descrição antes de concluir qualquer coisa: o próprio
+      dado costuma dizer se ele é forte ou fraco como indício.
+    credits: 120
+    unlocks: ["Device", "Phone", "Email", "IPAddress", "Address", "BankAccount"]
+    duration_seconds: 900
+  - number: 3
+    title: "Mensagens e dinheiro"
+    narrative: >
+      Entram no caso as mensagens de WhatsApp apreendidas, os extratos bancários, as
+      transações e os registros de empresas. Aqui vocês descobrem duas coisas ao mesmo
+      tempo: para onde o dinheiro foi depois de sair da Vero Express e quem estava
+      dando as instruções. Também entram os pareceres que inocentam quem, nas fases
+      anteriores, parecia culpado por aparência — leiam todos antes de fechar a
+      acusação. Uma acusação completa responde quatro perguntas: quem participou, quem
+      coordenou, por qual mecanismo e por onde o dinheiro passou.
+    credits: 140
+    unlocks: ["Message", "Evidence", "Transaction", "Company"]
+    duration_seconds: 900

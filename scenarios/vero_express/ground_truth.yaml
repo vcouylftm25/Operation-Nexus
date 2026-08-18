@@ -1,0 +1,62 @@
+# QUARANTINED — loaded ONLY by domain/game/scoring.py. Must never enter a prompt,
+# a tool result, or an API response before GAME_FINISHED (CONTRACT.md §0 rule 4).
+#
+# Cast of five. Roles (narrative, for the facilitator):
+#   person_03 (Isabela Brandão) -> coordinator. Deliberately boring through phases 1-2:
+#       best credit score of the cast (842), highest declared income, one bland approved
+#       loan from BEFORE the investigated window, and only two graph edges (that
+#       application and her own address) — fewer than anyone else. She is only reachable
+#       in phase 3, by two independent paths that must be combined: (a) the money —
+#       account_01 and account_02 both empty into account_03, and evidence_03 ties
+#       account_03 + company_01 to her; (b) the messages — she sends message_01,
+#       message_02 and message_05, i.e. she is the one giving orders.
+#   person_01 (Pedro Hyppolito) -> mule. The MOST connected node from phase 2 onward
+#       (3 applications, shared device + address + phone + generic e-mail, plus the
+#       outgoing money hop). The obvious, incomplete answer: he signed, he did not
+#       organise.
+#   person_02 (Anderson Schott) -> mule. Shares device_01, address_01, phone_01 and
+#       email_01 with person_01 — that quadruple coincidence is the phase-2 "aha".
+#
+# designed_false_positives:
+#   person_04 (Rodrigo Baroni) - worst credit_score in the dataset (291) and zero shared
+#       infrastructure with anyone. Cleared in phase 3 by evidence_04.
+#       Lesson: a bad score measures default risk, not fraud.
+#   person_05 (Daniel Santos)  - his work notebook shares the public coworking IP (ip_02)
+#       with the mules' notebook (device_01) in phase 2. Cleared in phase 3 by
+#       evidence_02: ~40 unrelated customers per day exit through that same NAT address.
+#       Lesson: a public NAT address is not a shared device.
+
+fraudsters:
+  - person_01   # Pedro Hyppolito (mule — the obvious, wrong-alone answer)
+  - person_02   # Anderson Schott (mule — same notebook, same door, same line)
+  - person_03   # Isabela Brandão (coordinator)
+
+coordinator: person_03
+
+pattern: MULE_ACCOUNTS
+
+key_relationships:
+  - rel_010   # USED_DEVICE person_02 -> device_01 (the phase-2 discovery: one device, two CPFs)
+  - rel_021   # RESIDES_AT person_02 -> address_01 (same apartment number as person_01)
+  - rel_013   # USED_PHONE person_02 -> phone_01 (same contact line as person_01)
+  - rel_038   # TRANSFERRED_TO account_01 -> account_03 (mule money into the shell company)
+  - rel_039   # TRANSFERRED_TO account_02 -> account_03 (second mule, same destination)
+  - rel_029   # CONTROLLED_BY company_01 -> person_03 (the shell company answers to the coordinator)
+
+designed_false_positives:
+  - person_04   # Rodrigo Baroni (worst score, zero links — cleared by evidence_04)
+  - person_05   # Daniel Santos (public coworking IP — cleared by evidence_02)
+
+decoy_notes: >
+  person_01 (Pedro Hyppolito) is the trap for teams that accuse by degree: from phase 2
+  on he is the most connected node in the graph, but he is a mule who signed papers
+  someone else assembled. Teams that stop at him lose the coordinator bonus.
+  person_04 (Rodrigo Baroni) is the trap for teams that accuse by score: 291, the worst
+  in the dataset, and not a single shared node with anyone — his own credit analysis
+  says so out loud in phase 3.
+  person_05 (Daniel Santos) is the trap for teams that treat every shared node as equal:
+  a public NAT IP is not a shared device, and the network report quantifies exactly why
+  (~40 unrelated customers a day, 214 turnstile check-ins for him, 2 accesses for the
+  mules' notebook).
+  Both designed false positives have an explicit, discoverable clearing document in
+  phase 3 — accusing them is always a fair, avoidable mistake.

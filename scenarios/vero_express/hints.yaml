@@ -1,0 +1,137 @@
+# Dicas compráveis com créditos, exibidas por fase.
+#
+# Schema (cada item da lista `hints`):
+#   id     : string, único, ^hint_r\d_\d{2}$ — o dígito depois de "r" repete o campo `round`
+#   round  : int, 1..3 — fase em que a dica pode ser comprada
+#   cost   : int, 10..30 — créditos debitados do time na compra
+#   title  : string (pt-BR) — rótulo curto, mostrado antes da compra
+#   text   : string (pt-BR) — conteúdo liberado após a compra
+#
+# Regra de conteúdo: uma dica empurra o time para o PRÓXIMO passo de investigação.
+# Nenhuma dica nomeia culpado, nomeia pessoa específica ou diz quem coordenou o esquema.
+
+hints:
+  - id: hint_r1_01
+    round: 1
+    cost: 10
+    title: "Como se lê uma ficha"
+    text: >
+      Cada ficha tem duas camadas: os números (renda, score, idade) e o texto (resumo e
+      observação do analista). Times iniciantes só olham os números. Leiam as observações
+      das cinco fichas antes de escolher qualquer suspeito — é lá que aparecem as coisas
+      que um cadastro normal não teria, como comprovante repetido, campo em branco ou
+      movimentação sem explicação.
+
+  - id: hint_r1_02
+    round: 1
+    cost: 15
+    title: "Score ruim não é crime"
+    text: >
+      Score de crédito mede uma coisa só: a chance de a pessoa não pagar. Ele não mede
+      honestidade. Quem faz fraude com crédito normalmente precisa de um perfil que passe
+      na análise, ou seja, precisa de score bom. Se vocês estão olhando para a pior ficha
+      da lista, provavelmente estão olhando para o lugar errado.
+
+  - id: hint_r1_03
+    round: 1
+    cost: 15
+    title: "Ritmo, não valor"
+    text: >
+      Comparem as datas das propostas, não só os valores. Uma proposta grande é comum. Três
+      propostas do mesmo cliente em poucas semanas, sempre no mesmo horário, é um padrão de
+      ritmo. Anotem quem repete e a que horas — isso vai importar quando os aparelhos
+      aparecerem na próxima fase.
+
+  - id: hint_r1_04
+    round: 1
+    cost: 20
+    title: "Nesta fase ninguém é culpado"
+    text: >
+      Não existe prova de fraude na fase 1, por construção. O objetivo aqui é sair com uma
+      lista curta de perguntas, não com um acusado. Escrevam perguntas do tipo "essas duas
+      fichas parecidas foram preenchidas do mesmo lugar?" — na fase 2 vocês vão conseguir
+      responder cada uma delas com um clique.
+
+  - id: hint_r2_01
+    round: 2
+    cost: 15
+    title: "O que é um nó compartilhado"
+    text: >
+      No grafo, pessoas são círculos e as coisas que elas usam também. Quando duas pessoas
+      apontam para o mesmo aparelho, o mesmo telefone ou o mesmo endereço, esse item vira um
+      nó compartilhado: um ponto com duas setas chegando. Procurem visualmente por isso —
+      qualquer item com mais de uma pessoa ligada a ele merece ser aberto e lido.
+
+  - id: hint_r2_02
+    round: 2
+    cost: 20
+    title: "Nem todo compartilhamento vale o mesmo"
+    text: >
+      Antes de acusar alguém por compartilhar algo, abram o nó e leiam a descrição dele. Um
+      aparelho pessoal usado por dois CPFs diferentes é quase impossível por acaso. Uma rede
+      Wi-Fi aberta ao público é usada por dezenas de desconhecidos todo dia e não liga
+      ninguém a ninguém. Classifiquem cada compartilhamento como forte ou fraco antes de
+      seguir em frente.
+
+  - id: hint_r2_03
+    round: 2
+    cost: 20
+    title: "Comece pelo aparelho"
+    text: >
+      Se vocês só tiverem tempo para uma verificação nesta fase, façam esta: procurem um
+      aparelho ligado a mais de uma pessoa e confiram se essas pessoas se declararam sem
+      relação entre si no cadastro. Depois olhem se o endereço e o telefone delas também
+      coincidem. Três coincidências independentes entre as mesmas duas pessoas deixam de
+      ser coincidência.
+
+  - id: hint_r2_04
+    round: 2
+    cost: 25
+    title: "Poucas conexões não são um álibi"
+    text: >
+      Contem as conexões de cada ficha, mas reparem também em quem quase não aparece no
+      grafo. Aparecer pouco pode significar duas coisas opostas: a pessoa não tem nada a
+      ver com o caso, ou ela nunca precisou assinar, usar aparelho ou receber dinheiro em
+      nome próprio. Nesta fase vocês ainda não conseguem separar as duas hipóteses —
+      guardem a lista dos quase invisíveis para a fase 3.
+
+  - id: hint_r3_01
+    round: 3
+    cost: 20
+    title: "Siga para onde o dinheiro converge"
+    text: >
+      Não tentem acompanhar transação por transação. Procurem a conta que RECEBE de mais de
+      um solicitante em poucos dias. Convergência é o sinal: dinheiro legítimo se espalha em
+      pagamentos variados, dinheiro de esquema se junta em um ponto só antes de seguir
+      viagem.
+
+  - id: hint_r3_02
+    round: 3
+    cost: 25
+    title: "O último salto importa mais que o primeiro"
+    text: >
+      Depois de achar a conta onde o dinheiro se junta, olhem de quem ela é. Se valores
+      altos saem de contas de pessoas físicas e param em uma conta de empresa, parem tudo e
+      perguntem quem responde por essa empresa. Empresa não assina nada sozinha: sempre
+      existe uma pessoa autorizada a movimentar a conta, e isso está em registro público.
+
+  - id: hint_r3_03
+    round: 3
+    cost: 25
+    title: "Quem manda escreve pouco"
+    text: >
+      Parem de contar conexões e comecem a ler mensagens. Nas conversas, separem quem está
+      DANDO instruções de quem está executando. Quem organiza um esquema costuma aparecer
+      pouco no grafo justamente porque não assina nada, não usa os aparelhos e não recebe o
+      dinheiro na própria conta — mas alguém precisa mandar, e isso aparece por escrito.
+
+  - id: hint_r3_04
+    round: 3
+    cost: 30
+    title: "Toda acusação precisa de uma absolvição"
+    text: >
+      Antes de fechar a acusação, façam a lista dos suspeitos e procurem, para cada um, um
+      documento desta fase que fale especificamente dele. Alguns relatórios e análises
+      existem só para inocentar quem pareceu culpado nas fases anteriores. Acusar alguém que
+      tem um documento de inocência disponível custa pontos — e é o erro mais comum de times
+      apressados.

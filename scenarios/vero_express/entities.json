@@ -1,0 +1,559 @@
+{
+  "entities": [
+    {
+      "id": "person_01",
+      "label": "Person",
+      "visible_from_round": 1,
+      "label_display": "Pedro Hyppolito",
+      "properties": {
+        "name": "Pedro Hyppolito",
+        "cpf_masked": "***.412.660-**",
+        "age": 27,
+        "occupation": "Entregador de aplicativo",
+        "income_declared": 2900.0,
+        "credit_score": 604,
+        "resumo": "Entregador de aplicativo, cliente recente. Abriu três propostas em menos de um mês e todas foram aprovadas.",
+        "cliente_desde": "2025-11-03",
+        "estado_civil": "Solteiro",
+        "observacao_analista": "Renda declarada bate com o histórico de depósitos. O que chamou atenção da triagem foi a frequência: três pedidos em 23 dias, sempre à noite."
+      }
+    },
+    {
+      "id": "person_02",
+      "label": "Person",
+      "visible_from_round": 1,
+      "label_display": "Anderson Schott",
+      "properties": {
+        "name": "Anderson Schott",
+        "cpf_masked": "***.087.315-**",
+        "age": 31,
+        "occupation": "Auxiliar de estoque",
+        "income_declared": 2600.0,
+        "credit_score": 588,
+        "resumo": "Auxiliar de estoque em um atacadista da Zona Norte. Duas propostas aprovadas em três semanas.",
+        "cliente_desde": "2025-12-18",
+        "estado_civil": "Casado",
+        "observacao_analista": "Cadastro preenchido com pressa: complemento de endereço e referência pessoal ficaram em branco nas duas propostas."
+      }
+    },
+    {
+      "id": "person_03",
+      "label": "Person",
+      "visible_from_round": 1,
+      "label_display": "Isabela Brandão",
+      "properties": {
+        "name": "Isabela Brandão",
+        "cpf_masked": "***.559.204-**",
+        "age": 36,
+        "occupation": "Analista de contratos",
+        "income_declared": 11400.0,
+        "credit_score": 842,
+        "resumo": "Cliente antiga, sem nenhuma ocorrência. Um único empréstimo pessoal, anterior ao período investigado, com parcelas em dia.",
+        "cliente_desde": "2021-04-15",
+        "estado_civil": "Solteira",
+        "observacao_analista": "Nada a apontar. Documentação completa, renda comprovada por holerite e declaração de imposto de renda."
+      }
+    },
+    {
+      "id": "person_04",
+      "label": "Person",
+      "visible_from_round": 1,
+      "label_display": "Rodrigo Baroni",
+      "properties": {
+        "name": "Rodrigo Baroni",
+        "cpf_masked": "***.190.448-**",
+        "age": 44,
+        "occupation": "Pintor autônomo",
+        "income_declared": 2200.0,
+        "credit_score": 291,
+        "resumo": "O menor score de crédito de toda a carteira analisada. Uma proposta apresentada, recusada automaticamente.",
+        "cliente_desde": "2019-06-30",
+        "estado_civil": "Casado",
+        "observacao_analista": "Restrição antiga de cartão de loja. Fora o score, não há absolutamente nada de fora do padrão no cadastro dele."
+      }
+    },
+    {
+      "id": "person_05",
+      "label": "Person",
+      "visible_from_round": 1,
+      "label_display": "Daniel Santos",
+      "properties": {
+        "name": "Daniel Santos",
+        "cpf_masked": "***.628.017-**",
+        "age": 29,
+        "occupation": "Designer freelancer",
+        "income_declared": 4700.0,
+        "credit_score": 726,
+        "resumo": "Designer autônomo. Trabalha todo dia útil em um espaço de coworking na Rua Aurora.",
+        "cliente_desde": "2024-02-11",
+        "estado_civil": "Solteiro",
+        "observacao_analista": "Proposta única, aprovada sem ressalvas. O cadastro registra o coworking como local de acesso habitual."
+      }
+    },
+    {
+      "id": "application_01",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Proposta 014",
+      "properties": {
+        "amount": 18500.0,
+        "submitted_at": "2026-01-14T09:22:00Z",
+        "status": "aprovada",
+        "product": "Empréstimo pessoal",
+        "codigo": "EP-2601-014",
+        "valor": "R$ 18.500,00",
+        "finalidade": "Quitação de dívidas",
+        "canal": "app_mobile",
+        "prazo_meses": 24,
+        "observacao": "Aprovada pelo motor automático em 6 minutos, sem análise humana."
+      }
+    },
+    {
+      "id": "application_02",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Proposta 089",
+      "properties": {
+        "amount": 12400.0,
+        "submitted_at": "2026-01-29T21:05:00Z",
+        "status": "aprovada",
+        "product": "Empréstimo pessoal",
+        "codigo": "EP-2601-089",
+        "valor": "R$ 12.400,00",
+        "finalidade": "Capital para trabalho autônomo",
+        "canal": "web",
+        "prazo_meses": 18,
+        "observacao": "Segunda proposta do mesmo solicitante em 15 dias. Preenchida às 21h."
+      }
+    },
+    {
+      "id": "application_03",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Proposta 011",
+      "properties": {
+        "amount": 9800.0,
+        "submitted_at": "2026-02-06T20:47:00Z",
+        "status": "aprovada",
+        "product": "Antecipação de recebíveis",
+        "codigo": "AR-2602-011",
+        "valor": "R$ 9.800,00",
+        "finalidade": "Antecipação de repasses de aplicativo",
+        "canal": "web",
+        "prazo_meses": 6,
+        "observacao": "Terceira proposta do mesmo solicitante em 23 dias, sempre no período da noite."
+      }
+    },
+    {
+      "id": "application_04",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Proposta 031",
+      "properties": {
+        "amount": 17200.0,
+        "submitted_at": "2026-01-16T19:38:00Z",
+        "status": "aprovada",
+        "product": "Empréstimo pessoal",
+        "codigo": "EP-2601-031",
+        "valor": "R$ 17.200,00",
+        "finalidade": "Reforma residencial",
+        "canal": "web",
+        "prazo_meses": 24,
+        "observacao": "Formulário concluído em 4 minutos, sem preencher referência pessoal."
+      }
+    },
+    {
+      "id": "application_05",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Proposta 006",
+      "properties": {
+        "amount": 8600.0,
+        "submitted_at": "2026-02-03T20:12:00Z",
+        "status": "aprovada",
+        "product": "Empréstimo pessoal",
+        "codigo": "EP-2602-006",
+        "valor": "R$ 8.600,00",
+        "finalidade": "Despesas médicas",
+        "canal": "web",
+        "prazo_meses": 12,
+        "observacao": "Comprovante de renda idêntico ao da proposta anterior, apenas com a data alterada."
+      }
+    },
+    {
+      "id": "application_06",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Proposta 002",
+      "properties": {
+        "amount": 15000.0,
+        "submitted_at": "2025-11-10T15:40:00Z",
+        "status": "aprovada",
+        "product": "Empréstimo pessoal",
+        "codigo": "EP-2511-002",
+        "valor": "R$ 15.000,00",
+        "finalidade": "Troca de dívida mais cara",
+        "canal": "web",
+        "prazo_meses": 36,
+        "observacao": "Contrato em dia: 9 parcelas pagas, nenhuma com atraso. Proposta anterior ao período investigado."
+      }
+    },
+    {
+      "id": "application_07",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Proposta 003",
+      "properties": {
+        "amount": 6000.0,
+        "submitted_at": "2026-01-08T08:30:00Z",
+        "status": "recusada",
+        "product": "Empréstimo pessoal",
+        "codigo": "EP-2601-003",
+        "valor": "R$ 6.000,00 (recusada)",
+        "finalidade": "Compra de ferramentas de trabalho",
+        "canal": "app_mobile",
+        "prazo_meses": 24,
+        "observacao": "Recusa automática: score abaixo do mínimo de política (450). Nenhum valor liberado."
+      }
+    },
+    {
+      "id": "application_08",
+      "label": "Application",
+      "visible_from_round": 1,
+      "label_display": "Proposta 058",
+      "properties": {
+        "amount": 11000.0,
+        "submitted_at": "2026-01-19T13:26:00Z",
+        "status": "aprovada",
+        "product": "Empréstimo pessoal",
+        "codigo": "EP-2601-058",
+        "valor": "R$ 11.000,00",
+        "finalidade": "Compra de equipamento de trabalho",
+        "canal": "web",
+        "prazo_meses": 18,
+        "observacao": "Proposta preenchida em horário comercial, a partir de rede compartilhada de escritório."
+      }
+    },
+    {
+      "id": "device_01",
+      "label": "Device",
+      "visible_from_round": 2,
+      "label_display": "Notebook Dell",
+      "properties": {
+        "fingerprint": "4c9a1f0b7d22",
+        "os": "Windows 11",
+        "first_seen": "2025-11-02T00:00:00Z",
+        "modelo": "Notebook Dell Inspiron 15",
+        "descricao": "Notebook doméstico. As propostas feitas a partir dele foram sempre preenchidas entre 19h e 22h.",
+        "navegador": "Chrome 131",
+        "fuso_horario": "America/Sao_Paulo",
+        "observacao": "A financeira grava uma impressão digital do aparelho (resolução de tela, fontes instaladas, versão do navegador). Aparelhos diferentes praticamente nunca geram a mesma impressão."
+      }
+    },
+    {
+      "id": "device_02",
+      "label": "Device",
+      "visible_from_round": 2,
+      "label_display": "Notebook Samsung",
+      "properties": {
+        "fingerprint": "e21d7740fa93",
+        "os": "Windows 11",
+        "first_seen": "2024-02-10T00:00:00Z",
+        "modelo": "Notebook Samsung Book — uso profissional",
+        "descricao": "Notebook de trabalho de um profissional autônomo. Conecta quase sempre a partir de rede pública, em horário comercial.",
+        "navegador": "Edge 130",
+        "fuso_horario": "America/Sao_Paulo",
+        "observacao": "Aparelho com um único CPF associado."
+      }
+    },
+    {
+      "id": "phone_01",
+      "label": "Phone",
+      "visible_from_round": 2,
+      "label_display": "(11) 9****-4471",
+      "properties": {
+        "number_masked": "(11) 9****-4471",
+        "carrier": "Vivo",
+        "tipo_linha": "pré-pago",
+        "ativa_desde": "2025-10-28",
+        "observacao": "Linha pré-paga, sem comprovação de titularidade no cadastro. Informada como telefone de contato principal em propostas de mais de um solicitante."
+      }
+    },
+    {
+      "id": "phone_02",
+      "label": "Phone",
+      "visible_from_round": 2,
+      "label_display": "(11) 9****-2210",
+      "properties": {
+        "number_masked": "(11) 9****-2210",
+        "carrier": "Claro",
+        "tipo_linha": "pós-pago",
+        "ativa_desde": "2019-03-14",
+        "observacao": "Linha pós-paga em nome do próprio titular há mais de seis anos."
+      }
+    },
+    {
+      "id": "phone_03",
+      "label": "Phone",
+      "visible_from_round": 2,
+      "label_display": "(11) 9****-6027",
+      "properties": {
+        "number_masked": "(11) 9****-6027",
+        "carrier": "TIM",
+        "tipo_linha": "pós-pago",
+        "ativa_desde": "2020-05-08",
+        "observacao": "Linha pós-paga em plano familiar, mesma titularidade desde a abertura."
+      }
+    },
+    {
+      "id": "email_01",
+      "label": "Email",
+      "visible_from_round": 2,
+      "label_display": "propostas.vero2026",
+      "properties": {
+        "address": "propostas.vero2026@velomail.com",
+        "provedor": "Velomail",
+        "criado_em": "2025-11-01",
+        "observacao": "Endereço genérico, sem nome de pessoa, criado dois dias antes da primeira proposta em que aparece. Usado em cadastros de solicitantes diferentes."
+      }
+    },
+    {
+      "id": "email_02",
+      "label": "Email",
+      "visible_from_round": 2,
+      "label_display": "anderson.schott31",
+      "properties": {
+        "address": "anderson.schott31@velomail.com",
+        "provedor": "Velomail",
+        "criado_em": "2018-09-12",
+        "observacao": "E-mail pessoal antigo, usado também em cadastros de comércio eletrônico."
+      }
+    },
+    {
+      "id": "email_03",
+      "label": "Email",
+      "visible_from_round": 2,
+      "label_display": "daniel.santos.design",
+      "properties": {
+        "address": "daniel.santos.design@mailnet.com.br",
+        "provedor": "MailNet",
+        "criado_em": "2020-06-03",
+        "observacao": "E-mail profissional, também divulgado no portfólio público do titular."
+      }
+    },
+    {
+      "id": "ip_01",
+      "label": "IPAddress",
+      "visible_from_round": 2,
+      "label_display": "177.92.14.88 (casa)",
+      "properties": {
+        "address": "177.92.14.88",
+        "asn": "AS8167",
+        "geo_city": "São Paulo",
+        "tipo_conexao": "Banda larga residencial",
+        "provedor": "NetSul Telecom",
+        "observacao": "Endereço de uma casa ou apartamento: normalmente atende uma única família. Compartilhar este IP é um sinal forte de que as pessoas estão no mesmo lugar."
+      }
+    },
+    {
+      "id": "ip_02",
+      "label": "IPAddress",
+      "visible_from_round": 2,
+      "label_display": "191.36.207.14 público",
+      "properties": {
+        "address": "191.36.207.14",
+        "asn": "AS28573",
+        "geo_city": "São Paulo",
+        "tipo_conexao": "Link corporativo com Wi-Fi aberto ao público",
+        "provedor": "Fibra Metro",
+        "local": "Coworking Aurora — Rua Aurora, 210",
+        "observacao": "Endereço de saída do Coworking Aurora. Dezenas de pessoas sem relação entre si usam esta mesma conexão todos os dias. Compartilhar este IP, sozinho, não liga ninguém a ninguém."
+      }
+    },
+    {
+      "id": "address_01",
+      "label": "Address",
+      "visible_from_round": 2,
+      "label_display": "Rua Bento Pires, 431",
+      "properties": {
+        "street": "Rua Coronel Bento Pires, 431, ap 42",
+        "city": "São Paulo",
+        "state": "SP",
+        "zip": "02412-070",
+        "endereco_completo": "Rua Coronel Bento Pires, 431, ap 42 — São Paulo/SP, 02412-070",
+        "tipo_imovel": "Apartamento de 2 dormitórios",
+        "observacao": "Mesma unidade, mesmo número de apartamento. Não é apenas o mesmo prédio: é a mesma porta."
+      }
+    },
+    {
+      "id": "address_02",
+      "label": "Address",
+      "visible_from_round": 2,
+      "label_display": "Alameda Lorena, 820",
+      "properties": {
+        "street": "Alameda Lorena, 820, ap 121",
+        "city": "São Paulo",
+        "state": "SP",
+        "zip": "01424-001",
+        "endereco_completo": "Alameda Lorena, 820, ap 121 — São Paulo/SP, 01424-001",
+        "tipo_imovel": "Apartamento próprio",
+        "observacao": "Comprovante de residência em nome da própria titular, com contas de consumo compatíveis."
+      }
+    },
+    {
+      "id": "address_03",
+      "label": "Address",
+      "visible_from_round": 2,
+      "label_display": "Rua Serra Bragança",
+      "properties": {
+        "street": "Rua Serra de Bragança, 505",
+        "city": "São Paulo",
+        "state": "SP",
+        "zip": "03318-000",
+        "endereco_completo": "Rua Serra de Bragança, 505 — São Paulo/SP, 03318-000",
+        "tipo_imovel": "Casa própria",
+        "observacao": "Mesmo endereço cadastrado desde 2019, sem nenhuma alteração."
+      }
+    },
+    {
+      "id": "account_01",
+      "label": "BankAccount",
+      "visible_from_round": 2,
+      "label_display": "Vero **.***-1",
+      "properties": {
+        "bank": "Banco Vero",
+        "branch": "0021",
+        "number_masked": "**.***-1",
+        "opened_at": "2025-11-03T00:00:00Z",
+        "identificacao": "Banco Vero, agência 0021, conta **.***-1",
+        "tipo": "Conta corrente pessoa física",
+        "movimentacao_media_mensal": 3100.0,
+        "observacao": "Conta aberta junto com o primeiro cadastro na financeira. Serve como conta de recebimento dos créditos aprovados."
+      }
+    },
+    {
+      "id": "account_02",
+      "label": "BankAccount",
+      "visible_from_round": 2,
+      "label_display": "Vero **.***-2",
+      "properties": {
+        "bank": "Banco Vero",
+        "branch": "0021",
+        "number_masked": "**.***-2",
+        "opened_at": "2025-12-18T00:00:00Z",
+        "identificacao": "Banco Vero, agência 0021, conta **.***-2",
+        "tipo": "Conta corrente pessoa física",
+        "movimentacao_media_mensal": 2800.0,
+        "observacao": "Conta recente. O saldo raramente passa de um dia parado depois de cada entrada grande."
+      }
+    },
+    {
+      "id": "account_03",
+      "label": "BankAccount",
+      "visible_from_round": 3,
+      "label_display": "Continental **.***-3",
+      "properties": {
+        "bank": "Banco Continental",
+        "branch": "1300",
+        "number_masked": "**.***-3",
+        "opened_at": "2025-12-12T00:00:00Z",
+        "identificacao": "Banco Continental, agência 1300, conta **.***-3",
+        "tipo": "Conta corrente pessoa jurídica",
+        "movimentacao_media_mensal": 23100.0,
+        "observacao": "Conta operacional de uma empresa, que só recebe transferências de pessoas físicas. Não há pagamento de fornecedores, folha, impostos ou aluguel."
+      }
+    },
+    {
+      "id": "account_04",
+      "label": "BankAccount",
+      "visible_from_round": 2,
+      "label_display": "Vero — desembolso",
+      "properties": {
+        "bank": "Banco Vero",
+        "branch": "0001",
+        "number_masked": "**.***-4",
+        "opened_at": "2018-01-15T00:00:00Z",
+        "identificacao": "Banco Vero, agência 0001, conta de desembolso da Vero Express",
+        "tipo": "Conta operacional da financeira",
+        "movimentacao_media_mensal": 1850000.0,
+        "observacao": "É desta conta que a Vero Express libera todo crédito aprovado. Aparecer aqui não é indício de nada: todo cliente aprovado recebe daqui."
+      }
+    },
+    {
+      "id": "company_01",
+      "label": "Company",
+      "visible_from_round": 3,
+      "label_display": "Meridiano Assessoria",
+      "properties": {
+        "name": "Meridiano Assessoria Empresarial LTDA",
+        "cnpj_masked": "**.702.556/0001-**",
+        "founded_at": "2025-12-05T00:00:00Z",
+        "sector": "Serviços de assessoria administrativa",
+        "situacao_cadastral": "Ativa",
+        "capital_social": 5000.0,
+        "funcionarios_declarados": 0,
+        "observacao": "Empresa aberta um mês antes do início das propostas investigadas. Sem funcionários, sem faturamento informado e com endereço de escritório virtual."
+      }
+    },
+    {
+      "id": "transaction_01",
+      "label": "Transaction",
+      "visible_from_round": 3,
+      "label_display": "TED R$ 18.500",
+      "properties": {
+        "amount": 18500.0,
+        "occurred_at": "2026-01-16T10:04:00Z",
+        "currency": "BRL",
+        "tipo": "TED",
+        "descricao": "Desembolso da Vero Express para a conta **.***-1",
+        "descricao_extrato": "LIBERACAO CREDITO EP-2601-014",
+        "observacao": "Liberação normal de crédito aprovado. Todo cliente aprovado recebe uma transferência assim."
+      }
+    },
+    {
+      "id": "transaction_02",
+      "label": "Transaction",
+      "visible_from_round": 3,
+      "label_display": "TED R$ 17.200",
+      "properties": {
+        "amount": 17200.0,
+        "occurred_at": "2026-01-19T10:11:00Z",
+        "currency": "BRL",
+        "tipo": "TED",
+        "descricao": "Desembolso da Vero Express para a conta **.***-2",
+        "descricao_extrato": "LIBERACAO CREDITO EP-2601-031",
+        "observacao": "Liberação normal de crédito aprovado."
+      }
+    },
+    {
+      "id": "transaction_03",
+      "label": "Transaction",
+      "visible_from_round": 3,
+      "label_display": "PIX R$ 17.900",
+      "properties": {
+        "amount": 17900.0,
+        "occurred_at": "2026-01-21T08:37:00Z",
+        "currency": "BRL",
+        "tipo": "PIX",
+        "descricao": "Da conta **.***-1 para a conta **.***-3, de pessoa jurídica",
+        "descricao_extrato": "PIX ENVIADO - PAGTO SERVICOS",
+        "observacao": "Saiu 5 dias depois da liberação do crédito e corresponde a quase todo o valor recebido. Não há nota fiscal correspondente."
+      }
+    },
+    {
+      "id": "transaction_04",
+      "label": "Transaction",
+      "visible_from_round": 3,
+      "label_display": "PIX R$ 16.700",
+      "properties": {
+        "amount": 16700.0,
+        "occurred_at": "2026-01-22T07:59:00Z",
+        "currency": "BRL",
+        "tipo": "PIX",
+        "descricao": "Da conta **.***-2 para a mesma conta **.***-3 de pessoa jurídica",
+        "descricao_extrato": "PIX ENVIADO - PAGTO SERVICOS",
+        "observacao": "Saiu 3 dias depois da liberação do crédito, para o mesmo destino da transferência anterior e com o mesmo histórico genérico."
+      }
+    }
+  ]
+}
