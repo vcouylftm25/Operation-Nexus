@@ -3,12 +3,12 @@
     {
       "id": "message_01",
       "visible_from_round": 3,
-      "label_display": "WhatsApp 13/01 20:11",
+      "label_display": "WhatsApp — 13/01 20:11",
       "content": "Pedro, deixa comigo que eu monto tudo: comprovante, ficha, print do aplicativo, tudo certinho. Você só entra, confere o valor e assina. Não precisa explicar nada pra ninguém, nem inventar história.",
       "captured_at": "2026-01-13T20:11:00Z",
       "source": "seized_device_pedro",
       "channel": "whatsapp",
-      "sent_by": "person_03",
+      "sent_by": "person_04",
       "sent_to": [
         "person_01"
       ],
@@ -19,16 +19,18 @@
     {
       "id": "message_02",
       "visible_from_round": 3,
-      "label_display": "WhatsApp 20/01 21:15",
-      "content": "Anderson, assim que entrar você passa pra conta da empresa no mesmo dia, por favor. Coloca no histórico como pagamento de serviços. Dinheiro parado em conta de pessoa física é o que chama atenção.",
-      "captured_at": "2026-01-20T21:15:00Z",
-      "source": "seized_device_anderson",
+      "label_display": "WhatsApp — 21/01 08:44",
+      "content": "Caiu aqui hoje de manhã. Já mandei pro Fernando, ele tava esperando desde ontem. Faz igual com a tua parte quando cair, não deixa parado na conta que depois complica.",
+      "captured_at": "2026-01-21T08:44:00Z",
+      "source": "seized_device_pedro",
       "channel": "whatsapp",
-      "sent_by": "person_03",
+      "sent_by": "person_01",
       "sent_to": [
         "person_02"
       ],
-      "mentions": [],
+      "mentions": [
+        "person_03"
+      ],
       "mentions_accounts": [
         "account_03"
       ],
@@ -37,25 +39,7 @@
     {
       "id": "message_03",
       "visible_from_round": 3,
-      "label_display": "WhatsApp 21/01 08:44",
-      "content": "Caiu aqui hoje de manhã e eu já passei tudo pra conta da empresa, como combinado. Faz igual com a tua parte quando cair, não deixa parado na conta que depois complica.",
-      "captured_at": "2026-01-21T08:44:00Z",
-      "source": "seized_device_pedro",
-      "channel": "whatsapp",
-      "sent_by": "person_01",
-      "sent_to": [
-        "person_02"
-      ],
-      "mentions": [],
-      "mentions_accounts": [
-        "account_03"
-      ],
-      "kind": "Message"
-    },
-    {
-      "id": "message_04",
-      "visible_from_round": 3,
-      "label_display": "WhatsApp 22/01 07:31",
+      "label_display": "WhatsApp — 22/01 07:31",
       "content": "Tranquilo, já passei também. Ó, o notebook continua aqui em casa, tá na mesa da sala. Se precisar fazer outra proposta eu faço daqui mesmo, é mais rápido do que ficar indo e voltando.",
       "captured_at": "2026-01-22T07:31:00Z",
       "source": "seized_device_pedro",
@@ -69,14 +53,32 @@
       "kind": "Message"
     },
     {
+      "id": "message_04",
+      "visible_from_round": 3,
+      "label_display": "WhatsApp — 04/02 10:58",
+      "content": "Fernando, assim que entrar você passa pra conta da empresa no mesmo dia, por favor. Coloca no histórico como pagamento de serviços. Dinheiro parado em conta de pessoa física é o que chama atenção.",
+      "captured_at": "2026-02-04T10:58:00Z",
+      "source": "seized_device_fernando",
+      "channel": "whatsapp",
+      "sent_by": "person_04",
+      "sent_to": [
+        "person_03"
+      ],
+      "mentions": [],
+      "mentions_accounts": [
+        "account_05"
+      ],
+      "kind": "Message"
+    },
+    {
       "id": "message_05",
       "visible_from_round": 3,
-      "label_display": "WhatsApp 06/02 22:03",
-      "content": "E mais uma coisa: nunca fala meu nome nesses grupos. Se alguém da financeira perguntar quem organizou, foi você que procurou por conta própria. Combinado assim.",
+      "label_display": "WhatsApp — 06/02 22:03",
+      "content": "E mais uma coisa: nunca fala meu nome nesses grupos. Se alguém da financeira perguntar quem organizou, foi você que procurou a loja por conta própria. Combinado assim.",
       "captured_at": "2026-02-06T22:03:00Z",
       "source": "seized_device_pedro",
       "channel": "whatsapp",
-      "sent_by": "person_03",
+      "sent_by": "person_04",
       "sent_to": [
         "person_01"
       ],
@@ -87,12 +89,44 @@
     {
       "id": "message_06",
       "visible_from_round": 3,
-      "label_display": "WhatsApp 19/01 10:15",
+      "label_display": "WhatsApp — 09/02 18:40",
+      "content": "cara, consegue pôr no seu nome? é rapidinho, é só até sair a papelada. depois a gente resolve",
+      "captured_at": "2026-02-09T18:40:00Z",
+      "source": "seized_device_caio",
+      "channel": "whatsapp",
+      "sent_by": "person_07",
+      "sent_to": [
+        "person_08"
+      ],
+      "mentions": [],
+      "mentions_accounts": [],
+      "kind": "Message"
+    },
+    {
+      "id": "message_07",
+      "visible_from_round": 3,
+      "label_display": "WhatsApp — 09/02 18:52",
+      "content": "o CRV do carro do teu irmão? posso sim, mas o despachante já falou que dá pra transferir direto pro nome dele, não precisa passar pelo meu. me manda o número do contrato do financiamento que eu levo lá amanhã junto com o documento assinado.",
+      "captured_at": "2026-02-09T18:52:00Z",
+      "source": "seized_device_caio",
+      "channel": "whatsapp",
+      "sent_by": "person_08",
+      "sent_to": [
+        "person_07"
+      ],
+      "mentions": [],
+      "mentions_accounts": [],
+      "kind": "Message"
+    },
+    {
+      "id": "message_08",
+      "visible_from_round": 3,
+      "label_display": "WhatsApp — grupo de trabalho — 19/01 10:15",
       "content": "Pessoal, tô no coworking da Aurora desde as 8, como todo dia. Fico aqui até as 18h. Se a chamada travar é o wi-fi daqui, que é o mesmo pra todo mundo que senta nessa sala — aí eu ligo pelo celular.",
       "captured_at": "2026-01-19T10:15:00Z",
       "source": "voluntary_disclosure_daniel",
       "channel": "whatsapp",
-      "sent_by": "person_05",
+      "sent_by": "person_06",
       "sent_to": [],
       "mentions": [],
       "mentions_accounts": [],
@@ -101,8 +135,8 @@
     {
       "id": "evidence_01",
       "visible_from_round": 3,
-      "label_display": "Laudo de dispositivo",
-      "content": "Relatório de impressão digital de dispositivo. O aparelho de fingerprint 4c9a1f0b7d22 (notebook Dell, Windows 11, Chrome 131) foi usado no preenchimento de 5 propostas de crédito associadas a 2 CPFs distintos, em um intervalo de 23 dias. Em três ocasiões, propostas de titulares diferentes foram preenchidas na mesma noite, com menos de 40 minutos entre elas. Cadastros de pessoas sem relação entre si praticamente nunca compartilham a mesma impressão digital de aparelho: ela combina resolução de tela, fontes instaladas, versão de navegador e fuso horário. Os dois titulares informaram ainda o mesmo apartamento e a mesma linha de telefone, e declararam no cadastro não ter relação um com o outro.",
+      "label_display": "Relatório técnico — impressão digital de dispositivo",
+      "content": "Relatório de fingerprint de dispositivo. O aparelho de impressão digital 4c9a1f0b7d22 (notebook Dell, Windows 11, Chrome 131) foi usado no preenchimento de 5 propostas de crédito associadas a 2 CPFs distintos, em um intervalo de 23 dias. Em três ocasiões, propostas de titulares diferentes foram preenchidas na mesma noite, com menos de 40 minutos entre elas. Cadastros de pessoas sem relação entre si praticamente nunca compartilham a mesma impressão digital de aparelho: ela combina resolução de tela, fontes instaladas, versão de navegador e fuso horário.",
       "captured_at": "2026-02-20T00:00:00Z",
       "source": "device_fingerprinting",
       "evidence_type": "device_report",
@@ -116,13 +150,13 @@
     {
       "id": "evidence_02",
       "visible_from_round": 3,
-      "label_display": "Relatório de rede",
-      "content": "Relatório de rede sobre o endereço 191.36.207.14. O IP pertence ao link corporativo do Coworking Aurora (Rua Aurora, 210) e opera com NAT público: todos os visitantes saem para a internet com o mesmo endereço. Na janela analisada, uma média de 40 clientes distintos por dia acessaram a internet por esse IP, sem qualquer relação entre si. Daniel Santos consta na lista de assinantes mensais do espaço desde fevereiro de 2024, com registro de entrada por catraca em 214 dias úteis, sempre em horário comercial. O notebook usado nas propostas investigadas aparece nesse mesmo IP em apenas dois acessos, em tarde de dia útil. CONCLUSÃO: o compartilhamento deste IP não estabelece vínculo entre as pessoas que o utilizam e não sustenta, por si só, nenhuma suspeita contra Daniel Santos.",
+      "label_display": "Relatório de rede — IP público do Coworking Aurora",
+      "content": "Relatório de rede sobre o endereço 191.36.207.14. O IP pertence ao link corporativo do Coworking Aurora (Rua Aurora, 210) e opera com NAT público: todos os visitantes saem para a internet com o mesmo endereço. Na janela analisada, uma média de 40 clientes distintos por dia acessaram a internet por esse IP, sem qualquer relação entre si. Daniel Santos consta na lista de assinantes mensais do espaço desde fevereiro de 2024, com registro de entrada por catraca em 214 dias úteis, sempre em horário comercial. CONCLUSÃO: o compartilhamento deste IP não estabelece vínculo entre as pessoas que o utilizam e não sustenta, por si só, nenhuma suspeita contra Daniel Santos.",
       "captured_at": "2026-02-21T00:00:00Z",
       "source": "network_forensics",
       "evidence_type": "network_report",
       "mentions": [
-        "person_05",
+        "person_06",
         "person_01"
       ],
       "mentions_accounts": [],
@@ -131,31 +165,65 @@
     {
       "id": "evidence_03",
       "visible_from_round": 3,
-      "label_display": "Ficha da empresa",
-      "content": "Certidão simplificada da Junta Comercial combinada com o cadastro bancário de pessoa jurídica. A Meridiano Assessoria Empresarial LTDA (CNPJ **.702.556/0001-**), constituída em 05/12/2025 com capital social de R$ 5.000,00 e nenhum funcionário declarado, tem como sócia administradora Isabela Brandão, com poderes isolados de movimentação. A conta operacional da empresa é a conta **.***-3 do Banco Continental, agência 1300, aberta em 12/12/2025, e a única procuração de movimentação registrada é a da própria sócia administradora. No período investigado, a conta recebeu apenas transferências de pessoas físicas, sem nota fiscal, folha, imposto ou pagamento a fornecedor. O endereço da sede é um escritório virtual compartilhado por 60 empresas.",
+      "label_display": "Ficha da Junta Comercial e cadastro bancário PJ — Meridiano Assessoria",
+      "content": "Certidão simplificada da Junta Comercial combinada com o cadastro bancário de pessoa jurídica. A Meridiano Assessoria Empresarial LTDA (CNPJ **.702.556/0001-**), constituída em 05/12/2025 com capital social de R$ 5.000,00 e nenhum funcionário declarado, tem como sócia administradora Isabela Brandão, com poderes isolados de movimentação. A conta operacional da empresa é a conta **.***-5 do Banco Continental, agência 1300, aberta em 12/12/2025, e a única procuração de movimentação registrada é a da própria sócia administradora. O endereço da sede é um escritório virtual compartilhado por 60 empresas.",
       "captured_at": "2026-02-22T00:00:00Z",
       "source": "commercial_registry",
       "evidence_type": "corporate_record",
       "mentions": [
-        "person_03"
+        "person_04"
       ],
       "mentions_accounts": [
-        "account_03"
+        "account_05"
       ],
       "kind": "Evidence"
     },
     {
       "id": "evidence_04",
       "visible_from_round": 3,
-      "label_display": "Análise de crédito",
-      "content": "Análise de crédito individual. Rodrigo Baroni tem score 291, o mais baixo de toda a carteira analisada. A restrição decorre de um único cartão de loja em atraso desde 2019, quitado em acordo em 2023 e ainda em atualização nos bureaus de crédito. A proposta que ele apresentou foi recusada automaticamente pelo motor de score, sem análise humana e sem qualquer valor liberado. A varredura de vínculos não encontrou nenhum dispositivo, telefone, e-mail, endereço, conta bancária ou transação em comum entre ele e qualquer outro solicitante desta carteira. CONCLUSÃO: score baixo mede risco de inadimplência, não fraude. Não há qualquer elemento que ligue Rodrigo Baroni ao caso.",
+      "label_display": "Parecer — Financiamento de Veículos (contrato FV-2602-012)",
+      "content": "Parecer da área de Financiamento de Veículos sobre a mensagem trocada entre Victor Aarão e Caio Ghinis em 09/02/2026. A conversa refere-se à transferência do CRV do veículo objeto do contrato FV-2602-012, financiado por Victor Aarão em nome próprio, com entrada de 30% e alienação fiduciária regular. O veículo foi comprado para uso do irmão do titular e a transferência de propriedade foi protocolada por despachante credenciado (registro 4471-SP) em 12/02/2026, diretamente para o nome do irmão — sem qualquer passagem pelo nome de Caio Ghinis. CONCLUSÃO: a expressão 'pôr no seu nome' na mensagem refere-se ao documento do veículo, não a contrato de crédito. Não existe empréstimo tomado em nome de terceiro, e nem Victor Aarão nem Caio Ghinis têm relação com as propostas investigadas.",
+      "captured_at": "2026-02-23T00:00:00Z",
+      "source": "vehicle_financing_desk",
+      "evidence_type": "financing_opinion",
+      "mentions": [
+        "person_07",
+        "person_08"
+      ],
+      "mentions_accounts": [],
+      "kind": "Evidence"
+    },
+    {
+      "id": "evidence_05",
+      "visible_from_round": 3,
+      "label_display": "Análise de crédito — Rodrigo Baroni (score 291)",
+      "content": "Análise de crédito individual. Rodrigo Baroni tem score 291, o mais baixo de toda a carteira analisada. A restrição decorre de um único cartão de loja em atraso desde 2019, quitado em acordo em 2023 e ainda em atualização nos bureaus de crédito. As duas propostas apresentadas foram recusadas automaticamente pelo motor de score, sem análise humana e sem qualquer valor liberado. A varredura de vínculos não encontrou nenhum dispositivo, telefone, e-mail, endereço, conta bancária ou transação em comum entre ele e qualquer outro solicitante desta carteira. CONCLUSÃO: score baixo mede risco de inadimplência, não fraude. Não há qualquer elemento que ligue Rodrigo Baroni ao caso.",
       "captured_at": "2026-02-23T00:00:00Z",
       "source": "credit_bureau_analysis",
       "evidence_type": "credit_analysis",
       "mentions": [
-        "person_04"
+        "person_05"
       ],
-      "mentions_accounts": [],
+      "mentions_accounts": [
+        "account_06"
+      ],
+      "kind": "Evidence"
+    },
+    {
+      "id": "evidence_06",
+      "visible_from_round": 3,
+      "label_display": "Análise de conta — transferência recorrente de R$ 350",
+      "content": "Análise da transferência recorrente entre a conta **.***-2 (Anderson Schott) e a conta **.***-4 (Caio Ghinis). O envio de R$ 350,00 ocorre no dia 5 de cada mês, sem variação de valor, de forma ininterrupta desde março de 2024 — quase dois anos antes da primeira proposta investigada. Não há devolução de recursos no sentido contrário, nem qualquer transferência de valor alto entre as duas contas. Os titulares são cunhados, com vínculo declarado no cadastro desde a abertura da conta, e o valor corresponde à parte de Caio Ghinis no plano de saúde familiar, conforme boleto apresentado. CONCLUSÃO: transferência familiar recorrente, incompatível em valor e em data com repasse de crédito fraudado.",
+      "captured_at": "2026-02-24T00:00:00Z",
+      "source": "bank_statement",
+      "evidence_type": "financial_record",
+      "mentions": [
+        "person_08",
+        "person_02"
+      ],
+      "mentions_accounts": [
+        "account_04"
+      ],
       "kind": "Evidence"
     }
   ]

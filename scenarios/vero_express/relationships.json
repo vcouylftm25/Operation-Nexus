@@ -63,14 +63,36 @@
       "visible_from_round": 1,
       "source": "core_banking_system",
       "confidence": 1.0,
-      "timestamp": "2025-11-10T15:40:00Z",
+      "timestamp": "2026-01-23T11:15:00Z",
       "properties": {}
     },
     {
       "id": "rel_007",
       "type": "SUBMITTED",
-      "start_id": "person_04",
+      "start_id": "person_03",
       "end_id": "application_07",
+      "visible_from_round": 1,
+      "source": "core_banking_system",
+      "confidence": 1.0,
+      "timestamp": "2026-02-09T09:03:00Z",
+      "properties": {}
+    },
+    {
+      "id": "rel_008",
+      "type": "SUBMITTED",
+      "start_id": "person_04",
+      "end_id": "application_08",
+      "visible_from_round": 1,
+      "source": "core_banking_system",
+      "confidence": 1.0,
+      "timestamp": "2025-11-10T15:40:00Z",
+      "properties": {}
+    },
+    {
+      "id": "rel_009",
+      "type": "SUBMITTED",
+      "start_id": "person_05",
+      "end_id": "application_09",
       "visible_from_round": 1,
       "source": "core_banking_system",
       "confidence": 1.0,
@@ -78,10 +100,21 @@
       "properties": {}
     },
     {
-      "id": "rel_008",
+      "id": "rel_010",
       "type": "SUBMITTED",
       "start_id": "person_05",
-      "end_id": "application_08",
+      "end_id": "application_10",
+      "visible_from_round": 1,
+      "source": "core_banking_system",
+      "confidence": 1.0,
+      "timestamp": "2026-02-12T17:55:00Z",
+      "properties": {}
+    },
+    {
+      "id": "rel_011",
+      "type": "SUBMITTED",
+      "start_id": "person_06",
+      "end_id": "application_11",
       "visible_from_round": 1,
       "source": "core_banking_system",
       "confidence": 1.0,
@@ -89,7 +122,40 @@
       "properties": {}
     },
     {
-      "id": "rel_009",
+      "id": "rel_012",
+      "type": "SUBMITTED",
+      "start_id": "person_07",
+      "end_id": "application_12",
+      "visible_from_round": 1,
+      "source": "core_banking_system",
+      "confidence": 1.0,
+      "timestamp": "2026-02-02T16:10:00Z",
+      "properties": {}
+    },
+    {
+      "id": "rel_013",
+      "type": "SUBMITTED",
+      "start_id": "person_08",
+      "end_id": "application_13",
+      "visible_from_round": 1,
+      "source": "core_banking_system",
+      "confidence": 1.0,
+      "timestamp": "2026-01-27T12:44:00Z",
+      "properties": {}
+    },
+    {
+      "id": "rel_077",
+      "type": "SUBMITTED",
+      "start_id": "person_01",
+      "end_id": "application_14",
+      "visible_from_round": 1,
+      "source": "core_banking_system",
+      "confidence": 1.0,
+      "timestamp": "2026-02-13T21:34:00Z",
+      "properties": {}
+    },
+    {
+      "id": "rel_014",
       "type": "USED_DEVICE",
       "start_id": "person_01",
       "end_id": "device_01",
@@ -103,7 +169,7 @@
       }
     },
     {
-      "id": "rel_010",
+      "id": "rel_015",
       "type": "USED_DEVICE",
       "start_id": "person_02",
       "end_id": "device_01",
@@ -117,10 +183,23 @@
       }
     },
     {
-      "id": "rel_011",
+      "id": "rel_016",
       "type": "USED_DEVICE",
-      "start_id": "person_05",
+      "start_id": "person_03",
       "end_id": "device_02",
+      "visible_from_round": 2,
+      "source": "device_fingerprinting",
+      "confidence": 0.96,
+      "timestamp": "2026-01-23T11:12:00Z",
+      "properties": {
+        "propostas_preenchidas": 2
+      }
+    },
+    {
+      "id": "rel_017",
+      "type": "USED_DEVICE",
+      "start_id": "person_06",
+      "end_id": "device_03",
       "visible_from_round": 2,
       "source": "device_fingerprinting",
       "confidence": 0.97,
@@ -130,7 +209,20 @@
       }
     },
     {
-      "id": "rel_012",
+      "id": "rel_018",
+      "type": "USED_DEVICE",
+      "start_id": "person_07",
+      "end_id": "device_04",
+      "visible_from_round": 2,
+      "source": "device_fingerprinting",
+      "confidence": 0.98,
+      "timestamp": "2026-02-02T16:06:00Z",
+      "properties": {
+        "propostas_preenchidas": 1
+      }
+    },
+    {
+      "id": "rel_019",
       "type": "USED_PHONE",
       "start_id": "person_01",
       "end_id": "phone_01",
@@ -143,7 +235,7 @@
       }
     },
     {
-      "id": "rel_013",
+      "id": "rel_020",
       "type": "USED_PHONE",
       "start_id": "person_02",
       "end_id": "phone_01",
@@ -157,23 +249,36 @@
       }
     },
     {
-      "id": "rel_014",
+      "id": "rel_021",
       "type": "USED_PHONE",
-      "start_id": "person_04",
+      "start_id": "person_03",
       "end_id": "phone_02",
       "visible_from_round": 2,
       "source": "registration_form",
       "confidence": 0.99,
-      "timestamp": "2026-01-08T08:30:00Z",
+      "timestamp": "2026-01-23T11:15:00Z",
       "properties": {
         "campo": "Telefone de contato principal"
       }
     },
     {
-      "id": "rel_015",
+      "id": "rel_022",
       "type": "USED_PHONE",
-      "start_id": "person_05",
+      "start_id": "person_07",
       "end_id": "phone_03",
+      "visible_from_round": 2,
+      "source": "registration_form",
+      "confidence": 0.99,
+      "timestamp": "2026-02-02T16:10:00Z",
+      "properties": {
+        "campo": "Telefone de contato principal"
+      }
+    },
+    {
+      "id": "rel_023",
+      "type": "USED_PHONE",
+      "start_id": "person_06",
+      "end_id": "phone_04",
       "visible_from_round": 2,
       "source": "registration_form",
       "confidence": 0.99,
@@ -183,7 +288,34 @@
       }
     },
     {
-      "id": "rel_016",
+      "id": "rel_024",
+      "type": "USED_PHONE",
+      "start_id": "person_08",
+      "end_id": "phone_05",
+      "visible_from_round": 2,
+      "source": "registration_form",
+      "confidence": 0.99,
+      "timestamp": "2026-01-27T12:44:00Z",
+      "properties": {
+        "campo": "Telefone de contato principal"
+      }
+    },
+    {
+      "id": "rel_078",
+      "type": "USED_PHONE",
+      "start_id": "person_01",
+      "end_id": "phone_06",
+      "visible_from_round": 2,
+      "source": "registration_form",
+      "confidence": 0.96,
+      "timestamp": "2026-02-13T21:34:00Z",
+      "properties": {
+        "campo": "Telefone de contato principal",
+        "observacao": "Linha informada apenas na última proposta, substituindo a anterior."
+      }
+    },
+    {
+      "id": "rel_025",
       "type": "USED_EMAIL",
       "start_id": "person_01",
       "end_id": "email_01",
@@ -196,7 +328,7 @@
       }
     },
     {
-      "id": "rel_017",
+      "id": "rel_026",
       "type": "USED_EMAIL",
       "start_id": "person_02",
       "end_id": "email_01",
@@ -210,7 +342,7 @@
       }
     },
     {
-      "id": "rel_018",
+      "id": "rel_027",
       "type": "USED_EMAIL",
       "start_id": "person_02",
       "end_id": "email_02",
@@ -223,10 +355,36 @@
       }
     },
     {
-      "id": "rel_019",
+      "id": "rel_028",
       "type": "USED_EMAIL",
-      "start_id": "person_05",
+      "start_id": "person_03",
       "end_id": "email_03",
+      "visible_from_round": 2,
+      "source": "registration_form",
+      "confidence": 0.99,
+      "timestamp": "2026-01-23T11:15:00Z",
+      "properties": {
+        "campo": "E-mail de cadastro"
+      }
+    },
+    {
+      "id": "rel_029",
+      "type": "USED_EMAIL",
+      "start_id": "person_07",
+      "end_id": "email_04",
+      "visible_from_round": 2,
+      "source": "registration_form",
+      "confidence": 0.99,
+      "timestamp": "2026-02-02T16:10:00Z",
+      "properties": {
+        "campo": "E-mail de cadastro"
+      }
+    },
+    {
+      "id": "rel_030",
+      "type": "USED_EMAIL",
+      "start_id": "person_06",
+      "end_id": "email_05",
       "visible_from_round": 2,
       "source": "registration_form",
       "confidence": 0.99,
@@ -236,7 +394,7 @@
       }
     },
     {
-      "id": "rel_020",
+      "id": "rel_031",
       "type": "RESIDES_AT",
       "start_id": "person_01",
       "end_id": "address_01",
@@ -249,7 +407,7 @@
       }
     },
     {
-      "id": "rel_021",
+      "id": "rel_032",
       "type": "RESIDES_AT",
       "start_id": "person_02",
       "end_id": "address_01",
@@ -263,10 +421,23 @@
       }
     },
     {
-      "id": "rel_022",
+      "id": "rel_033",
       "type": "RESIDES_AT",
       "start_id": "person_03",
       "end_id": "address_02",
+      "visible_from_round": 2,
+      "source": "utility_bill",
+      "confidence": 0.98,
+      "timestamp": "2026-01-23T11:15:00Z",
+      "properties": {
+        "comprovante": "Conta de água em nome do titular"
+      }
+    },
+    {
+      "id": "rel_034",
+      "type": "RESIDES_AT",
+      "start_id": "person_04",
+      "end_id": "address_03",
       "visible_from_round": 2,
       "source": "utility_bill",
       "confidence": 0.99,
@@ -276,10 +447,23 @@
       }
     },
     {
-      "id": "rel_023",
+      "id": "rel_035",
       "type": "RESIDES_AT",
-      "start_id": "person_04",
-      "end_id": "address_03",
+      "start_id": "person_08",
+      "end_id": "address_04",
+      "visible_from_round": 2,
+      "source": "registration_form",
+      "confidence": 0.98,
+      "timestamp": "2026-01-27T12:44:00Z",
+      "properties": {
+        "comprovante": "Contrato de locação"
+      }
+    },
+    {
+      "id": "rel_036",
+      "type": "RESIDES_AT",
+      "start_id": "person_05",
+      "end_id": "address_05",
       "visible_from_round": 2,
       "source": "utility_bill",
       "confidence": 0.99,
@@ -289,7 +473,33 @@
       }
     },
     {
-      "id": "rel_024",
+      "id": "rel_037",
+      "type": "RESIDES_AT",
+      "start_id": "person_07",
+      "end_id": "address_06",
+      "visible_from_round": 2,
+      "source": "utility_bill",
+      "confidence": 0.99,
+      "timestamp": "2026-02-02T16:10:00Z",
+      "properties": {
+        "comprovante": "Conta de energia em nome do titular"
+      }
+    },
+    {
+      "id": "rel_038",
+      "type": "RESIDES_AT",
+      "start_id": "person_06",
+      "end_id": "address_07",
+      "visible_from_round": 2,
+      "source": "registration_form",
+      "confidence": 0.97,
+      "timestamp": "2026-01-19T13:26:00Z",
+      "properties": {
+        "comprovante": "Contrato de locação"
+      }
+    },
+    {
+      "id": "rel_039",
       "type": "OWNS_ACCOUNT",
       "start_id": "person_01",
       "end_id": "account_01",
@@ -302,7 +512,7 @@
       }
     },
     {
-      "id": "rel_025",
+      "id": "rel_040",
       "type": "OWNS_ACCOUNT",
       "start_id": "person_02",
       "end_id": "account_02",
@@ -315,7 +525,46 @@
       }
     },
     {
-      "id": "rel_026",
+      "id": "rel_041",
+      "type": "OWNS_ACCOUNT",
+      "start_id": "person_03",
+      "end_id": "account_03",
+      "visible_from_round": 2,
+      "source": "core_banking_system",
+      "confidence": 1.0,
+      "timestamp": "2025-09-22T00:00:00Z",
+      "properties": {
+        "papel": "Titular único"
+      }
+    },
+    {
+      "id": "rel_042",
+      "type": "OWNS_ACCOUNT",
+      "start_id": "person_08",
+      "end_id": "account_04",
+      "visible_from_round": 2,
+      "source": "core_banking_system",
+      "confidence": 1.0,
+      "timestamp": "2023-05-19T00:00:00Z",
+      "properties": {
+        "papel": "Titular único"
+      }
+    },
+    {
+      "id": "rel_043",
+      "type": "OWNS_ACCOUNT",
+      "start_id": "person_05",
+      "end_id": "account_06",
+      "visible_from_round": 2,
+      "source": "core_banking_system",
+      "confidence": 1.0,
+      "timestamp": "2019-06-30T00:00:00Z",
+      "properties": {
+        "papel": "Titular único"
+      }
+    },
+    {
+      "id": "rel_044",
       "type": "CONNECTED_FROM",
       "start_id": "device_01",
       "end_id": "ip_01",
@@ -329,7 +578,7 @@
       }
     },
     {
-      "id": "rel_027",
+      "id": "rel_045",
       "type": "CONNECTED_FROM",
       "start_id": "device_01",
       "end_id": "ip_02",
@@ -343,13 +592,13 @@
       }
     },
     {
-      "id": "rel_028",
+      "id": "rel_046",
       "type": "CONNECTED_FROM",
-      "start_id": "device_02",
+      "start_id": "device_03",
       "end_id": "ip_02",
       "visible_from_round": 2,
       "source": "access_logs",
-      "confidence": 0.9,
+      "confidence": 0.90,
       "timestamp": "2026-01-19T13:22:00Z",
       "properties": {
         "acessos_registrados": 214,
@@ -357,10 +606,67 @@
       }
     },
     {
-      "id": "rel_029",
+      "id": "rel_047",
+      "type": "CONNECTED_FROM",
+      "start_id": "device_02",
+      "end_id": "ip_03",
+      "visible_from_round": 2,
+      "source": "access_logs",
+      "confidence": 0.96,
+      "timestamp": "2026-01-23T11:12:00Z",
+      "properties": {
+        "acessos_registrados": 96
+      }
+    },
+    {
+      "id": "rel_048",
+      "type": "CONNECTED_FROM",
+      "start_id": "device_04",
+      "end_id": "ip_04",
+      "visible_from_round": 2,
+      "source": "access_logs",
+      "confidence": 0.97,
+      "timestamp": "2026-02-02T16:06:00Z",
+      "properties": {
+        "acessos_registrados": 143
+      }
+    },
+    {
+      "id": "rel_049",
+      "type": "RELATED_TO",
+      "start_id": "person_02",
+      "end_id": "person_08",
+      "visible_from_round": 2,
+      "source": "registration_form",
+      "confidence": 0.92,
+      "timestamp": "2025-12-18T00:00:00Z",
+      "properties": {
+        "kind": "brother_in_law",
+        "vinculo": "Cunhados: um é casado com a irmã do outro",
+        "declarado_em": "2025-12-18",
+        "observacao": "Vínculo declarado pelos próprios titulares no cadastro, muito antes das propostas investigadas."
+      }
+    },
+    {
+      "id": "rel_050",
+      "type": "RELATED_TO",
+      "start_id": "person_07",
+      "end_id": "person_08",
+      "visible_from_round": 2,
+      "source": "registration_form",
+      "confidence": 0.85,
+      "timestamp": "2026-01-27T12:44:00Z",
+      "properties": {
+        "kind": "friend",
+        "vinculo": "Amigos: um indicou o outro como referência pessoal na proposta",
+        "declarado_em": "2026-01-27"
+      }
+    },
+    {
+      "id": "rel_051",
       "type": "CONTROLLED_BY",
       "start_id": "company_01",
-      "end_id": "person_03",
+      "end_id": "person_04",
       "visible_from_round": 3,
       "source": "commercial_registry",
       "confidence": 0.99,
@@ -372,10 +678,10 @@
       }
     },
     {
-      "id": "rel_030",
+      "id": "rel_052",
       "type": "FROM_ACCOUNT",
       "start_id": "transaction_01",
-      "end_id": "account_04",
+      "end_id": "account_07",
       "visible_from_round": 3,
       "source": "bank_statement",
       "confidence": 1.0,
@@ -383,7 +689,7 @@
       "properties": {}
     },
     {
-      "id": "rel_031",
+      "id": "rel_053",
       "type": "TO_ACCOUNT",
       "start_id": "transaction_01",
       "end_id": "account_01",
@@ -394,10 +700,10 @@
       "properties": {}
     },
     {
-      "id": "rel_032",
+      "id": "rel_054",
       "type": "FROM_ACCOUNT",
       "start_id": "transaction_02",
-      "end_id": "account_04",
+      "end_id": "account_07",
       "visible_from_round": 3,
       "source": "bank_statement",
       "confidence": 1.0,
@@ -405,7 +711,7 @@
       "properties": {}
     },
     {
-      "id": "rel_033",
+      "id": "rel_055",
       "type": "TO_ACCOUNT",
       "start_id": "transaction_02",
       "end_id": "account_02",
@@ -416,9 +722,31 @@
       "properties": {}
     },
     {
-      "id": "rel_034",
+      "id": "rel_056",
       "type": "FROM_ACCOUNT",
       "start_id": "transaction_03",
+      "end_id": "account_07",
+      "visible_from_round": 3,
+      "source": "bank_statement",
+      "confidence": 1.0,
+      "timestamp": "2026-01-26T09:52:00Z",
+      "properties": {}
+    },
+    {
+      "id": "rel_057",
+      "type": "TO_ACCOUNT",
+      "start_id": "transaction_03",
+      "end_id": "account_03",
+      "visible_from_round": 3,
+      "source": "bank_statement",
+      "confidence": 1.0,
+      "timestamp": "2026-01-26T09:52:00Z",
+      "properties": {}
+    },
+    {
+      "id": "rel_058",
+      "type": "FROM_ACCOUNT",
+      "start_id": "transaction_04",
       "end_id": "account_01",
       "visible_from_round": 3,
       "source": "bank_statement",
@@ -427,9 +755,9 @@
       "properties": {}
     },
     {
-      "id": "rel_035",
+      "id": "rel_059",
       "type": "TO_ACCOUNT",
-      "start_id": "transaction_03",
+      "start_id": "transaction_04",
       "end_id": "account_03",
       "visible_from_round": 3,
       "source": "bank_statement",
@@ -438,9 +766,9 @@
       "properties": {}
     },
     {
-      "id": "rel_036",
+      "id": "rel_060",
       "type": "FROM_ACCOUNT",
-      "start_id": "transaction_04",
+      "start_id": "transaction_05",
       "end_id": "account_02",
       "visible_from_round": 3,
       "source": "bank_statement",
@@ -449,9 +777,9 @@
       "properties": {}
     },
     {
-      "id": "rel_037",
+      "id": "rel_061",
       "type": "TO_ACCOUNT",
-      "start_id": "transaction_04",
+      "start_id": "transaction_05",
       "end_id": "account_03",
       "visible_from_round": 3,
       "source": "bank_statement",
@@ -460,7 +788,140 @@
       "properties": {}
     },
     {
-      "id": "rel_038",
+      "id": "rel_062",
+      "type": "FROM_ACCOUNT",
+      "start_id": "transaction_06",
+      "end_id": "account_01",
+      "visible_from_round": 3,
+      "source": "bank_statement",
+      "confidence": 1.0,
+      "timestamp": "2026-02-02T19:22:00Z",
+      "properties": {}
+    },
+    {
+      "id": "rel_063",
+      "type": "TO_ACCOUNT",
+      "start_id": "transaction_06",
+      "end_id": "account_03",
+      "visible_from_round": 3,
+      "source": "bank_statement",
+      "confidence": 1.0,
+      "timestamp": "2026-02-02T19:22:00Z",
+      "properties": {}
+    },
+    {
+      "id": "rel_064",
+      "type": "FROM_ACCOUNT",
+      "start_id": "transaction_07",
+      "end_id": "account_03",
+      "visible_from_round": 3,
+      "source": "bank_statement",
+      "confidence": 1.0,
+      "timestamp": "2026-02-04T11:48:00Z",
+      "properties": {}
+    },
+    {
+      "id": "rel_065",
+      "type": "TO_ACCOUNT",
+      "start_id": "transaction_07",
+      "end_id": "account_05",
+      "visible_from_round": 3,
+      "source": "bank_statement",
+      "confidence": 1.0,
+      "timestamp": "2026-02-04T11:48:00Z",
+      "properties": {}
+    },
+    {
+      "id": "rel_066",
+      "type": "FROM_ACCOUNT",
+      "start_id": "transaction_08",
+      "end_id": "account_03",
+      "visible_from_round": 3,
+      "source": "bank_statement",
+      "confidence": 1.0,
+      "timestamp": "2026-02-11T15:06:00Z",
+      "properties": {}
+    },
+    {
+      "id": "rel_067",
+      "type": "TO_ACCOUNT",
+      "start_id": "transaction_08",
+      "end_id": "account_05",
+      "visible_from_round": 3,
+      "source": "bank_statement",
+      "confidence": 1.0,
+      "timestamp": "2026-02-11T15:06:00Z",
+      "properties": {}
+    },
+    {
+      "id": "rel_068",
+      "type": "FROM_ACCOUNT",
+      "start_id": "transaction_09",
+      "end_id": "account_02",
+      "visible_from_round": 3,
+      "source": "bank_statement",
+      "confidence": 1.0,
+      "timestamp": "2026-02-05T08:02:00Z",
+      "properties": {}
+    },
+    {
+      "id": "rel_069",
+      "type": "TO_ACCOUNT",
+      "start_id": "transaction_09",
+      "end_id": "account_04",
+      "visible_from_round": 3,
+      "source": "bank_statement",
+      "confidence": 1.0,
+      "timestamp": "2026-02-05T08:02:00Z",
+      "properties": {}
+    },
+    {
+      "id": "rel_070",
+      "type": "TRANSFERRED_TO",
+      "start_id": "account_07",
+      "end_id": "account_01",
+      "visible_from_round": 3,
+      "source": "bank_statement",
+      "confidence": 1.0,
+      "timestamp": "2026-01-16T10:04:00Z",
+      "properties": {
+        "valor_total": 18500.0,
+        "quantidade_transferencias": 1,
+        "natureza": "Liberação de crédito aprovado pela financeira"
+      }
+    },
+    {
+      "id": "rel_071",
+      "type": "TRANSFERRED_TO",
+      "start_id": "account_07",
+      "end_id": "account_02",
+      "visible_from_round": 3,
+      "source": "bank_statement",
+      "confidence": 1.0,
+      "timestamp": "2026-01-19T10:11:00Z",
+      "properties": {
+        "valor_total": 17200.0,
+        "quantidade_transferencias": 1,
+        "natureza": "Liberação de crédito aprovado pela financeira"
+      }
+    },
+    {
+      "id": "rel_072",
+      "type": "TRANSFERRED_TO",
+      "start_id": "account_07",
+      "end_id": "account_03",
+      "visible_from_round": 3,
+      "source": "bank_statement",
+      "confidence": 1.0,
+      "timestamp": "2026-01-26T09:52:00Z",
+      "properties": {
+        "valor_total": 14300.0,
+        "quantidade_transferencias": 1,
+        "natureza": "Liberação de crédito aprovado pela financeira"
+      }
+    },
+    {
+      "id": "rel_073",
       "type": "TRANSFERRED_TO",
       "start_id": "account_01",
       "end_id": "account_03",
@@ -469,13 +930,13 @@
       "confidence": 1.0,
       "timestamp": "2026-01-21T08:37:00Z",
       "properties": {
-        "valor_total": 17900.0,
-        "quantidade_transferencias": 1,
-        "natureza": "Saída de pessoa física para conta de empresa, cinco dias após a liberação do crédito"
+        "valor_total": 29700.0,
+        "quantidade_transferencias": 2,
+        "natureza": "Transferências entre pessoas físicas, poucos dias após cada liberação de crédito"
       }
     },
     {
-      "id": "rel_039",
+      "id": "rel_074",
       "type": "TRANSFERRED_TO",
       "start_id": "account_02",
       "end_id": "account_03",
@@ -486,7 +947,37 @@
       "properties": {
         "valor_total": 16700.0,
         "quantidade_transferencias": 1,
-        "natureza": "Saída de pessoa física para a mesma conta de empresa, três dias após a liberação do crédito"
+        "natureza": "Transferência entre pessoas físicas, três dias após a liberação de crédito"
+      }
+    },
+    {
+      "id": "rel_075",
+      "type": "TRANSFERRED_TO",
+      "start_id": "account_03",
+      "end_id": "account_05",
+      "visible_from_round": 3,
+      "source": "bank_statement",
+      "confidence": 1.0,
+      "timestamp": "2026-02-04T11:48:00Z",
+      "properties": {
+        "valor_total": 46200.0,
+        "quantidade_transferencias": 2,
+        "natureza": "Saída de pessoa física para conta de empresa, com histórico genérico de pagamento de serviços"
+      }
+    },
+    {
+      "id": "rel_076",
+      "type": "TRANSFERRED_TO",
+      "start_id": "account_02",
+      "end_id": "account_04",
+      "visible_from_round": 3,
+      "source": "bank_statement",
+      "confidence": 1.0,
+      "timestamp": "2026-02-05T08:02:00Z",
+      "properties": {
+        "valor_total": 350.0,
+        "quantidade_transferencias": 1,
+        "natureza": "Transferência mensal fixa, repetida no mesmo dia do mês desde março de 2024"
       }
     }
   ]

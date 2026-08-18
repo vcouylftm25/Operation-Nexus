@@ -18,9 +18,9 @@ hints:
     text: >
       Cada ficha tem duas camadas: os números (renda, score, idade) e o texto (resumo e
       observação do analista). Times iniciantes só olham os números. Leiam as observações
-      das cinco fichas antes de escolher qualquer suspeito — é lá que aparecem as coisas
-      que um cadastro normal não teria, como comprovante repetido, campo em branco ou
-      movimentação sem explicação.
+      de todas as oito fichas antes de escolher qualquer suspeito — é lá que aparecem as
+      coisas que um cadastro normal não teria, como comprovante repetido, campo em branco
+      ou movimentação sem explicação.
 
   - id: hint_r1_02
     round: 1
@@ -87,33 +87,34 @@ hints:
   - id: hint_r2_04
     round: 2
     cost: 25
-    title: "Poucas conexões não são um álibi"
+    title: "Parente declarado não é cúmplice"
     text: >
-      Contem as conexões de cada ficha, mas reparem também em quem quase não aparece no
-      grafo. Aparecer pouco pode significar duas coisas opostas: a pessoa não tem nada a
-      ver com o caso, ou ela nunca precisou assinar, usar aparelho ou receber dinheiro em
-      nome próprio. Nesta fase vocês ainda não conseguem separar as duas hipóteses —
-      guardem a lista dos quase invisíveis para a fase 3.
+      Algumas ligações entre pessoas são vínculos familiares informados pelos próprios
+      clientes no cadastro, muito antes do período investigado. Quem esconde alguma coisa
+      não costuma declarar o vínculo por escrito. Reparem na data em que o vínculo foi
+      declarado: se ela é bem anterior às propostas, isso enfraquece a suspeita em vez de
+      reforçá-la.
 
   - id: hint_r3_01
     round: 3
     cost: 20
     title: "Siga para onde o dinheiro converge"
     text: >
-      Não tentem acompanhar transação por transação. Procurem a conta que RECEBE de mais de
-      um solicitante em poucos dias. Convergência é o sinal: dinheiro legítimo se espalha em
-      pagamentos variados, dinheiro de esquema se junta em um ponto só antes de seguir
-      viagem.
+      Não tentem acompanhar transação por transação. Procurem a conta que RECEBE de várias
+      pessoas diferentes em poucos dias. Convergência é o sinal: dinheiro legítimo se
+      espalha em pagamentos variados, dinheiro de esquema se junta em um ponto só antes de
+      seguir viagem.
 
   - id: hint_r3_02
     round: 3
     cost: 25
     title: "O último salto importa mais que o primeiro"
     text: >
-      Depois de achar a conta onde o dinheiro se junta, olhem de quem ela é. Se valores
-      altos saem de contas de pessoas físicas e param em uma conta de empresa, parem tudo e
-      perguntem quem responde por essa empresa. Empresa não assina nada sozinha: sempre
-      existe uma pessoa autorizada a movimentar a conta, e isso está em registro público.
+      Depois de achar a conta onde o dinheiro se junta, olhem para onde ele vai DEPOIS. Se
+      valores altos saem de contas de pessoas físicas e param em uma conta de empresa,
+      parem tudo e perguntem quem responde por essa empresa. Empresa não assina nada
+      sozinha: sempre existe uma pessoa autorizada a movimentar a conta, e isso está em
+      registro público.
 
   - id: hint_r3_03
     round: 3
@@ -131,7 +132,7 @@ hints:
     title: "Toda acusação precisa de uma absolvição"
     text: >
       Antes de fechar a acusação, façam a lista dos suspeitos e procurem, para cada um, um
-      documento desta fase que fale especificamente dele. Alguns relatórios e análises
-      existem só para inocentar quem pareceu culpado nas fases anteriores. Acusar alguém que
-      tem um documento de inocência disponível custa pontos — e é o erro mais comum de times
-      apressados.
+      documento desta fase que fale especificamente dele. Vários pareceres, relatórios e
+      análises existem só para inocentar quem pareceu culpado nas fases anteriores. Acusar
+      alguém que tem um documento de inocência disponível custa pontos — e é o erro mais
+      comum de times apressados.

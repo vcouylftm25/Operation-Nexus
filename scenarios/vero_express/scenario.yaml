@@ -1,16 +1,15 @@
 name: "Vero Express — Crédito em Nome de Terceiros"
 slug: vero_express
 description: >
-  Entre novembro e fevereiro, a financeira fictícia Vero Express liberou cerca de
-  R$ 90 mil em empréstimos pessoais e antecipações para clientes que, olhados um a um,
+  Entre novembro e fevereiro, a financeira fictícia Vero Express liberou pouco mais de
+  R$ 100 mil em empréstimos pessoais e antecipações para clientes que, olhados um a um,
   não tinham nada de errado: renda compatível, documentação completa, parcelas em dia.
   Semanas depois, o dinheiro tinha sumido das contas de origem. A auditoria abriu a
-  "Operação Vero Express" sobre cinco fichas, em três fases: primeiro os cadastros
-  isolados, depois os vínculos técnicos entre eles (aparelhos, linhas, endereços e
-  contas) e, por fim, as mensagens apreendidas e o rastro do dinheiro. O caso foi
-  desenhado para ensinar a diferença entre coincidência e conluio — e para punir
-  acusação por aparência: há pessoas neste cenário que parecem culpadas e não são, e a
-  prova disso está nos autos. Todos os nomes, CPFs, contas, empresas e mensagens são
-  fictícios, criados apenas para treinamento; qualquer semelhança com pessoas ou
-  empresas reais é coincidência.
-version: "2.0.0"
+  "Operação Vero Express" em três fases: primeiro as fichas isoladas, depois os
+  vínculos técnicos entre elas (aparelhos, linhas, endereços e contas) e, por fim, as
+  mensagens apreendidas e o rastro do dinheiro. O caso foi desenhado para ensinar a
+  diferença entre coincidência e conluio — e para punir acusação por aparência: há
+  pessoas neste cenário que parecem culpadas e não são, e a prova disso está nos autos.
+  Todos os nomes, CPFs, contas, empresas e mensagens são fictícios, criados apenas para
+  treinamento; qualquer semelhança com pessoas ou empresas reais é coincidência.
+version: "1.0.0"
