@@ -18,7 +18,7 @@ interface NxThemeStore {
 export const useNxThemeStore = create<NxThemeStore>()(
   persist(
     (set, get) => ({
-      theme: "dark",
+      theme: "light",
       set: (theme) => set({ theme }),
       toggle: () => set({ theme: get().theme === "dark" ? "light" : "dark" }),
     }),
