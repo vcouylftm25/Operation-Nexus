@@ -11,7 +11,7 @@ export function InvestigationBoard() {
   const total = counts.suspect + counts.uncertain + counts.explained;
 
   return (
-    <div style={{ padding: "10px 16px" }} data-testid="investigation-board">
+    <div style={{ padding: "12px 16px 14px" }} data-testid="investigation-board">
       <p
         style={{
           fontFamily: "'IBM Plex Mono', monospace",

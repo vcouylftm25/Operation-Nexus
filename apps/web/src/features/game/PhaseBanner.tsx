@@ -50,27 +50,46 @@ export function PhaseBanner({
     >
       <div style={{ display: "flex", alignItems: "flex-start", gap: 20 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-            <span
-              style={{
-                fontFamily: "'IBM Plex Mono', monospace",
-                fontSize: 9.5,
-                letterSpacing: "0.18em",
-                color: "var(--nx-accent-text)",
-              }}
-            >
-              FASE {phase} DE {totalPhases}
-            </span>
-            <span style={{ fontSize: 14, fontWeight: 600, color: "var(--nx-ink)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ display: "flex", gap: 3 }}>
+                {Array.from({ length: totalPhases }, (_, index) => (
+                  <span
+                    key={index}
+                    style={{
+                      width: 16,
+                      height: 3,
+                      borderRadius: 2,
+                      background:
+                        index < phase ? "var(--nx-accent)" : "var(--nx-line-2)",
+                    }}
+                  />
+                ))}
+              </div>
+              <span
+                style={{
+                  fontFamily: "'IBM Plex Mono', monospace",
+                  fontSize: 9.5,
+                  letterSpacing: "0.18em",
+                  color: "var(--nx-accent-text)",
+                }}
+              >
+                FASE {phase} DE {totalPhases}
+              </span>
+            </div>
+            <h2 style={{ fontSize: 15, fontWeight: 600, color: "var(--nx-ink)" }}>
               {title ?? brief.eyebrow}
-            </span>
-            <span style={{ fontSize: 12, color: "var(--nx-muted)" }}>{brief.objective}</span>
+            </h2>
           </div>
+
+          <p style={{ marginTop: 5, fontSize: 12.5, color: "var(--nx-muted)" }}>
+            {brief.objective}
+          </p>
 
           {narrative ? (
             <p
               style={{
-                marginTop: 7,
+                marginTop: 8,
                 maxWidth: 900,
                 fontSize: 12.5,
                 lineHeight: 1.6,
@@ -85,8 +104,39 @@ export function PhaseBanner({
             </p>
           ) : null}
 
-          <div style={{ marginTop: 7, display: "flex", alignItems: "center", gap: 12 }}>
-            <span style={{ fontSize: 11.5, color: "var(--nx-attention)" }}>{brief.rule}</span>
+          <div
+            style={{
+              marginTop: 9,
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              flexWrap: "wrap",
+            }}
+          >
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 7,
+                padding: "5px 11px",
+                borderRadius: 8,
+                border: "1px solid var(--nx-line)",
+                background: "var(--nx-surface)",
+                fontSize: 11.5,
+                color: "var(--nx-ink)",
+              }}
+            >
+              <span
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: "50%",
+                  background: "var(--nx-attention)",
+                  flexShrink: 0,
+                }}
+              />
+              {brief.rule}
+            </span>
             {narrative ? (
               <button
                 type="button"
@@ -108,8 +158,16 @@ export function PhaseBanner({
           </div>
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 16, flexShrink: 0 }}>
-          <div style={{ textAlign: "right" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 14, flexShrink: 0 }}>
+          <div
+            style={{
+              textAlign: "right",
+              padding: "7px 14px",
+              borderRadius: 10,
+              border: "1px solid var(--nx-line)",
+              background: "var(--nx-surface)",
+            }}
+          >
             <p
               style={{
                 fontFamily: "'IBM Plex Mono', monospace",

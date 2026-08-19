@@ -161,19 +161,35 @@ export function GuessPanel({
             Quem coordenou o esquema? Uma pessoa por tentativa.
           </p>
         </div>
-        <div style={{ textAlign: "right" }}>
-          <p style={labelStyle}>Tentativas restantes</p>
-          <p
-            style={{
-              fontFamily: "'IBM Plex Mono', monospace",
-              fontSize: 22,
-              lineHeight: 1.15,
-              color: attemptsLeft === 1 ? "var(--nx-danger)" : "var(--nx-ink)",
-            }}
-            data-testid="attempts-remaining"
-          >
-            {attemptsLeft} de {MAX_GUESS_ATTEMPTS}
-          </p>
+        <div style={{ display: "flex", alignItems: "center", gap: 11, flexShrink: 0 }}>
+          <div style={{ display: "flex", gap: 4 }}>
+            {Array.from({ length: MAX_GUESS_ATTEMPTS }, (_, index) => (
+              <span
+                key={index}
+                style={{
+                  width: 9,
+                  height: 9,
+                  borderRadius: "50%",
+                  border: `1px solid ${index < attemptsLeft ? "var(--nx-danger)" : "var(--nx-line-2)"}`,
+                  background: index < attemptsLeft ? "var(--nx-danger)" : "transparent",
+                }}
+              />
+            ))}
+          </div>
+          <div style={{ textAlign: "right" }}>
+            <p style={labelStyle}>Tentativas restantes</p>
+            <p
+              style={{
+                fontFamily: "'IBM Plex Mono', monospace",
+                fontSize: 18,
+                lineHeight: 1.2,
+                color: attemptsLeft === 1 ? "var(--nx-danger)" : "var(--nx-ink)",
+              }}
+              data-testid="attempts-remaining"
+            >
+              {attemptsLeft} de {MAX_GUESS_ATTEMPTS}
+            </p>
+          </div>
         </div>
       </div>
 

@@ -44,12 +44,38 @@ export function InvestigatorPanel({ session, credits }: InvestigatorPanelProps) 
             }}
           />
           <span style={{ fontSize: 13, fontWeight: 600, letterSpacing: "0.06em", color: "var(--nx-ink)" }}>
-            NEXUS AI
+            INVESTIGADOR
           </span>
+          <span
+            style={{
+              fontFamily: "'IBM Plex Mono', monospace",
+              fontSize: 9,
+              letterSpacing: "0.12em",
+              color: "var(--nx-accent-text)",
+              border: "1px solid var(--nx-accent-45)",
+              borderRadius: 999,
+              padding: "2px 7px",
+            }}
+          >
+            GRAPHRAG
+          </span>
+          {credits !== undefined ? (
+            <span
+              style={{
+                marginLeft: "auto",
+                fontFamily: "'IBM Plex Mono', monospace",
+                fontSize: 10,
+                letterSpacing: "0.1em",
+                color: credits < 20 ? "var(--nx-danger)" : "var(--nx-muted)",
+              }}
+            >
+              {credits} CR
+            </span>
+          ) : null}
         </div>
-        <p style={{ fontSize: 11, color: "var(--nx-muted)", marginTop: 4, lineHeight: 1.5 }}>
-          Investigador com acesso só ao que sua equipe já descobriu — sem gabarito.
-          {credits !== undefined ? ` ${credits} cr restantes.` : ""}
+        <p style={{ fontSize: 11, color: "var(--nx-muted)", marginTop: 5, lineHeight: 1.5 }}>
+          Pergunte em português. Ele busca no grafo e nas evidências que sua equipe já
+          descobriu — nunca no gabarito.
         </p>
       </header>
 
@@ -86,8 +112,8 @@ export function InvestigatorPanel({ session, credits }: InvestigatorPanelProps) 
             // quick actions above do. Keep this true regardless of theme.
             placeholder={
               selectedIds.length > 0
-                ? "Pergunte em português (com IA) ou escolha uma ação acima…"
-                : "Pergunte em português com IA — ex.: “quem compartilha dispositivo com Roberto Alves?”"
+                ? "Pergunte ou use uma ação acima…"
+                : "ex.: quem usa o mesmo aparelho?"
             }
             style={{
               flex: 1,

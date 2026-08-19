@@ -57,9 +57,57 @@ function ThinkingSteps() {
 export function ChatTranscript({ entries }: ChatTranscriptProps) {
   if (entries.length === 0) {
     return (
-      <p style={{ padding: "24px 4px", textAlign: "center", fontSize: 12, lineHeight: 1.6, color: "var(--nx-muted)" }}>
-        Nenhuma consulta ainda. Abra um dossiê ou use os chips abaixo.
-      </p>
+      <div style={{ padding: "26px 6px", color: "var(--nx-muted)" }}>
+        <p
+          style={{
+            fontFamily: "'IBM Plex Mono', monospace",
+            fontSize: 10,
+            letterSpacing: "0.14em",
+            color: "var(--nx-muted)",
+          }}
+        >
+          POR ONDE COMEÇAR
+        </p>
+        <ol
+          style={{
+            marginTop: 12,
+            display: "flex",
+            flexDirection: "column",
+            gap: 10,
+            fontSize: 11.5,
+            lineHeight: 1.55,
+            listStyle: "none",
+            padding: 0,
+            counterReset: "nxStep",
+          }}
+        >
+          {[
+            "Clique numa pessoa do grafo para abrir o dossiê dela.",
+            "Selecione duas e peça as conexões em comum.",
+            "Ou pergunte com suas palavras no campo abaixo.",
+          ].map((step, index) => (
+            <li key={step} style={{ display: "flex", gap: 9, alignItems: "flex-start" }}>
+              <span
+                style={{
+                  flexShrink: 0,
+                  width: 17,
+                  height: 17,
+                  borderRadius: "50%",
+                  border: "1px solid var(--nx-line-2)",
+                  display: "grid",
+                  placeItems: "center",
+                  fontFamily: "'IBM Plex Mono', monospace",
+                  fontSize: 9.5,
+                  color: "var(--nx-accent-text)",
+                }}
+              >
+                {index + 1}
+              </span>
+              <span>{step}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
     );
   }
 

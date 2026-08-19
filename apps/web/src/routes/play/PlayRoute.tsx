@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { NexusHeader } from "@/components/layout/NexusHeader";
@@ -43,6 +43,12 @@ function PlayWarRoom({ session }: { session: TeamSession }) {
   const assistantIsDrawer = layout !== "wide";
   const [caseRailOpen, setCaseRailOpen] = useState(false);
   const [assistantOpen, setAssistantOpen] = useState(false);
+  // Docked rails can be folded away to give the canvas the whole width; the
+  // drawer layouts already hide them, so this only applies when they're docked.
+  const [caseRailFolded, setCaseRailFolded] = useState(false);
+  const [assistantFolded, setAssistantFolded] = useState(false);
+  const caseRailDocked = !caseRailIsDrawer && !caseRailFolded;
+  const assistantDocked = !assistantIsDrawer && !assistantFolded;
 
   const hasSelection = useGraphStore((s) => s.selectedIds.length === 1 || s.selectedEdgeId !== null);
 
@@ -70,13 +76,20 @@ function PlayWarRoom({ session }: { session: TeamSession }) {
     if (graphQuery.data) useGraphStore.getState().merge(graphQuery.data);
   }, [graphQuery.data]);
 
-  // Selecting something on a narrow screen has to bring the Inspector with it,
-  // otherwise the detail lands in a rail the player can't see.
-  const hadSelection = useRef(hasSelection);
-  useEffect(() => {
-    if (caseRailIsDrawer && hasSelection && !hadSelection.current) setCaseRailOpen(true);
-    hadSelection.current = hasSelection;
-  }, [hasSelection, caseRailIsDrawer]);
+  // Selecting something has to bring the Inspector with it, otherwise the
+  // detail lands in a rail the player folded away or never opened.
+  useEffect(
+    () =>
+      useGraphStore.subscribe((state, previous) => {
+        const selectedNow = state.selectedIds.length === 1 || state.selectedEdgeId !== null;
+        const selectedBefore =
+          previous.selectedIds.length === 1 || previous.selectedEdgeId !== null;
+        if (!selectedNow || selectedBefore) return;
+        if (caseRailIsDrawer) setCaseRailOpen(true);
+        else setCaseRailFolded(false);
+      }),
+    [caseRailIsDrawer],
+  );
 
   const advance = useMutation({
     mutationFn: () => api.advancePhase(teamId, token),
@@ -203,7 +216,7 @@ function PlayWarRoom({ session }: { session: TeamSession }) {
       />
 
       <div className="relative flex min-h-0 flex-1">
-        {caseRailIsDrawer ? null : (
+        {caseRailDocked ? (
           <aside
             className="flex min-h-0 shrink-0 flex-col"
             style={{
@@ -214,9 +227,27 @@ function PlayWarRoom({ session }: { session: TeamSession }) {
           >
             {caseRail}
           </aside>
-        )}
+        ) : null}
 
-        <section className="flex min-h-0 min-w-0 flex-1 flex-col">
+        <section className="relative flex min-h-0 min-w-0 flex-1 flex-col">
+          {caseRailIsDrawer ? null : (
+            <RailFoldHandle
+              side="left"
+              folded={caseRailFolded}
+              onToggle={() => setCaseRailFolded((folded) => !folded)}
+              label="painel de casos"
+              testId="fold-case-rail"
+            />
+          )}
+          {assistantIsDrawer ? null : (
+            <RailFoldHandle
+              side="right"
+              folded={assistantFolded}
+              onToggle={() => setAssistantFolded((folded) => !folded)}
+              label="investigador"
+              testId="fold-assistant"
+            />
+          )}
           {caseRailIsDrawer || assistantIsDrawer ? (
             <div
               className="flex shrink-0 flex-wrap items-center gap-2"
@@ -260,11 +291,11 @@ function PlayWarRoom({ session }: { session: TeamSession }) {
           </div>
         </section>
 
-        {assistantIsDrawer ? null : (
+        {assistantDocked ? (
           <aside className="flex min-h-0 shrink-0 flex-col" style={{ width: 344 }}>
             {assistant}
           </aside>
-        )}
+        ) : null}
 
         {caseRailIsDrawer && caseRailOpen ? (
           <RailDrawer side="left" onClose={() => setCaseRailOpen(false)}>
@@ -313,6 +344,57 @@ const railButtonStyle = {
   letterSpacing: "0.12em",
   color: "var(--nx-muted)",
 } as const;
+
+/** Fold/unfold tab that rides the seam between the canvas and a docked rail. */
+function RailFoldHandle({
+  side,
+  folded,
+  onToggle,
+  label,
+  testId,
+}: {
+  side: "left" | "right";
+  folded: boolean;
+  onToggle: () => void;
+  label: string;
+  testId: string;
+}) {
+  const pointsAway = side === "left" ? folded : !folded;
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      data-testid={testId}
+      title={folded ? `Mostrar ${label}` : `Recolher ${label}`}
+      aria-label={folded ? `Mostrar ${label}` : `Recolher ${label}`}
+      style={{
+        position: "absolute",
+        top: "50%",
+        transform: "translateY(-50%)",
+        left: side === "left" ? 0 : undefined,
+        right: side === "right" ? 0 : undefined,
+        zIndex: 10,
+        width: 18,
+        height: 54,
+        display: "grid",
+        placeItems: "center",
+        padding: 0,
+        cursor: "pointer",
+        border: "1px solid var(--nx-accent-30)",
+        borderLeft: side === "left" ? "none" : undefined,
+        borderRight: side === "right" ? "none" : undefined,
+        borderRadius: side === "left" ? "0 8px 8px 0" : "8px 0 0 8px",
+        background: "var(--nx-accent-06)",
+        color: "var(--nx-accent-text)",
+        boxShadow: `${side === "left" ? "" : "-"}2px 0 10px var(--nx-shadow-2)`,
+        fontSize: 13,
+        lineHeight: 1,
+      }}
+    >
+      {pointsAway ? "›" : "‹"}
+    </button>
+  );
+}
 
 function RailDrawer({
   side,

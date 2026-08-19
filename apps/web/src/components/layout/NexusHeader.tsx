@@ -15,9 +15,12 @@ interface NexusHeaderProps {
 
 export function NexusHeader({ subtitle, credits, round, live, right, variant = "amber" }: NexusHeaderProps) {
   const liveTone =
-    live === "open" ? "live" : live === "reconnecting" || live === "connecting" ? "amber" : "danger";
+    live === "reconnecting" || live === "connecting" ? "amber" : "danger";
   const liveLabel =
-    live === "open" ? "LIVE" : live === "reconnecting" ? "RECONECTANDO" : live === "connecting" ? "SINCRONIZANDO" : "OFFLINE";
+    live === "reconnecting" ? "RECONECTANDO" : live === "connecting" ? "SINCRONIZANDO" : "OFFLINE";
+  // A healthy connection is the expected state, so it gets no chrome: the
+  // indicator only appears when something is actually wrong.
+  const showLive = live !== undefined && live !== "open";
 
   if (variant === "nx") {
     return (
@@ -53,8 +56,8 @@ export function NexusHeader({ subtitle, credits, round, live, right, variant = "
               FASE {String(round).padStart(2, "0")}
             </span>
           ) : null}
-          {live ? (
-            <span style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, letterSpacing: "0.14em", color: liveTone === "live" ? "var(--nx-accent-text)" : liveTone === "danger" ? "var(--nx-danger)" : "var(--nx-attention)" }}>
+          {showLive ? (
+            <span style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, letterSpacing: "0.14em", color: liveTone === "danger" ? "var(--nx-danger)" : "var(--nx-attention)" }}>
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: "currentColor" }} />
               {liveLabel}
             </span>
@@ -111,14 +114,9 @@ export function NexusHeader({ subtitle, credits, round, live, right, variant = "
         {round !== null && round !== undefined ? (
           <Badge tone="amber">Fase {round}</Badge>
         ) : null}
-        {live ? (
+        {showLive ? (
           <Badge tone={liveTone}>
-            <span
-              className={cn(
-                "h-1.5 w-1.5 rounded-full bg-current",
-                live === "open" && "nexus-live-dot",
-              )}
-            />
+            <span className="h-1.5 w-1.5 rounded-full bg-current" />
             {liveLabel}
           </Badge>
         ) : null}
