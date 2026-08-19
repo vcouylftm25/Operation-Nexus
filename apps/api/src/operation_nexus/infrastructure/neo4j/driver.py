@@ -42,6 +42,15 @@ class Neo4jDriverManager:
         *,
         max_connection_pool_size: int = 50,
         connection_timeout: float = 30.0,
+        # Aura sits behind a load balancer that silently drops idle TCP
+        # connections after a few minutes. Without these two the pool hands out
+        # a socket the server already closed, and the first query after a quiet
+        # spell pays a read timeout ("failed to read from defunct connection")
+        # before the driver retries on a fresh one. Retiring connections well
+        # inside that idle window, and pinging anything idle past
+        # `liveness_check_timeout`, keeps the first request cheap.
+        max_connection_lifetime: float = 300.0,
+        liveness_check_timeout: float = 30.0,
         max_retries: int = 3,
         retry_backoff_seconds: float = 0.5,
     ) -> None:
@@ -50,6 +59,8 @@ class Neo4jDriverManager:
         self._password = password
         self._max_connection_pool_size = max_connection_pool_size
         self._connection_timeout = connection_timeout
+        self._max_connection_lifetime = max_connection_lifetime
+        self._liveness_check_timeout = liveness_check_timeout
         self._max_retries = max_retries
         self._retry_backoff_seconds = retry_backoff_seconds
         self._driver: AsyncDriver | None = None
@@ -68,6 +79,8 @@ class Neo4jDriverManager:
                 auth=(self._user, self._password),
                 max_connection_pool_size=self._max_connection_pool_size,
                 connection_timeout=self._connection_timeout,
+                max_connection_lifetime=self._max_connection_lifetime,
+                liveness_check_timeout=self._liveness_check_timeout,
             )
         return self._driver
 
