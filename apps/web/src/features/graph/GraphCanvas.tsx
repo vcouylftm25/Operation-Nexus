@@ -99,6 +99,55 @@ function parseTs(ts: string): number {
   return Number.isNaN(t) ? Number.POSITIVE_INFINITY : t;
 }
 
+/**
+ * Says out loud that a query is in flight. Without it a click during one looks
+ * broken: the command is dropped on purpose and nothing on screen explains why.
+ * It rides both the populated canvas and the empty state, since the very first
+ * query a team runs is the one where they have the least to look at.
+ */
+function BusyBadge() {
+  return (
+    <div
+      data-testid="graph-busy"
+      style={{
+        position: "absolute",
+        left: "50%",
+        top: 14,
+        transform: "translateX(-50%)",
+        display: "flex",
+        alignItems: "center",
+        gap: 8,
+        padding: "7px 13px",
+        border: "1px solid var(--nx-accent-30)",
+        borderRadius: 999,
+        background: "var(--nx-card)",
+        boxShadow: "0 6px 20px var(--nx-shadow-2)",
+        zIndex: 6,
+      }}
+    >
+      <span
+        style={{
+          width: 6,
+          height: 6,
+          borderRadius: "50%",
+          background: "var(--nx-accent)",
+          animation: "nxBreathe 1.4s ease-in-out infinite",
+        }}
+      />
+      <span
+        style={{
+          fontFamily: "'IBM Plex Mono', monospace",
+          fontSize: 10,
+          letterSpacing: "0.14em",
+          color: "var(--nx-accent-text)",
+        }}
+      >
+        VERA CONSULTANDO — AGUARDE
+      </span>
+    </div>
+  );
+}
+
 export function GraphCanvas({ onCommand, pending, phase = 1 }: GraphCanvasProps) {
   const payload = useTeamGraphPayload();
   const recentIds = useGraphStore((s) => s.recentIds);
@@ -595,6 +644,7 @@ export function GraphCanvas({ onCommand, pending, phase = 1 }: GraphCanvasProps)
     return (
       <div
         style={{
+          position: "relative",
           height: "100%",
           display: "flex",
           alignItems: "center",
@@ -629,6 +679,7 @@ export function GraphCanvas({ onCommand, pending, phase = 1 }: GraphCanvasProps)
               : "Se um item aparecer ligado a duas pessoas diferentes, vocês acharam o primeiro fio da meada."}
           </p>
         </div>
+        {pending ? <BusyBadge /> : null}
       </div>
     );
   }
@@ -830,7 +881,7 @@ export function GraphCanvas({ onCommand, pending, phase = 1 }: GraphCanvasProps)
                 <g
                   key={node.id}
                   transform={`translate(${p.x.toFixed(2)},${p.y.toFixed(2)})`}
-                  style={{ cursor: "pointer", opacity, animation: isRecent ? "nxPulse 620ms cubic-bezier(.22,1,.36,1)" : undefined }}
+                  style={{ cursor: pending ? "wait" : "pointer", opacity, animation: isRecent ? "nxPulse 620ms cubic-bezier(.22,1,.36,1)" : undefined }}
                   onPointerDown={(e) => startDrag(node.id, e)}
                   onClick={(e) => e.stopPropagation()}
                   onDoubleClick={(e) => { e.stopPropagation(); onCommand(`/expand ${node.id} 1`); }}
@@ -1112,6 +1163,8 @@ export function GraphCanvas({ onCommand, pending, phase = 1 }: GraphCanvasProps)
             </div>
           </div>
         ) : null}
+
+        {pending ? <BusyBadge /> : null}
 
         {selectedIds.length >= 2 ? (
           <div

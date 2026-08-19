@@ -19,6 +19,7 @@ import { InvestigationBoard } from "@/features/graph/InvestigationBoard";
 import { useNxThemeStore } from "@/features/graph/nxTheme";
 import { useLayoutMode } from "@/features/graph/useLayoutMode";
 import { InvestigatorPanel } from "@/features/investigation/InvestigatorPanel";
+import { ConfirmSpendDialog } from "@/features/investigation/ConfirmSpendDialog";
 import { useInvestigatorSession } from "@/features/investigation/useInvestigatorSession";
 import { ApiError, api } from "@/lib/client";
 import type { AdvancePhaseResponse, TeamState } from "@/lib/types";
@@ -177,6 +178,12 @@ function PlayWarRoom({ session }: { session: TeamSession }) {
       style={{ background: "var(--nx-bg)" }}
     >
       <TutorialOverlay storageKey={`nexus-tutorial-${teamId}`} />
+      <ConfirmSpendDialog
+        spend={investigatorSession.awaitingConfirmation}
+        balance={credits}
+        onConfirm={investigatorSession.confirmSpend}
+        onCancel={investigatorSession.cancelSpend}
+      />
       <NexusHeader
         variant="nx"
         subtitle={session.team_name}

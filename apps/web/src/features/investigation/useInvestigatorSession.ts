@@ -3,7 +3,7 @@
  * and the real `api.investigate` mutation. Extracted out of InvestigatorPanel
  * so the graph canvas's multi-select quick actions ("conexões em comum",
  * "encontrar caminho") can feed the exact same backend call and the exact
- * same NEXUS AI feed, instead of duplicating the mutation.
+ * same feed from Vera, instead of duplicating the mutation.
  */
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -15,15 +15,26 @@ import { estimateCommandCost } from "./commands";
 
 const EXPENSIVE_COST = 15;
 
+/** A spend waiting on the player's yes — see `ConfirmSpendDialog`. */
+export interface PendingSpend {
+  question: string;
+  label: string;
+  cost: number;
+}
+
 export interface InvestigatorSession {
   entries: ChatEntry[];
   pending: boolean;
   submit: (raw: string) => void;
+  awaitingConfirmation: PendingSpend | null;
+  confirmSpend: () => void;
+  cancelSpend: () => void;
 }
 
 export function useInvestigatorSession(teamId: string, sessionToken: string): InvestigatorSession {
   const queryClient = useQueryClient();
   const [entries, setEntries] = useState<ChatEntry[]>([]);
+  const [awaitingConfirmation, setAwaitingConfirmation] = useState<PendingSpend | null>(null);
 
   const mutation = useMutation({
     mutationFn: ({ question }: { id: string; question: string }) =>
@@ -45,20 +56,38 @@ export function useInvestigatorSession(teamId: string, sessionToken: string): In
     },
   });
 
-  function submit(raw: string) {
-    const q = raw.trim();
-    if (!q || mutation.isPending) return;
-    const cost = estimateCommandCost(q);
-    if (cost >= EXPENSIVE_COST) {
-      const ok = window.confirm(`Isso custa ${cost} cr. Confirma a investigação?`);
-      if (!ok) return;
-    }
+  function dispatch(question: string) {
     const id = crypto.randomUUID();
-    setEntries((prev) => [...prev, { id, question: q, displayQuestion: humanizeQuestion(q) }]);
-    mutation.mutate({ id, question: q });
+    setEntries((prev) => [...prev, { id, question, displayQuestion: humanizeQuestion(question) }]);
+    mutation.mutate({ id, question });
   }
 
-  return { entries, pending: mutation.isPending, submit };
+  function submit(raw: string) {
+    const q = raw.trim();
+    if (!q || mutation.isPending || awaitingConfirmation) return;
+    const cost = estimateCommandCost(q);
+    if (cost >= EXPENSIVE_COST) {
+      setAwaitingConfirmation({ question: q, label: humanizeQuestion(q), cost });
+      return;
+    }
+    dispatch(q);
+  }
+
+  function confirmSpend() {
+    if (!awaitingConfirmation) return;
+    const { question } = awaitingConfirmation;
+    setAwaitingConfirmation(null);
+    dispatch(question);
+  }
+
+  return {
+    entries,
+    pending: mutation.isPending,
+    submit,
+    awaitingConfirmation,
+    confirmSpend,
+    cancelSpend: () => setAwaitingConfirmation(null),
+  };
 }
 
 function humanizeQuestion(question: string): string {
