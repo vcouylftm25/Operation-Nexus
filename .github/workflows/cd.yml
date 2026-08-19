@@ -124,7 +124,7 @@ jobs:
           echo "RUNNER_IP=$RUNNER_IP" >> "$GITHUB_ENV"
           az postgres flexible-server firewall-rule create \
             --resource-group "$RESOURCE_GROUP" \
-            --name "$PG_SERVER" \
+            --server-name "$PG_SERVER" \
             --rule-name "gh-runner-${{ github.run_id }}" \
             --start-ip-address "$RUNNER_IP" \
             --end-ip-address "$RUNNER_IP" \
@@ -143,7 +143,7 @@ jobs:
         run: |
           az postgres flexible-server firewall-rule delete \
             --resource-group "$RESOURCE_GROUP" \
-            --name "$PG_SERVER" \
+            --server-name "$PG_SERVER" \
             --rule-name "gh-runner-${{ github.run_id }}" \
             --yes --output none || true
 
@@ -213,4 +213,3 @@ jobs:
           action: upload
           app_location: apps/web/dist
           skip_app_build: true
-          skip_api_build: true
