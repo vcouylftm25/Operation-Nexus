@@ -27,6 +27,7 @@ import structlog
 from langchain_core.messages import HumanMessage, SystemMessage
 from langgraph.graph import END, START, StateGraph
 
+from operation_nexus.ai.deterministic import parse_investigation_command
 from operation_nexus.ai.prompts.loader import load_prompt
 from operation_nexus.ai.tools.registry import (
     TOOL_REGISTRY,
@@ -217,6 +218,16 @@ def build_investigation_graph(
         return {"normalized_question": normalized}
 
     async def plan_investigation(state: InvestigationState) -> dict[str, Any]:
+        # Every button in the UI emits the command DSL verbatim — clicking a
+        # case file sends `/inspect person_04`, double-clicking a node sends
+        # `/expand person_04 1`. The tool and its arguments are already spelled
+        # out, so asking the model to "plan" them burns a full round trip (a
+        # few seconds, on every click) to rediscover what the click said.
+        # Free text still falls through to the planner below.
+        direct = parse_investigation_command(state["normalized_question"])
+        if direct.tool_calls and direct.intent is not InvestigationIntent.OUT_OF_SCOPE:
+            return {"plan": direct}
+
         known_entities = state.get("known_entities") or {}
         system_text = load_prompt(
             "planner",
