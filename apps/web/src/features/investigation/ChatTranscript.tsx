@@ -174,7 +174,7 @@ export function ChatTranscript({ entries }: ChatTranscriptProps) {
                         color: "var(--nx-accent-text)",
                       }}
                     >
-                      NEXUS AI
+                      VERA
                     </span>
                     {entry.result ? (
                       <span

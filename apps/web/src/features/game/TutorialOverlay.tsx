@@ -9,7 +9,7 @@ const STEPS = [
   ["01 · MISSÃO", "Uma quadrilha pediu crédito fingindo ser oito clientes diferentes.", "A equipe atravessa três fases no próprio ritmo: vocês mesmos apertam “avançar” quando acharem que já entenderam a fase.", "Comecem pelas fichas. Na fase 1 o grafo aparece vazio de propósito."],
   ["02 · CRÉDITOS", "Toda consulta custa crédito.", "Inspecionar pessoas, expandir conexões, buscar evidências e desafiar hipóteses gastam do saldo. Cada fase nova credita mais.", "A melhor equipe não é a que mais consulta. É a que faz as melhores perguntas."],
   ["03 · O GRAFO", "Na fase 2 as ligações entram no caso.", "Aparelhos, telefones, contas e endereços aparecem conforme vocês investigam — e um mesmo item usado por duas pessoas é o começo de tudo.", "Uma conexão é um indício. Não é um veredito."],
-  ["04 · INVESTIGADOR", "A IA é a analista júnior da equipe — não o gabarito.", "Peça conexões, caminhos, linhas do tempo e trechos de evidência. Ela enxerga só o que já foi liberado para vocês.", "Use a IA para testar a hipótese, não para terceirizar a acusação."],
+  ["04 · VERA", "A Vera é a analista de vínculos da equipe — não o gabarito.", "Peça conexões, caminhos, linhas do tempo e trechos de evidência. Ela enxerga só o que já foi liberado para vocês.", "Use a Vera para testar a hipótese, não para terceirizar a acusação."],
   ["05 · A ACUSAÇÃO", "Na fase 3 vocês apontam quem coordenou o esquema.", "São três tentativas, com resposta na hora. Acertar cedo, gastando pouco, vale mais pontos — e o placar da sala mostra como está cada equipe.", "Quem coordena costuma aparecer pouco no grafo. Leiam as mensagens."],
 ] as const;
 

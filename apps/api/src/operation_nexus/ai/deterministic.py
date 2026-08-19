@@ -70,8 +70,8 @@ def _out_of_scope_plan(reason: str) -> InvestigationPlan:
 def _out_of_scope_answer() -> InvestigationAnswer:
     return InvestigationAnswer(
         answer=(
-            "Não tenho acesso ao gabarito. Posso investigar relações e "
-            "evidências disponíveis através das ferramentas da paleta "
+            "Não tenho o gabarito — quem fraudou é a conclusão de vocês. "
+            "Posso puxar vínculos e evidências pelas ações da paleta "
             "(/inspect, /shared, /path, /expand, /timeline, /search, /challenge)."
         ),
         caveats=["NO_GROUND_TRUTH_ACCESS"],

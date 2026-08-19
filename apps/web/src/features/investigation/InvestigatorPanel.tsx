@@ -44,7 +44,7 @@ export function InvestigatorPanel({ session, credits }: InvestigatorPanelProps) 
             }}
           />
           <span style={{ fontSize: 13, fontWeight: 600, letterSpacing: "0.06em", color: "var(--nx-ink)" }}>
-            INVESTIGADOR
+            VERA
           </span>
           <span
             style={{
@@ -74,8 +74,8 @@ export function InvestigatorPanel({ session, credits }: InvestigatorPanelProps) 
           ) : null}
         </div>
         <p style={{ fontSize: 11, color: "var(--nx-muted)", marginTop: 5, lineHeight: 1.5 }}>
-          Pergunte em português. Ele busca no grafo e nas evidências que sua equipe já
-          descobriu — nunca no gabarito.
+          Analista de vínculos do caso. Pergunte em português: ela busca no grafo e nas
+          evidências que sua equipe já descobriu — nunca no gabarito.
         </p>
       </header>
 

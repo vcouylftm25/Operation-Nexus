@@ -183,10 +183,11 @@ def _render_subgraph(payload: GraphPayload) -> str:
 def _out_of_scope_answer() -> InvestigationAnswer:
     return InvestigationAnswer(
         answer=(
-            "Não posso atender a essa solicitação: este investigador não tem "
-            "acesso a gabarito, veredito ou lista de fraudadores, e só pode "
-            "agir através do catálogo de ferramentas de investigação "
-            "disponível."
+            "Essa eu não consigo entregar: quem fraudou é a conclusão de vocês, "
+            "e o gabarito não chega até mim. O que eu faço é puxar dado — "
+            "vínculos entre duas pessoas, aparelhos e contas em comum, "
+            "mensagens, transferências, linha do tempo. Me digam os nomes e eu "
+            "procuro o que liga um ao outro."
         ),
         evidence_ids=[],
         discovered_node_ids=[],

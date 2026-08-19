@@ -244,7 +244,7 @@ function PlayWarRoom({ session }: { session: TeamSession }) {
               side="right"
               folded={assistantFolded}
               onToggle={() => setAssistantFolded((folded) => !folded)}
-              label="investigador"
+              label="painel da Vera"
               testId="fold-assistant"
             />
           )}
@@ -274,7 +274,7 @@ function PlayWarRoom({ session }: { session: TeamSession }) {
                   style={railButtonStyle}
                   data-testid="open-assistant"
                 >
-                  NEXUS AI
+                  VERA
                 </button>
               ) : null}
               <span style={{ fontSize: 10.5, color: "var(--nx-muted)" }}>
