@@ -25,7 +25,9 @@ RUN groupadd --gid 1000 appuser \
 # --- dev -------------------------------------------------------------------
 FROM base AS dev
 
-COPY apps/api/pyproject.toml apps/api/uv.lock /app/
+# README.md ships with the metadata because pyproject declares it as the
+# package readme; without it the hatchling build backend aborts the sync.
+COPY apps/api/pyproject.toml apps/api/uv.lock apps/api/README.md /app/
 COPY apps/api/src /app/src
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --all-extras
@@ -45,7 +47,7 @@ CMD ["uv", "run", "uvicorn", "operation_nexus.main:app", \
 # --- runtime -----------------------------------------------------------------
 FROM base AS runtime
 
-COPY apps/api/pyproject.toml apps/api/uv.lock /app/
+COPY apps/api/pyproject.toml apps/api/uv.lock apps/api/README.md /app/
 COPY apps/api/src /app/src
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-dev --all-extras
