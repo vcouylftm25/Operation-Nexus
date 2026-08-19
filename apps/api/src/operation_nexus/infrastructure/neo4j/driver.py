@@ -14,6 +14,13 @@ from typing import TypeVar
 
 import structlog
 from neo4j import AsyncDriver, AsyncGraphDatabase, AsyncManagedTransaction, AsyncSession
+
+# Private module on purpose: `SocketDeadlineExceededError` is a plain
+# RuntimeError, not a DriverError, so it is invisible to every public
+# exception in `neo4j.exceptions` — see `_TRANSIENT_EXCEPTIONS`. A driver
+# upgrade that moves or renames it must fail loudly here rather than silently
+# stop retrying in production — see tests/unit/test_neo4j_driver_retry.py.
+from neo4j._exceptions import SocketDeadlineExceededError
 from neo4j.exceptions import ServiceUnavailable, SessionExpired, TransientError
 
 logger = structlog.get_logger(__name__)
@@ -23,10 +30,18 @@ T = TypeVar("T")
 #: Exceptions worth retrying — connection blips and Neo4j's own "please retry
 #: this transaction" signal. Anything else (syntax errors, constraint
 #: violations, auth failures) must fail fast.
+#:
+#: `SocketDeadlineExceededError` is the one that bites in production: when Aura
+#: kills a connection mid-query the read blocks until the socket deadline and
+#: then raises this, which — being a bare RuntimeError — sails past the
+#: driver's own managed retry and past the three DriverError types below. It
+#: reached a player once as an HTTP 500 while every other stale-connection blip
+#: was retried transparently.
 _TRANSIENT_EXCEPTIONS: tuple[type[Exception], ...] = (
     ServiceUnavailable,
     SessionExpired,
     TransientError,
+    SocketDeadlineExceededError,
 )
 
 
@@ -41,7 +56,14 @@ class Neo4jDriverManager:
         password: str,
         *,
         max_connection_pool_size: int = 50,
-        connection_timeout: float = 30.0,
+        # Aura's hostname resolves to more than one address and one of them
+        # occasionally refuses to answer — roughly one connect in fifteen hung
+        # for the full timeout while the healthy ones all finished under half a
+        # second. The driver only moves to the next address once this expires,
+        # so the timeout is the entire cost of hitting a bad one. Five seconds
+        # is an order of magnitude above the observed worst healthy connect and
+        # an order of magnitude below what a player will sit through.
+        connection_timeout: float = 5.0,
         # Aura sits behind a load balancer that silently drops idle TCP
         # connections after a few minutes. Without these two the pool hands out
         # a socket the server already closed, and the first query after a quiet
@@ -51,6 +73,12 @@ class Neo4jDriverManager:
         # `liveness_check_timeout`, keeps the first request cheap.
         max_connection_lifetime: float = 300.0,
         liveness_check_timeout: float = 30.0,
+        # A single stale socket burns ~30s before the read gives up. The
+        # driver's default retry budget is also 30s, so that one stall used up
+        # the whole allowance and the managed transaction gave up without ever
+        # retrying. Doubling the budget leaves room for the retry that
+        # succeeds — a slow answer beats an error the team has to re-ask for.
+        max_transaction_retry_time: float = 60.0,
         max_retries: int = 3,
         retry_backoff_seconds: float = 0.5,
     ) -> None:
@@ -61,6 +89,7 @@ class Neo4jDriverManager:
         self._connection_timeout = connection_timeout
         self._max_connection_lifetime = max_connection_lifetime
         self._liveness_check_timeout = liveness_check_timeout
+        self._max_transaction_retry_time = max_transaction_retry_time
         self._max_retries = max_retries
         self._retry_backoff_seconds = retry_backoff_seconds
         self._driver: AsyncDriver | None = None
@@ -81,6 +110,7 @@ class Neo4jDriverManager:
                 connection_timeout=self._connection_timeout,
                 max_connection_lifetime=self._max_connection_lifetime,
                 liveness_check_timeout=self._liveness_check_timeout,
+                max_transaction_retry_time=self._max_transaction_retry_time,
             )
         return self._driver
 
