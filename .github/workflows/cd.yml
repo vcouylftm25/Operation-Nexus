@@ -77,16 +77,26 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Build e push para o ACR
-        run: |
-          az acr build \
-            --registry "$ACR_NAME" \
-            --image "$API_IMAGE:${{ steps.tag.outputs.tag }}" \
-            --image "$API_IMAGE:latest" \
-            --platform linux/amd64 \
-            --target runtime \
-            --file infra/docker/api.Dockerfile \
-            .
+      # O builder clássico do ACR não entende os cache mounts do BuildKit que o
+      # Dockerfile usa, então a imagem é construída aqui e só empurrada para lá.
+      - name: Autenticar no ACR
+        run: az acr login --name "$ACR_NAME"
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build e push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: infra/docker/api.Dockerfile
+          target: runtime
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ${{ env.ACR_URL }}/${{ env.API_IMAGE }}:${{ steps.tag.outputs.tag }}
+            ${{ env.ACR_URL }}/${{ env.API_IMAGE }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   migrate:
     name: Migrações do Postgres
