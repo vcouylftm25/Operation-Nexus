@@ -125,7 +125,7 @@ jobs:
           az postgres flexible-server firewall-rule create \
             --resource-group "$RESOURCE_GROUP" \
             --server-name "$PG_SERVER" \
-            --rule-name "gh-runner-${{ github.run_id }}" \
+            --name "gh-runner-${{ github.run_id }}" \
             --start-ip-address "$RUNNER_IP" \
             --end-ip-address "$RUNNER_IP" \
             --output none
@@ -144,7 +144,7 @@ jobs:
           az postgres flexible-server firewall-rule delete \
             --resource-group "$RESOURCE_GROUP" \
             --server-name "$PG_SERVER" \
-            --rule-name "gh-runner-${{ github.run_id }}" \
+            --name "gh-runner-${{ github.run_id }}" \
             --yes --output none || true
 
   deploy-api:
